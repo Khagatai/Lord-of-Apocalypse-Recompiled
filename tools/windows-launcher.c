@@ -41,6 +41,32 @@ static HANDLE log_file=INVALID_HANDLE_VALUE;
 static int game_started;
 static char pending[32768];
 static size_t pending_len;
+static int setup_active;
+static unsigned setup_percent;
+static ULONGLONG setup_started,setup_elapsed,last_elapsed_second;
+static void set_status(const wchar_t *value,int error);
+typedef struct {unsigned stage,done,total,percent;} SetupProgress;
+static int parse_setup_progress(const char *line,SetupProgress *p){
+    char tail;unsigned long long stage,done,total,percent;
+    if(sscanf(line,"LOA_SETUP_PROGRESS %llu %llu %llu %llu %c",&stage,&done,&total,&percent,&tail)!=4)return 0;
+    if(stage>=13 || total>1000000 || done>total || percent>1000)return 0;
+    if(stage==12){if(percent!=1000 || done!=1 || total!=1)return 0;}
+    else if(percent==1000)return 0;
+    p->stage=(unsigned)stage;p->done=(unsigned)done;p->total=(unsigned)total;p->percent=(unsigned)percent;return 1;
+}
+static void setup_update(SetupProgress p){
+    static const wchar_t *names[]={L"Checking your original ISO",L"Preparing verified game inputs",L"Generating native game code",
+        L"Compiling the native game",L"Linking the Windows executable",L"Rendering English UI",L"Rebuilding and checking English archives",
+        L"Preparing English subtitles",L"Preparing public texture tools",L"Mapping texture sources",L"Building HD textures",
+        L"Validating the completed installation",L"Setup complete. Opening the game"};
+    static const wchar_t *units[]={L"steps",L"inputs",L"steps",L"files",L"steps",L"resources",L"resources checked",L"captions",L"steps",L"steps",L"jobs",L"checks",L"steps"};
+    if(!setup_active){setup_started=GetTickCount64();setup_elapsed=0;setup_active=1;}
+    if(p.percent>setup_percent)setup_percent=p.percent;
+    wchar_t status[240];
+    if(p.total && p.stage!=12)swprintf(status,240,L"%ls: %u / %u %ls",names[p.stage],p.done,p.total,units[p.stage]);
+    else swprintf(status,240,L"%ls...",names[p.stage]);
+    set_status(status,0);
+}
 
 #define BG RGB(13,18,26)
 #define PANEL RGB(21,29,40)
@@ -157,14 +183,22 @@ static void paint_background(HDC dc){
     RECT title={x,vertical(94),x+w,vertical(141)};
     label(dc,title_font,INK,title,launch_error?L"Launch needs attention":child?L"Preparing your game":L"Ready to play",DT_SINGLELINE|DT_VCENTER);
     RECT sub={x,vertical(150),x+w,vertical(184)};
-    label(dc,font,MUTED,sub,L"Pick up where you left off. Your settings stay with you.",DT_WORDBREAK);
+    if(setup_active){
+        ULONGLONG seconds=child?(GetTickCount64()-setup_started)/1000:setup_elapsed;
+        wchar_t summary[160];swprintf(summary,160,L"Estimated overall: %u%%  |  Elapsed: %lluh %llum %llus",setup_percent/10,
+            (unsigned long long)(seconds/3600),(unsigned long long)(seconds/60%60),(unsigned long long)(seconds%60));
+        label(dc,font,MUTED,sub,summary,DT_WORDBREAK);
+    }else label(dc,font,MUTED,sub,L"Pick up where you left off. Your settings stay with you.",DT_WORDBREAK);
     RECT state={x,vertical(294),x+w,vertical(368)};box(dc,state,PANEL,EDGE,12);
     int dotx=x+px(21),doty=vertical(315);RECT dot={dotx-px(3),doty-px(3),dotx+px(3),doty+px(3)};
     box(dc,dot,launch_error?ERROR_INK:GOLD,launch_error?ERROR_INK:GOLD,6);
     if(child){
         RECT track={x,vertical(278),x+w,vertical(280)};fill(dc,track,EDGE);
-        int span=w/4,at=(animation*px(8))%(w+span)-span;
-        RECT active={x+(at<0?0:at),track.top,x+(at+span>w?w:at+span),track.bottom};fill(dc,active,GOLD);
+        if(setup_active){RECT active={x,track.top,x+MulDiv(w,(int)setup_percent,1000),track.bottom};fill(dc,active,GOLD);}
+        else{
+            int span=w/4,at=(animation*px(8))%(w+span)-span;
+            RECT active={x+(at<0?0:at),track.top,x+(at+span>w?w:at+span),track.bottom};fill(dc,active,GOLD);
+        }
     }
     if(expanded){RECT panel={x,vertical(382),x+w,vertical(479)};box(dc,panel,RGB(10,16,24),EDGE,8);}
     else{
@@ -269,13 +303,16 @@ static void output_line(const char *bytes,int length) {
     if(length<=0)return;
     int n=MultiByteToWideChar(CP_UTF8,0,bytes,length,text,32764);
     text[n]=0;
+    SetupProgress setup;
+    if(!game_started && parse_setup_progress(bytes,&setup)){setup_update(setup);return;}
     if(strstr(bytes,"LOA_LAUNCHER_GAME_STARTED")) {
         game_started=1;set_status(L"Game running. Use F1 for settings and networking.",0);
         ShowWindow(main_window,SW_MINIMIZE);
     } else {
         if(!game_started && n){
             unsigned completed_jobs=0,total_jobs=0;
-            if(sscanf(bytes,"Preparing HD textures: %u / %u jobs complete",&completed_jobs,&total_jobs)==2 && total_jobs && total_jobs<=1000000u && completed_jobs<=total_jobs){
+            if(setup_active){ /* Structured setup messages own the main status. */ }
+            else if(sscanf(bytes,"Preparing HD textures: %u / %u jobs complete",&completed_jobs,&total_jobs)==2 && total_jobs && total_jobs<=1000000u && completed_jobs<=total_jobs){
                 wchar_t progress[220];
                 swprintf(progress,220,L"Building HD textures: %u / %u jobs (%u%%). This runs once; completed batches resume after errors.",completed_jobs,total_jobs,completed_jobs*100u/total_jobs);
                 set_status(progress,0);
@@ -313,6 +350,7 @@ static void consume(const char *data,DWORD length) {
 static void finish(void) {
     if(pending_len){pending[pending_len]=0;output_line(pending,(int)pending_len);pending_len=0;}
     DWORD code=1;GetExitCodeProcess(child,&code);CloseHandle(child);child=NULL;
+    if(setup_active)setup_elapsed=(GetTickCount64()-setup_started)/1000;
     CloseHandle(read_pipe);read_pipe=NULL;
     if(log_file!=INVALID_HANDLE_VALUE){CloseHandle(log_file);log_file=INVALID_HANDLE_VALUE;}
     if(child_mode){settings_finish(code);return;}
@@ -325,6 +363,7 @@ static void finish(void) {
 }
 static void launch(int argc,wchar_t **argv) {
     child_mode=0;
+    setup_active=0;setup_percent=0;setup_elapsed=0;last_elapsed_second=0;
     wchar_t python[32768],script[32768],manifest[32768],command[32768]={0};size_t used=0;
     swprintf(python,32768,L"%ls\\private\\tools\\python314\\python.exe",root);
     swprintf(manifest,32768,L"%ls\\private\\distribution\\release.json",root);
@@ -421,6 +460,10 @@ static LRESULT CALLBACK window_proc(HWND hwnd,UINT msg,WPARAM wp,LPARAM lp) {
         return (LRESULT)((HWND)lp==details?details_brush:settings_page?background_brush:panel_brush);
     case WM_TIMER:
         if(child) {
+            if(setup_active){
+                ULONGLONG seconds=(GetTickCount64()-setup_started)/1000;
+                if(seconds!=last_elapsed_second){last_elapsed_second=seconds;RECT summary={content_x(),vertical(150),content_x()+content_width(),vertical(184)};InvalidateRect(hwnd,&summary,FALSE);}
+            }
             if(!game_started&&!IsIconic(hwnd)){animation++;RECT track={content_x(),vertical(276),content_x()+content_width(),vertical(282)};InvalidateRect(hwnd,&track,FALSE);}
             DWORD available=0;
             while(PeekNamedPipe(read_pipe,NULL,0,NULL,&available,NULL)&&available) {

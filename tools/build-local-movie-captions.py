@@ -76,6 +76,8 @@ def main():
     if output.exists():
         if not args.resume or json.loads((output/'owner.json').read_text())!=identity:raise ValueError('Existing caption work does not match recipe')
     else:output.mkdir(parents=True);(output/'owner.json').write_text(json.dumps(identity,indent=2)+'\n')
+    import setup_progress
+    total_cues=sum(len(movie['cues']) for movie in recipe['movies'])
     title.verify_disc_image(image,'japanese');headers=[];cues=[];verified=0;mismatches=[]
     with image.open('rb') as stream:
         files=survey.ISO(stream).files()
@@ -111,6 +113,7 @@ def main():
                 if sha(pixels)!=cue['expected_pixels_sha256']:
                     mismatches.append(dict(movie=record['movie'],id=cue['id'],actual_sha256=sha(pixels),expected_sha256=cue['expected_pixels_sha256']))
                 cues.append((movie,cue['first_frame'],cue['end_frame'],x,y,w,h,pixels));verified+=1
+                setup_progress.emit('captions',verified,total_cues)
             print('Locally generated captions:',record['movie'],len(record['cues']),flush=True)
     if mismatches:
         (output/'pixel-mismatches.json').write_text(json.dumps(mismatches,indent=2)+'\n')

@@ -3,11 +3,14 @@
 All game-derived output is created privately on the player's PC. A failed or
 partial stage is never reported ready, and successful owned stages can resume.
 """
-import argparse,hashlib,json,os,subprocess,sys
+import argparse,hashlib,json,os,re,subprocess,sys,time
 from pathlib import Path
 ROOT=Path(__file__).resolve().parents[1];sys.path.insert(0,str(ROOT/'tools'))
 import title,source_identity,iso_local_setup,translation_candidate
+import setup_progress
+import setup_resources
 from graphics_settings import preference_lock
+TIMINGS=None
 
 
 def sha(path):
@@ -39,10 +42,28 @@ def plan():
 
 def run(script,*args):
     print('Preparing '+script.removesuffix('.py').replace('-',' ')+'...',flush=True)
-    try:subprocess.run([sys.executable,'-u',str(ROOT/'tools'/script),*map(str,args)],env=title.environment(),cwd=ROOT,check=True)
+    started=time.monotonic();code=-1
+    try:
+        process=subprocess.Popen([sys.executable,'-u',str(ROOT/'tools'/script),*map(str,args)],env=title.environment(),cwd=ROOT,
+            stdout=subprocess.PIPE,stderr=subprocess.STDOUT,text=True,errors='replace',bufsize=1)
+        try:
+            for line in process.stdout:
+                print(line,end='',flush=True)
+                if script=='build-local-hd-pack.py':
+                    count=re.fullmatch(r'Preparing HD textures: (\d+) / (\d+) jobs complete\s*',line)
+                    if count:
+                        setup_progress.emit('hd',int(count[1]),int(count[2]))
+                        if int(count[1])==int(count[2]):setup_progress.emit('verify')
+            code=process.wait()
+        finally:
+            process.stdout.close()
+            if process.poll() is None:process.wait()
+        if code:raise subprocess.CalledProcessError(code,script)
     except subprocess.CalledProcessError as error:
         extra=' HD inference details are in private/local-build/HD-work/scratch/inference-*.log.' if script=='build-local-hd-pack.py' else ''
         raise RuntimeError(f'Local setup stage {script} failed (exit {error.returncode}). Completed stages are kept for retry; see the launcher log.'+extra) from error
+    finally:
+        if TIMINGS:TIMINGS.record(script+(' '+str(args[0]) if script=='title.py' and args else ''),time.monotonic()-started,code)
 
 
 def ready():
@@ -58,38 +79,52 @@ def ready():
     return all(local(row['path']).is_file() for row in record['outputs'])
 
 
-def prepare(image,jobs=4):
+def prepare(image,jobs=None):
+    global TIMINGS
+    setup_progress.emit('checking');checked=time.monotonic()
     image=Path(image).resolve(strict=True);recipe=plan()
     expected=recipe['original']
     # Validate the complete dump before creating any game output or build lock.
     if image.stat().st_size!=expected['size'] or sha(image)!=expected['sha256']:
         raise ValueError('Requires your unmodified Japanese NPJH50503 disc 1.01 ISO; SHA256 '+expected['sha256'])
+    if jobs is None:jobs=setup_resources.compiler_workers()
     if not 1<=jobs<=8:raise ValueError('Use 1-8 compiler workers')
     source_identity.verify(ROOT,'framework');source_identity.verify(ROOT,'decryptor')
     records=recipe['recipes'];work=local('private/local-build');work.mkdir(parents=True,exist_ok=True)
     with preference_lock(work/'player-setup.lock'):
         if ready():
             atomic_json(local('private/distribution/local-image.json'),dict(schema=1,path=str(image)))
+            setup_progress.emit('ready',1,1)
             return dict(status='PASS',already_prepared=True,original_unchanged=True)
+        TIMINGS=setup_progress.Timings(work/'setup-timings.json',started=checked)
+        TIMINGS.record('verify-inputs',time.monotonic()-checked,0)
         atomic_json(work/'setup-progress.json',dict(state='BUILDING',ready_to_play=False))
         print('Preparing native Windows executable from your ISO. First setup can take a substantial time; completed stages resume.',flush=True)
+        print(f'Using {jobs} compiler workers (CPU and available-memory bounded).',flush=True)
         bridge=local('private/tools/decrypt-build/prx-decrypt.dll')
+        setup_progress.emit('inputs')
+        input_started=time.monotonic()
         if not bridge.is_file():run('build-prx-helper.py')
         input_report=iso_local_setup.prepare_inputs(image)
+        TIMINGS.record('prepare-inputs',time.monotonic()-input_started,0)
         native=title.build_directory('release')
         if (native/'host-ui-build.json').is_file():title.verify_launch_inputs('release')
         else:
-            for stage in ('generate','build'):run('title.py',stage,'--profile','release','--jobs',jobs)
+            for stage in ('generate','build'):
+                setup_progress.emit('generate' if stage=='generate' else 'compile')
+                run('title.py',stage,'--profile','release','--jobs',jobs)
             title.verify_launch_inputs('release')
         input_report.update(state='NATIVE_COMPILED',native_compilation_complete=True)
         atomic_json(work/'inputs.json',input_report)
         atomic_json(work/'setup-progress.json',dict(state='PREPARING_ENGLISH',ready_to_play=False))
         rendered=work/'English-rendered'
+        setup_progress.emit('text')
         run('build-local-text-images.py','--image',image,'--recipes',local(records['textures']['path']),
             '--output',rendered,'--allow-local-rasterization',*(['--resume'] if rendered.exists() else []))
         if json.loads((rendered/'result.json').read_text()).get('ISO_only_texture_generation_complete') is not True:
             raise RuntimeError('English UI reconstruction is incomplete; no playable installation admitted')
         english=local('private/translation/text-pass-16-image');report=english/'result.json';english_image=english/'LordOfApocalypse-English-WIP.iso'
+        setup_progress.emit('archives')
         if not report.is_file():
             if english.exists():
                 owner=json.loads((english/'owner.json').read_text())
@@ -105,6 +140,7 @@ def prepare(image,jobs=4):
         translation_candidate.verify(english_image,report)
         atomic_json(work/'setup-progress.json',dict(state='PREPARING_CAPTIONS',ready_to_play=False))
         captions=local('private/translation/movie-captions')
+        setup_progress.emit('captions')
         if not local('private/local-build/movie-helper/movie-survey.exe').is_file():run('build-movie-helper.py')
         run('build-local-movie-captions.py','--image',image,'--recipe',local(records['captions']['path']),
             '--output',captions,'--allow-local-rasterization',*(['--resume'] if captions.exists() else []))
@@ -113,15 +149,25 @@ def prepare(image,jobs=4):
         atomic_json(captions/'result.json',caption_report)
         atomic_json(work/'setup-progress.json',dict(state='PREPARING_HD',ready_to_play=False))
         import upscaler_dependency
+        setup_progress.emit('tools')
+        tools_started=time.monotonic()
         upscaler_dependency.ensure()
+        TIMINGS.record('prepare-texture-tools',time.monotonic()-tools_started,0)
         hd_recipe=local(records['HD']['path'])
         if json.loads((rendered/'result.json').read_text()).get('platform_rasterization_variants'):
+            setup_progress.emit('catalog')
             catalog=work/'current-HD-catalog'
             if not (catalog/'result.json').is_file():run('catalog-remaster-textures.py','--archives',english,'--output',catalog,'--decode')
-            rebased=work/'local-HD-recipes.json'
+            rebased=work/'local-HD-recipes-v2.json'
             run('rebase-local-hd-recipes.py','--recipes',hd_recipe,'--catalog',catalog,'--rendered',rendered/'result.json','--output',rebased)
             hd_recipe=rebased
+        import hd_recipe_migration
+        migration=hd_recipe_migration.migrate(ROOT,hd_recipe)
+        if migration:print(json.dumps(migration,indent=2),flush=True)
+        setup_progress.emit('hd')
         run('build-local-hd-pack.py','--archives',english,'--recipes',hd_recipe)
+        validation_started=time.monotonic()
+        setup_progress.emit('verify')
         hd_report=json.loads((work/'HD-work/result.json').read_text())
         if hd_report.get('state')!='HD_GENERATED':raise RuntimeError('HD generation has not completed')
         if sha(image)!=expected['sha256']:raise ValueError('Original ISO changed during setup')
@@ -134,11 +180,13 @@ def prepare(image,jobs=4):
             outputs=[dict(path=name,sha256=sha(local(name))) for name in outputs],game_data_bundled=False,
             original_unchanged=True,full_campaign_validation=False)
         atomic_json(work/'ready.json',result);atomic_json(work/'setup-progress.json',dict(state='READY',ready_to_play=True))
+        TIMINGS.record('final-validation',time.monotonic()-validation_started,0)
+        setup_progress.emit('ready',1,1)
         return dict(status='PASS',original_unchanged=True,native_compiled_locally=True,English_generated_locally=True,HD_generated_locally=True)
 
 
 def main():
-    p=argparse.ArgumentParser(description=__doc__);p.add_argument('--image',type=Path,required=True);p.add_argument('--jobs',type=int,default=4);a=p.parse_args()
+    p=argparse.ArgumentParser(description=__doc__);p.add_argument('--image',type=Path,required=True);p.add_argument('--jobs',type=int,choices=range(1,9),help='Override automatic CPU/RAM bounded compiler workers');a=p.parse_args()
     print(json.dumps(prepare(a.image,a.jobs),indent=2),flush=True)
 
 

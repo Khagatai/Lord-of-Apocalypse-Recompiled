@@ -35,6 +35,15 @@ class LocalHdRebase(unittest.TestCase):
     def test_ui_variants_need_independent_region_proof(self):
         old,catalog,report,rendered=self.fixture();rendered['source_identity_and_edit_region_guards']=False
         with self.assertRaisesRegex(ValueError,'edit-region guards'):m.rebase(old,catalog,report,rendered)
+    def test_canonical_fallback_preserves_its_own_restoration_and_detail(self):
+        old,catalog,report,rendered=self.fixture();key=catalog[0]['candidate_keys'][0]
+        old['jobs']['old']['method']='scale';old['jobs']['old']['model']=None
+        canonical=dict(old['jobs']['old'],method='restore',model='realesrgan-x4plus',detail_pass='gaussian5-detail25-cap6-alpha-preserved-v1')
+        old['jobs']['canonical']=canonical;old['groups'].append(dict(key=key,job='canonical'))
+        result=m.rebase(old,catalog,report,rendered);groups={g['key']:g for g in result['groups']}
+        fallback=result['jobs'][groups[key]['job']];tagged=result['jobs'][groups[sampler_pack.tagged_key(key,0)]['job']]
+        self.assertEqual(fallback['method'],'restore');self.assertEqual(fallback['detail_pass'],canonical['detail_pass'])
+        self.assertEqual(tagged['method'],'scale');self.assertIsNone(tagged['detail_pass'])
 
 
 if __name__=='__main__':unittest.main()

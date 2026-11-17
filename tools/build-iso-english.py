@@ -14,6 +14,7 @@ from iso_edits import append_files,extent_hash,survey
 from mes_codec import GlyphTable
 from message_recipe import reconstruct_bundle
 from texture_text import reconstruct
+import setup_progress
 
 def sha(path):
     with path.open('rb') as stream:return hashlib.file_digest(stream,'sha256').hexdigest()
@@ -67,6 +68,7 @@ def main():
             occurrence=counts[group,identity];counts[group,identity]+=1
             if hashlib.sha256(raw).hexdigest()!=expected[group,identity,occurrence]:raise ValueError('Built archive resource differs')
             verified+=1
+            if verified%256==0 or verified==len(expected):setup_progress.emit('archives',verified,len(expected))
     if verified!=len(expected):raise ValueError('Archive resource count changed')
     candidate=output/args.image_name
     shutil.copyfile(image,candidate)

@@ -78,7 +78,7 @@ def inventory(work):
         path=ROOT/'private/local-build'/source;name='private/distribution/recipes/'+kind+'.json';add(path,name)
         recipes[kind]=dict(path=name,sha256=sha(path))
     original=dict(size=title.CONFIG['disc']['iso_size'],sha256=title.CONFIG['disc']['iso_sha256'])
-    build=dict(schema=1,original=original,recipes=recipes,default_language='english-text-test',Japanese_audio=True)
+    build=dict(schema=1,pipeline_revision=2,original=original,recipes=recipes,default_language='english-text-test',Japanese_audio=True)
     raw=(json.dumps(build,indent=2)+'\n').encode();path=work/'player-build.json';path.write_bytes(raw);add(path,'config/player-build.json')
     generated('private/distribution/release.json',dict(schema=2,kind='ISO-local-native-build',original=original,
         build_plan=dict(path='config/player-build.json',sha256=hashlib.sha256(raw).hexdigest())))

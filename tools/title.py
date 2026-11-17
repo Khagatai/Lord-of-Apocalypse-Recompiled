@@ -184,8 +184,28 @@ def build(stage, jobs, profile="diagnostic"):
                *make_arguments(profile), f"-j{jobs}", "pipeline" if stage == "generate" else "compile"]
     log_path = destination / (stage + ".log")
     print(f"{stage}: running pinned framework; log: {log_path}", flush=True)
+    import setup_progress
+    tracker=None
+    if stage=='build':
+        # A dry run determines this invocation's pending compiler targets,
+        # including runtime sources. It also handles resumed/incremental builds.
+        plan=subprocess.run([*command,'--dry-run'],cwd=FRAMEWORK,env=env,capture_output=True,text=True,errors='replace')
+        (destination/'build-plan.log').write_text(plan.stdout+plan.stderr,encoding='utf-8')
+        if not plan.returncode:
+            tracker=setup_progress.CompileProgress(setup_progress.compile_targets(plan.stdout,FRAMEWORK,destination),FRAMEWORK,destination)
+        command.append('--output-sync=target')
     with log_path.open("w") as log:
-        run = subprocess.run(command, cwd=FRAMEWORK, env=env, stdout=log, stderr=subprocess.STDOUT)
+        # Make flushes a target's output after its recipe finishes. Streaming
+        # that output retains the complete log without counting queued jobs.
+        run = subprocess.Popen(command, cwd=FRAMEWORK, env=env, stdout=subprocess.PIPE, stderr=subprocess.STDOUT,text=True,errors='replace',bufsize=1)
+        try:
+            for line in run.stdout:
+                log.write(line);log.flush()
+                if tracker:tracker.line(line)
+            run.wait()
+        finally:
+            run.stdout.close()
+            if run.poll() is None:run.wait()
     if run.returncode:
         print("\n".join(log_path.read_text(errors="replace").splitlines()[-12:]), file=sys.stderr)
         raise SystemExit(run.returncode)

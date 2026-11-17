@@ -27,6 +27,27 @@ Allow approximately 18 GB of free disk space. First setup is much longer than
 normal startup; HD generation can take many minutes to several hours depending
 on CPU/GPU. The launcher reports progress. Keep it running; after an error,
 retrying preserves successful stages and reports the failing stage.
+The launcher displays completed/planned compiler files, translated resources,
+subtitles and HD jobs, plus elapsed time. Overall progress is explicitly an
+estimate: HD generation receives most of the weight, and individual jobs vary
+in cost. Stages without measurable totals show their activity instead of invented
+counts. 100% is emitted only after the installation's ready marker is written.
+New builds save per-stage durations and exit codes in
+`private/local-build/setup-timings.json` for performance investigations.
+Compiler concurrency is selected from available CPUs and RAM, capped at eight;
+`--jobs 1` through `--jobs 8` override it. HD processing uses memory-bounded
+batches (up to 64 jobs by default), two GPU processing workers, persistent native
+image helpers and bounded archive/decoded-pixel caches. No HD images are bundled.
+For a device requiring lower inference concurrency, the individual
+`build-local-hd-pack.py` command accepts `--threads 1:1:1`.
+
+The recipe audit found no unreferenced jobs or included dialogue portraits.
+Texture-key aliases already share jobs. UI-named textures are retained where
+exclusive 2D use has not been established; shared 3D atlases must remain covered.
+After full pack validation, unmapped generated PNGs left by interrupted batches
+are removed with hash/size records. Known previous pipeline checkpoints can be
+adopted only with identical recipe/archive/model/framework identities and verified
+completed PNG hashes. Unknown existing outputs remain protected.
 The pinned Real-ESRGAN tool is downloaded directly from its publisher during
 first HD setup; the archive and individual required files are hash-verified.
 Game data never leaves the PC. Internet access is needed for this tool download.

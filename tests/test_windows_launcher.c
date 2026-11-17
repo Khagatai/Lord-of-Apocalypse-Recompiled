@@ -2,6 +2,17 @@
 #include "../tools/windows-launcher.c"
 #include <assert.h>
 int wmain(void) {
+    SetupProgress progress;
+    assert(parse_setup_progress("LOA_SETUP_PROGRESS 3 42 111 41",&progress));
+    assert(progress.stage==3 && progress.done==42 && progress.total==111 && progress.percent==41);
+    assert(parse_setup_progress("LOA_SETUP_PROGRESS 12 1 1 1000",&progress));
+    assert(!parse_setup_progress("LOA_SETUP_PROGRESS 10 112 111 500",&progress));
+    assert(!parse_setup_progress("LOA_SETUP_PROGRESS 13 1 1 999",&progress));
+    assert(!parse_setup_progress("LOA_SETUP_PROGRESS 11 1 1 1000",&progress));
+    assert(!parse_setup_progress("LOA_SETUP_PROGRESS 3 1 1 300 garbage",&progress));
+    assert(!parse_setup_progress("LOA_SETUP_PROGRESS 3 -1 1 100",&progress));
+    assert(!parse_setup_progress("LOA_SETUP_PROGRESS 4294967308 1 1 1000",&progress));
+    assert(!parse_setup_progress("LOA_SETUP_PROGRESS 12 0 0 1000",&progress));
     const wchar_t *values[]={L"",L"ordinary",L"C:\\a folder\\",L"a\"quoted\" path",L"$() & path",L"日本語 Ω.iso"};
     wchar_t command[4096]={0};size_t n=0;
     for(unsigned i=0;i<sizeof values/sizeof values[0];i++)assert(argument(command,4096,&n,values[i]));

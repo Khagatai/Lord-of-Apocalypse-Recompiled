@@ -1,0 +1,14 @@
+{
+  "schema": 1,
+  "pixel_semantics": "xbrz4-neural-border64-tile128-exact-alpha-detail-v1",
+  "legacy_processing_sources": [
+    {
+      "build-local-hd-pack.py": "32ac38cdf16abe5ff6fa3da4e644051a19b7ab0cd7ab20074374f0dcbaa9473e",
+      "neural_texture.py": "e91c74d5aa43376167a34eb7f47466b4702a5c6b70838e32fe52b93bde4a3e89",
+      "scale-mip-texture.c": "be096e9f05b4e4f5e0dd4af238d5c39f216177768a5f2e7cfab02f9553163cb0",
+      "decode-private-png.c": "b7d9294f5dbf3db25fef7be61514d60933423f2e47568d0afac258e1940e0472",
+      "sharpen-model-texture.c": "2afda77c0339a02cf4dc65a79368f4e2249ff28c7141276e2e70f812c99a1873",
+      "inventory-textures.py": "310c9964cd817b51eea80737cfd21fcd1777c6f610b8d21451dcc8914e433651"
+    }
+  ]
+}

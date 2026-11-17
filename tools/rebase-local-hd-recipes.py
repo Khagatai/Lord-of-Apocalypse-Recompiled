@@ -52,7 +52,14 @@ def rebase(original,catalog,report,rendered):
                 if tagged in groups and groups[tagged]['job']!=job_id:raise ValueError('Local HD key conflict')
                 groups[tagged]=dict(key=tagged,canonical_key=key,job=job_id)
                 if key in old_groups and signature(originals[old_groups[key]['job']])==sig and wrap==originals[old_groups[key]['job']]['wrap']:
-                    groups[key]=dict(key=key,job=job_id)
+                    # A canonical fallback may deliberately use different
+                    # restoration/detail than its tagged sampler replacement.
+                    # Preserve its OWN recipe, not whichever tagged job won.
+                    canonical=originals[old_groups[key]['job']]
+                    value={name:canonical.get(name) for name in ('dimensions','source_rgba_sha256','wrap','method','model','detail_pass')}
+                    canonical_id=sha(json.dumps(value,sort_keys=True,separators=(',',':')).encode())
+                    if canonical_id not in jobs:jobs[canonical_id]=dict(value,reference=ref)
+                    groups[key]=dict(key=key,job=canonical_id)
     if not 1<=len(groups)<=65536:raise ValueError('Local HD group count exceeds runtime bounds')
     return dict(schema=1,scope='ISO-local HD generation recipes',archive_sha256=report['archive_sha256'],index_sha256=report['index_sha256'],
         jobs=jobs,groups=list(groups.values()),game_pixels_included=False,original_2D_UI=True,original_dialogue_portraits=True,
