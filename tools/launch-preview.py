@@ -21,6 +21,7 @@ import mip_preview
 import sampler_pack
 import network_settings
 import test_support
+import tester_setup
 import ui_runtime
 
 def verify_native_location(root=ROOT,image=None):
@@ -47,6 +48,7 @@ def main(argv=None):
     parser.add_argument('--texture-pack',type=Path,help='Explicit verified private HD UI sample; does not persist an enhancement preference')
     parser.add_argument('--graphics-preset',choices=('original','balanced','quality'),help='Per-run profile; saved preferences remain unchanged until a menu choice is saved')
     parser.add_argument('--mip-preview',type=Path,help='Registered private mip-renderer build; WIP English only, isolated saves/preferences')
+    parser.add_argument('--setup-iso', type=Path, help=argparse.SUPPRESS)
     args = parser.parse_args(argv)
     if args.check and args.check_cached:parser.error('Choose full or cached preflight')
     started=time.perf_counter()
@@ -64,6 +66,12 @@ def main(argv=None):
         graphics = graphics_settings.apply_preset(graphics,args.graphics_preset)
     if args.variant == 'saved':
         args.variant = graphics['variant']
+    if (args.variant and not (args.check or args.check_cached or args.mip_preview)
+            and tester_setup.iso_local_install()):
+        with_hd = (graphics['hd_ui'] and args.renderer == 'vulkan'
+                   and args.variant == 'english-text-test' and args.texture_pack is None)
+        if args.setup_iso or not tester_setup.ready(with_hd=with_hd):
+            tester_setup.prepare(args.setup_iso, with_hd=with_hd)
     if args.variant:
         variant_parser = argparse.ArgumentParser()
         variant_parser.add_argument('--language')

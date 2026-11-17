@@ -304,7 +304,13 @@ static void output_line(const char *bytes,int length) {
     int n=MultiByteToWideChar(CP_UTF8,0,bytes,length,text,32764);
     text[n]=0;
     SetupProgress setup;
-    if(!game_started && parse_setup_progress(bytes,&setup)){setup_update(setup);return;}
+    if(parse_setup_progress(bytes,&setup)){
+        if(game_started && setup.stage==0){
+            game_started=0;setup_active=0;
+            ShowWindow(main_window,SW_RESTORE);
+        }
+        if(!game_started){setup_update(setup);return;}
+    }
     if(strstr(bytes,"LOA_LAUNCHER_GAME_STARTED")) {
         game_started=1;set_status(L"Game running. Use F1 for settings and networking.",0);
         ShowWindow(main_window,SW_MINIMIZE);

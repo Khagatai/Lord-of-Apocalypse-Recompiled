@@ -1,5 +1,5 @@
 """First-setup progress protocol. Overall progress is a weighted estimate, not ETA."""
-import json,re,sys,time
+import json,os,re,sys,time
 from pathlib import Path
 
 # IDs are consumed by the native launcher; append IDs rather than renumbering.
@@ -8,11 +8,18 @@ STAGES={name:(i,start,end) for i,(name,start,end) in enumerate([
     ('link',6,7),('text',7,8),('archives',8,9),('captions',9,10),
     ('tools',10,11),('catalog',11,12),('hd',12,98),('verify',98,100),('ready',100,100)])}
 
+PROFILE_ENV = 'LOA_SETUP_PROGRESS_PROFILE'
+BASE_SPANS = {'inputs': (1, 3), 'generate': (3, 15), 'compile': (15, 65),
+              'link': (65, 73), 'text': (73, 81), 'archives': (81, 88), 'captions': (88, 98)}
+profile = os.environ.get(PROFILE_ENV)
+
 def emit(stage,done=0,total=0):
     if not isinstance(done,int) or not isinstance(total,int) or not 0<=done<=total<=1000000:
         raise ValueError('Invalid setup progress counts')
     if stage=='ready' and (done,total)!=(1,1):raise ValueError('Ready requires explicit completion')
     identity,start,end=STAGES[stage]
+    if profile == 'base':
+        start, end = BASE_SPANS.get(stage, (start, end))
     percent=start*10+(end-start)*10*done//total if total else start*10
     if stage!='ready':percent=min(percent,999)
     print(f'LOA_SETUP_PROGRESS {identity} {done} {total} {percent}',flush=True)

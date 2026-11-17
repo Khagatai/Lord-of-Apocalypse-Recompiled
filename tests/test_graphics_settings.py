@@ -46,6 +46,17 @@ class GraphicsSettings(unittest.TestCase):
             self.assertEqual(result[key],value)
         with self.assertRaises(ValueError):settings.apply_preset(current,'unknown')
 
+    def test_presentation_upscaling_and_hd_opt_in_are_independent(self):
+        self.assertFalse(settings.DEFAULTS['hd_ui'])
+        for enabled in (False, True):
+            saved = dict(settings.DEFAULTS, hd_ui=enabled)
+            self.assertEqual(settings.apply_preset(saved, 'quality')['hd_ui'], enabled)
+            self.assertEqual(settings.apply_preset(saved, 'balanced')['hd_ui'], enabled)
+        environment = settings.environment(settings.DEFAULTS)
+        self.assertEqual(environment['SR_PRESENT_UPSCALE'], 'fsr1')
+        self.assertEqual(environment['SR_TEX_SCALE'], '4')
+        self.assertEqual(environment['SR_TEX_REPLACE'], '')
+
     def test_roundtrip_and_invalid_choice_does_not_overwrite_existing_file(self):
         with tempfile.TemporaryDirectory() as folder:
             path = Path(folder)/'settings.json'

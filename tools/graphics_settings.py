@@ -56,7 +56,7 @@ OPTIONS = {
 ORIGINAL = {key: values[0] for key, values in OPTIONS.items()}
 ORIGINAL['vsync'] = True
 QUALITY = dict(render_scale=4, upscale='fsr1', anisotropy=16, mipmaps=True,
-               full_color=True, supersampling=2, texture_scale=4, hd_ui=True)
+               full_color=True, supersampling=2, texture_scale=4)
 DEFAULTS = dict(ORIGINAL, **QUALITY)
 
 
@@ -68,7 +68,7 @@ def apply_preset(value, name):
     if name not in ('original', 'balanced'):
         raise ValueError('Unknown graphics preset')
     result = dict(ORIGINAL)
-    preserved = ('variant', 'fullscreen', 'window_size', 'hud', 'gameplay_fps') if name == 'balanced' else ('variant',)
+    preserved = ('variant', 'fullscreen', 'window_size', 'hud', 'gameplay_fps', 'hd_ui') if name == 'balanced' else ('variant',)
     for key in preserved:
         result[key] = value[key]
     if name == 'balanced':

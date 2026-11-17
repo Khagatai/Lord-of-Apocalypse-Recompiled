@@ -436,7 +436,7 @@ NkOverlayAction __wrap_nk_overlay_page_settings(NkUi *ui, NkOverlayState *state,
             loa_settings_preset(choices,1);live_apply=3;submit(0);
         }
         nk_ui_text_role(ui,ID(203),"Versions keep separate saves. WIP English is the default.",NK_UI_TYPE_FOOTNOTE,theme->muted);
-        if(nk_ui_button(ui,ID(205),"High Quality: all graphics improvements",NK_UI_BUTTON_SMALL|NK_UI_BUTTON_GROW) && !pending) {
+        if(nk_ui_button(ui,ID(205),"High Quality graphics",NK_UI_BUTTON_SMALL|NK_UI_BUTTON_GROW) && !pending) {
             loa_settings_preset(choices,2);live_apply=3;submit(0);
         }
         if(nk_ui_button(ui,ID(204),"Open this run's logs",NK_UI_BUTTON_SMALL|NK_UI_BUTTON_GROW|(folder[0]?0:NK_UI_BUTTON_DISABLED)))
@@ -445,7 +445,7 @@ NkOverlayAction __wrap_nk_overlay_page_settings(NkUi *ui, NkOverlayState *state,
     nk_ui_end_container(ui);
     }
     NkUiTextStyle foot=nk_ui_type(NK_UI_TYPE_FOOTNOTE,theme->muted); foot.wrap=true;
-    nk_ui_text(ui,ID(300),tab==2?"Experimental effects may cost performance or alter artwork. Japanese audio is unchanged.":
+    nk_ui_text(ui,ID(300),tab==2?"The optional HD pack is built on restart if needed. The first build may take hours.":
       tab==0?"Movies keep original timing in both modes. Frame-rate changes require a restart.":
       "Fullscreen, scaling and HUD apply live. Other changes apply after restarting.",&foot);
     nk_ui_text(ui,ID(301),notice,&foot);

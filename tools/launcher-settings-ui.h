@@ -74,7 +74,7 @@ static void settings_paint(HDC dc,int x,int width){
         RECT info={x,vertical(374),x+width,vertical(447)};
         label(dc,font,MUTED,info,L"Versions keep separate saves.\nJapanese voices and music stay unchanged.",DT_WORDBREAK);
     }
-    const wchar_t *notes[]={L"Movies keep their original timing. FPS changes apply on launch.",L"Window resolution is used in windowed mode.",L"Original portraits and 2D UI artwork stay unchanged.",L"Presets keep the selected language.",L"Control bindings are shown for reference."};
+    const wchar_t *notes[]={L"Movies keep their original timing. FPS changes apply on launch.",L"Window resolution is used in windowed mode.",L"The optional HD pack builds on Play and may take hours.",L"Presets keep the selected language.",L"Control bindings are shown for reference."};
     RECT foot={x,vertical(465),x+width,vertical(483)};label(dc,small_font,MUTED,foot,notes[settings_tab],DT_SINGLELINE|DT_VCENTER);
     RECT hint={x,vertical(534),x+width,vertical(554)};
     label(dc,small_font,MUTED,hint,L"The same preferences are available in the in-game F1 menu.",DT_SINGLELINE|DT_VCENTER);

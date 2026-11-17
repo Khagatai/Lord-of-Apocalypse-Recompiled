@@ -6,7 +6,9 @@ import tester_setup
 def main():
     arguments=sys.argv[1:];image=None
     if arguments and not arguments[0].startswith('--'):image=Path(arguments.pop(0))
-    if image or not tester_setup.ready():tester_setup.prepare(image)
+    if tester_setup.iso_local_install():
+        if image:arguments.extend(['--setup-iso',str(image)])
+    elif image or not tester_setup.ready():tester_setup.prepare(image)
     return subprocess.call([sys.executable,str(tester_setup.ROOT/'tools/launch-preview.py'),'--variant','saved',*arguments])
 if __name__=='__main__':
     try:raise SystemExit(main())

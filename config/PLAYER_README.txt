@@ -7,15 +7,17 @@ Lord of Apocalypse Recompiled - v0.9.0-beta.1 - Windows x64
    unmodified Japanese PSP ISO (NPJH50503, disc 1.01). No ISO is supplied.
    You can also drag the ISO onto the EXE, then click Play.
 3. First launch compiles the native Windows game and generates the WIP English
-   image, subtitles and HD textures locally. Allow about 18 GB free disk space.
-   This takes substantially longer than later launches: HD processing can take
-   many minutes to several hours depending on your CPU and Vulkan graphics card.
+   image and subtitles locally. Original textures are the default. Render scale,
+   FSR, filtering and real-time 3D texture smoothing are still available.
    Progress appears in the launcher; completed generation stages can resume.
    Keep the launcher running. The original ISO is unchanged. Python, the portable
    compiler and runtime dependencies are included; no separate Git, compiler or
    emulator installation is required. All processing stays on your PC.
-   First HD setup also downloads a hash-verified public texture tool directly
-   from its publisher. Keep an internet connection available for this step.
+4. To enable the optional English HD world/model pack, open Settings > Advanced,
+   set Local HD pack (English) to On, save and click Play. You can also change
+   it from F1 > Settings > Advanced and restart. The first HD build may take
+   hours and downloads a verified public texture tool. Allow about 18 GB free
+   disk space for installation and full HD setup. Completed batches resume.
 
 Required ISO SHA256:
 3a4d63713880dfb67ade00b6a912ac4975847cec06b1ab341b65963f328e1c93

@@ -6,6 +6,44 @@ import local_player_setup as setup
 
 
 class PlayerSetupAdmission(unittest.TestCase):
+    def test_base_launch_skips_hd_and_remains_ready_after_interrupted_opt_in(self):
+        with tempfile.TemporaryDirectory() as tmp, patch.object(setup, 'ROOT', Path(tmp)):
+            image = Path(tmp)/'game.iso'
+            image.write_bytes(b'verified ISO')
+            manifest = setup.local('private/distribution/release.json')
+            manifest.parent.mkdir(parents=True)
+            manifest.write_text('release')
+            plan = dict(original=dict(size=image.stat().st_size, sha256=setup.sha(image)), recipes={})
+
+            def base(*args):
+                for name in setup.base_outputs():
+                    path = setup.local(name)
+                    path.parent.mkdir(parents=True, exist_ok=True)
+                    path.write_bytes(b'test output')
+
+            with (patch.object(setup, 'plan', return_value=plan),
+                  patch.object(setup.source_identity, 'verify'),
+                  patch.object(setup, 'prepare_base', side_effect=base) as build_base,
+                  patch.object(setup, 'prepare_hd', side_effect=RuntimeError('interrupted')) as build_hd):
+                self.assertFalse(setup.prepare(image, jobs=1)['HD_requested'])
+                build_hd.assert_not_called()
+                with self.assertRaisesRegex(RuntimeError, 'interrupted'):
+                    setup.prepare(image, jobs=1, with_hd=True)
+                self.assertTrue(setup.ready())
+                self.assertFalse(setup.ready(with_hd=True))
+                self.assertTrue(setup.prepare(image, jobs=1)['already_prepared'])
+                build_base.assert_called_once()
+
+                build_hd.side_effect = None
+                output = setup.local(setup.HD_OUTPUT)
+                output.parent.mkdir(parents=True)
+                output.write_text('HD output')
+                setup.prepare(image, jobs=1, with_hd=True)
+                self.assertTrue(setup.ready(with_hd=True))
+                output.unlink()
+                self.assertTrue(setup.ready())
+                self.assertFalse(setup.ready(with_hd=True))
+
     def test_wrong_dump_creates_no_game_files_or_lock(self):
         with tempfile.TemporaryDirectory() as tmp:
             root=Path(tmp);image=root/'game.iso';image.write_bytes(b'wrong')

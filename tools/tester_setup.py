@@ -47,12 +47,16 @@ def choose_image():
     if result.returncode:raise RuntimeError('Could not open the ISO picker. Drag your ISO onto LordOfApocalypse.exe instead.')
     if not result.stdout:raise RuntimeError('Setup cancelled; no game files were changed.')
     return Path(result.stdout)
-def prepare(image=None):
+def iso_local_install():
+    return MANIFEST.is_file() and json.loads(MANIFEST.read_text(encoding='utf-8')).get('schema') == 2
+
+
+def prepare(image=None, *, with_hd=False):
     manifest=json.loads(MANIFEST.read_text(encoding='utf-8'))
     if manifest.get('schema')==2:
         import local_player_setup
         if image is None and STATE.is_file():image=Path(json.loads(STATE.read_text())['path'])
-        return local_player_setup.prepare(image or choose_image())
+        return local_player_setup.prepare(image or choose_image(), with_hd=with_hd)
     if manifest.get('schema')!=1:raise ValueError('Unsupported tester release manifest')
     if image is None and STATE.is_file():image=Path(json.loads(STATE.read_text())['path'])
     image=Path(image or choose_image()).resolve(strict=True)
@@ -83,12 +87,12 @@ def prepare(image=None):
     STATE.parent.mkdir(parents=True,exist_ok=True)
     STATE.write_text(json.dumps(dict(schema=1,path=str(image)),indent=2)+'\n',encoding='utf-8')
     return dict(status='PASS',images_prepared=made,original_unchanged=matches(image,manifest['original']))
-def ready():
+def ready(*, with_hd=False):
     if not STATE.is_file() or not MANIFEST.is_file():return False
     manifest=json.loads(MANIFEST.read_text())
     if manifest.get('schema')==2:
         import local_player_setup
-        return local_player_setup.ready()
+        return local_player_setup.ready(with_hd=with_hd)
     return all(private_path(r['path']).is_file() for r in manifest['images'])
 def main():
     parser=argparse.ArgumentParser(description=__doc__);parser.add_argument('--image',type=Path);a=parser.parse_args()
