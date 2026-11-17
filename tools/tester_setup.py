@@ -49,6 +49,10 @@ def choose_image():
     return Path(result.stdout)
 def prepare(image=None):
     manifest=json.loads(MANIFEST.read_text(encoding='utf-8'))
+    if manifest.get('schema')==2:
+        import local_player_setup
+        if image is None and STATE.is_file():image=Path(json.loads(STATE.read_text())['path'])
+        return local_player_setup.prepare(image or choose_image())
     if manifest.get('schema')!=1:raise ValueError('Unsupported tester release manifest')
     if image is None and STATE.is_file():image=Path(json.loads(STATE.read_text())['path'])
     image=Path(image or choose_image()).resolve(strict=True)
@@ -82,6 +86,9 @@ def prepare(image=None):
 def ready():
     if not STATE.is_file() or not MANIFEST.is_file():return False
     manifest=json.loads(MANIFEST.read_text())
+    if manifest.get('schema')==2:
+        import local_player_setup
+        return local_player_setup.ready()
     return all(private_path(r['path']).is_file() for r in manifest['images'])
 def main():
     parser=argparse.ArgumentParser(description=__doc__);parser.add_argument('--image',type=Path);a=parser.parse_args()

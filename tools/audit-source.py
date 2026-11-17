@@ -27,7 +27,8 @@ def main():
         name = PurePosixPath(path)
         if name.parts[0] in {"private", "build", "out", "captures", "traces", "saves", "memstick", "cache"}:
             raise ValueError(f"Protected directory staged: {path}")
-        if name.suffix.lower() not in {".py", ".md", ".txt", ".toml", ".json", ".ini", ".ps1", ".cpp", ".cs", ".c", ".h", ".manifest", ".mk"} and path not in {"LICENSE", ".gitignore", ".gitmodules", "Start-Game.cmd", "Start-Safe-Graphics.cmd"}:
+        issue_template = name.parts[:2] == (".github", "ISSUE_TEMPLATE") and name.suffix.lower() == ".yml"
+        if not issue_template and name.suffix.lower() not in {".py", ".md", ".txt", ".toml", ".json", ".ini", ".ps1", ".cpp", ".cs", ".c", ".h", ".manifest", ".mk"} and path not in {"LICENSE", ".gitignore", ".gitmodules", "Start-Game.cmd", "Start-Safe-Graphics.cmd"}:
             raise ValueError(f"Unexpected source file type: {path}")
         if "_recomp" in name.name.lower():
             raise ValueError(f"Generated game source staged: {path}")

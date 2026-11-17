@@ -3,7 +3,7 @@ import argparse,hashlib,json,shutil,subprocess,sys
 from pathlib import Path
 ROOT=Path(__file__).resolve().parents[1]
 EXTENSIONS={'.py','.c','.cpp','.cs','.h','.mk','.ps1','.json','.toml','.ini','.manifest','.txt','.md'}
-HISTORY={'AGENTS.md','CLAUDE.md','GEMINI.md','STATUS.md','FINDINGS.md','PLAN.md','INTAKE.md','UPSTREAM.md'}
+HISTORY={'AGENTS.MD','CLAUDE.MD','GEMINI.MD','STATUS.MD','FINDINGS.MD','PLAN.MD','INTAKE.MD','UPSTREAM.MD'}
 
 def sha(path):return hashlib.sha256(path.read_bytes()).hexdigest()
 
@@ -15,6 +15,8 @@ def selected():
             if path.name.upper() in HISTORY or path.suffix not in EXTENSIONS:continue
             if any(part in ('.agents','.codex','.github') for part in path.parts):continue
             files[path.relative_to(ROOT).as_posix()]=path
+    for path in (ROOT/'.github/ISSUE_TEMPLATE').glob('*.yml'):
+        if path.is_file() and not path.is_symlink():files[path.relative_to(ROOT).as_posix()]=path
     return files
 
 def export(destination):
@@ -34,12 +36,22 @@ def export(destination):
     # Remove only agent instructions/history documents explicitly excluded here.
     removed=[]
     for path in destination.rglob('*.md'):
-        if '.git' in path.relative_to(destination).parts:continue
+        relative=path.relative_to(destination)
+        if '.git' in relative.parts or relative.parts[0]=='external':continue
         if path.name.upper() in HISTORY:
             if not path.resolve().is_relative_to(destination) or path.is_symlink():raise ValueError('Unsafe note path')
             path.unlink();removed.append(path.relative_to(destination).as_posix())
     git=['git','-c','safe.directory='+destination.as_posix(),'-C',str(destination)]
     if not (destination/'.git').exists():subprocess.run(git+['init'],check=True,capture_output=True)
+    tracked=subprocess.check_output(git+['ls-files','-z'],text=True).split('\0')
+    tracked_notes=[name for name in tracked if name and not name.startswith('external/') and Path(name).name.upper() in HISTORY]
+    for name in tracked_notes:
+        path=destination/name
+        if path.exists():
+            if path.is_symlink() or not path.resolve().is_relative_to(destination):raise ValueError('Unsafe indexed note path')
+            path.unlink()
+        if name not in removed:removed.append(name)
+    if tracked_notes:subprocess.run(git+['add','-u','--',*tracked_notes],check=True,capture_output=True)
     subprocess.run(git+['add','--',*(row['path'] for row in records)],check=True,capture_output=True)
     import tomllib
     config=tomllib.loads((ROOT/'config/lordofapocalypse.toml').read_text())

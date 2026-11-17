@@ -1,5 +1,16 @@
 # Credits and licensing
 
+The ISO-only beta installer distributes public build sources, tools, dependency
+notices and English generation recipes. It does not distribute a prepared game
+executable, decrypted module, disc image, original/restored texture or caption
+bitmap. Players generate those locally from their own original dump.
+The optional `LordOfApocalypse-Tool-Sources.zip` release asset contains the exact
+hash-pinned corresponding MSYS2 compiler/library sources; see its `SOURCES.txt`
+and the installed `licenses/toolchain/SOURCE-MANIFEST.json`. Upscaler/model
+notices are under `licenses/upscaler`. These dependencies retain their own
+licences. The original English patch's contributors remain credited below;
+translated text is not relicensed as title-project code.
+
 Active framework: Jstar269/Nakagawa-Recomp, GPL-3.0-or-later, pinned to
 `8704fba98007fff6d6f930365f2b2142af1bfbba`. See its LICENSE, NOTICE.md, CREDITS.md
 and third-party notices. Root LICENSE is GPLv3; redistributed combined
@@ -40,17 +51,21 @@ Local analysis uses John-K/pspdecrypt, revision
 `c156627db7634d395c380c0a9589130f603307fc` (project GPLv3, with PPSSPP/libkirk
 notices in its source), and a separate PPSSPP headless oracle, revision
 `1aebad2c651ff9d0684ee335e43aceff8fc7e3ec` (GPL-2.0-or-later and its dependency
-licenses). These downloaded trees and compiled tools remain in ignored
-`private/tools/`; they are not linked into a title executable or redistributed.
+licenses). The ISO-only payload includes the pinned pspdecrypt sources and
+compiles its separate intake helper locally. It is not linked into the game.
+PPSSPP remains a development reference and is absent from the player payload.
 Portable CPython 3.14.0 is now used locally under its bundled Python license;
 3.12.8 remains for historical reproduction. MSYS2 GCC 16.2.0-6 and SDL/Vulkan
-dependencies were installed privately from the active framework's hash-pinned
-manifest through an official MSYS2 mirror. Dependencies and retained notices
-are not added to the title repository's Git tree.
+dependencies were installed from the active framework's hash-pinned manifest
+through an official MSYS2 mirror. The ISO-only tool payload includes these
+public build dependencies and their notices; the matching source archives are
+provided separately. They are not added to the title repository's Git tree.
 
 Optional local texture-restoration experiments use the official
 [Real-ESRGAN ncnn Vulkan](https://github.com/xinntao/Real-ESRGAN-ncnn-vulkan)
 Windows 20220424 tool and Real-ESRGAN x4plus / x4plus-anime models from the
 [v0.2.5.0 release](https://github.com/xinntao/Real-ESRGAN/releases/tag/v0.2.5.0).
-Keep its upstream licenses/notices with the private tool. Neither this tool,
+The first-run builder downloads the pinned tool directly from its publisher
+and verifies both archive and required member hashes. Its notices accompany
+the project. Neither this tool,
 its model weights nor restored game images are distributed in this source tree.

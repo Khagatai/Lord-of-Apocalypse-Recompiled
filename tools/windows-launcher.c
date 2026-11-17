@@ -274,8 +274,19 @@ static void output_line(const char *bytes,int length) {
         ShowWindow(main_window,SW_MINIMIZE);
     } else {
         if(!game_started && n){
-            if(strstr(bytes,"Starting Lord"))set_status(L"Checking your game files...",0);
+            unsigned completed_jobs=0,total_jobs=0;
+            if(sscanf(bytes,"Preparing HD textures: %u / %u jobs complete",&completed_jobs,&total_jobs)==2 && total_jobs && total_jobs<=1000000u && completed_jobs<=total_jobs){
+                wchar_t progress[220];
+                swprintf(progress,220,L"Building HD textures: %u / %u jobs (%u%%). This runs once; completed batches resume after errors.",completed_jobs,total_jobs,completed_jobs*100u/total_jobs);
+                set_status(progress,0);
+            }
+            else if(strstr(bytes,"Starting Lord"))set_status(L"Checking your game files...",0);
             else if(strstr(bytes,"Checking HD textures"))set_status(L"Verifying HD textures. The first check may take a little longer.",0);
+            else if(strstr(bytes,"Preparing HD textures"))set_status(L"Building HD textures locally. This can take a long time; completed batches resume.",0);
+            else if(strstr(bytes,"Preparing HD tools"))set_status(L"Downloading and verifying public texture tools. Your game files stay on this PC.",0);
+            else if(strstr(bytes,"generate: running pinned framework"))set_status(L"Generating native game code from your verified ISO...",0);
+            else if(strstr(bytes,"build: running pinned framework"))set_status(L"Compiling the native Windows game. This is required once on first setup.",0);
+            else if(strstr(bytes,"Preparing native Windows"))set_status(L"Compiling the native game from your ISO. This is required once on first launch.",0);
             else if(strstr(bytes,"Preparing "))set_status(L"Preparing your English game files. Your original ISO stays unchanged.",0);
             else if(strstr(bytes,"Checks complete"))set_status(L"Everything is ready. Opening the game...",0);
         }

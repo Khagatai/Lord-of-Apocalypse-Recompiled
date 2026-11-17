@@ -15,7 +15,7 @@ using System.Web.Script.Serialization;
 using System.Windows.Forms;
 
 public sealed class SetupAsset { public string name, url, sha256; public long size; }
-public sealed class SetupManifest { public int schema,max_relative_path; public string version; public long expanded_size; public SetupAsset[] assets; }
+public sealed class SetupManifest { public int schema,max_relative_path; public string version; public long expanded_size,local_build_extra_bytes; public SetupAsset[] assets; }
 public sealed class InstalledFile { public string path, sha256; public long size; }
 public sealed class PackageManifest { public InstalledFile[] files; }
 public sealed class SetupProgress {
@@ -74,13 +74,14 @@ public static class SetupEngine {
         long downloads=0;
         foreach(var a in m.assets)if(!Matches(Path.Combine(adjacent,a.name),a)&&!Matches(Path.Combine(cache,a.name),a))downloads+=a.size;
         var targetDrive=new DriveInfo(Path.GetPathRoot(parent));var cacheDrive=new DriveInfo(Path.GetPathRoot(cache));
-        long install=m.expanded_size+2300L*1024*1024;
+        long install=m.expanded_size+Math.Max(2300L*1024*1024,m.local_build_extra_bytes);
         if(String.Equals(targetDrive.Name,cacheDrive.Name,StringComparison.OrdinalIgnoreCase)){
-            if(targetDrive.AvailableFreeSpace<install+downloads)throw new IOException("Not enough free space. Allow room for downloads, the installed game and about 2.2 GB for ISO preparation.");
+            if(targetDrive.AvailableFreeSpace<install+downloads)throw new IOException("Not enough free space. Allow room for downloads, native compilation, the English image and generated HD textures. The ISO-only build needs about 18 GB of free space.");
         }else if(targetDrive.AvailableFreeSpace<install||cacheDrive.AvailableFreeSpace<downloads+64L*1024*1024)throw new IOException("Not enough free space on the installation or download drive.");
     }
     public static void Install(SetupManifest manifest,string target,string cache,string adjacent,Action<SetupProgress> report,CancellationToken token,bool test){
         Validate(manifest,test);token.ThrowIfCancellationRequested();target=Path.GetFullPath(target).TrimEnd(Path.DirectorySeparatorChar);
+        cache=Path.GetFullPath(cache);adjacent=Path.GetFullPath(adjacent);
         if(!Ascii(target)||target==Path.GetPathRoot(target).TrimEnd(Path.DirectorySeparatorChar))throw new IOException("Choose an ASCII-only game folder, not a drive root.");
         if(File.Exists(target)||(Directory.Exists(target)&&Directory.GetFileSystemEntries(target).Length!=0))throw new IOException("Choose a new or empty folder. Existing games, saves and preferences will not be overwritten.");
         string parent=Path.GetDirectoryName(target);Directory.CreateDirectory(parent);Directory.CreateDirectory(cache);CheckSpace(manifest,parent,cache,adjacent);
@@ -140,7 +141,7 @@ public sealed class SetupWindow:Form {
     public SetupWindow(){
         Icon=Icon.ExtractAssociatedIcon(Application.ExecutablePath);
         Text="Lord of Apocalypse - Setup";ClientSize=new Size(650,310);FormBorderStyle=FormBorderStyle.FixedDialog;MaximizeBox=false;StartPosition=FormStartPosition.CenterScreen;Font=new Font("Segoe UI",10);
-        var intro=new Label{Text="Install Lord of Apocalypse\nThe game files will download from the GitHub release. You provide your own ISO.",Location=new Point(20,15),Size=new Size(610,55)};Controls.Add(intro);
+        var intro=new Label{Text="Install Lord of Apocalypse\nBuild tools download from GitHub. On first launch, your own ISO is used to build the native game, English text and HD textures locally.",Location=new Point(20,15),Size=new Size(610,65)};Controls.Add(intro);
         folder.SetBounds(20,90,505,28);folder.Text=Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),"Programs","LordOfApocalypse-Recomp");Controls.Add(folder);
         browse.Text="Browse...";browse.SetBounds(535,88,95,30);browse.Click+=delegate{using(var dialog=new FolderBrowserDialog{Description="Choose a new or empty folder for the game"})if(dialog.ShowDialog()==DialogResult.OK)folder.Text=dialog.SelectedPath;};Controls.Add(browse);
         shortcut.Text="Create a desktop shortcut";shortcut.Checked=true;shortcut.SetBounds(20,125,400,28);Controls.Add(shortcut);

@@ -18,6 +18,12 @@ SDK = ROOT / "private/toolchain/prerequisites/msys64/ucrt64"
 PYTHON = ROOT / "private/tools/python314/python.exe"
 
 def verify_inputs():
+    if (ROOT/'config/local-build-inputs.json').is_file() and not (FRAMEWORK/'.git').exists():
+        import source_identity
+        revision=source_identity.verify(ROOT,'framework')
+        if revision!=CONFIG['runtime']['commit']:raise ValueError('Active source-drop framework pin mismatch')
+        verify_title_inputs()
+        return revision
     if not shutil.which('git'):
         raise FileNotFoundError('Git is required for development/build checks. Use LordOfApocalypse.exe to play an existing release build.')
     revision = subprocess.check_output(["git", "-c", f"safe.directory={FRAMEWORK.as_posix()}",
@@ -75,7 +81,11 @@ def verify_launch_inputs(profile='release'):
 
 def environment():
     result = dict(os.environ)
-    result["PATH"] = os.pathsep.join([str(SDK / "bin"), str(PYTHON.parent), result["PATH"]])
+    system_tools=[]
+    if os.name=='nt':
+        windows=Path(result.get('SystemRoot','C:/Windows'))
+        system_tools=[str(windows/'System32'),str(windows/'System32/WindowsPowerShell/v1.0')]
+    result["PATH"] = os.pathsep.join([str(SDK / "bin"), str(PYTHON.parent), *system_tools,result.get("PATH",'')])
     result["VULKAN_SDK"] = str(SDK)
     result["SDL3_DIR"] = str(SDK)
     # The runtime otherwise resolves these relative to the caller's directory.
@@ -130,6 +140,8 @@ def make_arguments(profile="diagnostic"):
         "CODEGEN_PROFILE_ARG=--profile=none", "FUNCS_PER_CHUNK=500", "CHUNK_TARGET_BYTES=2000000",
         "CODEGEN_TOOL=../../tools/import_trace_codegen.py",
         "PUBLIC_SAFE=1", f"TRACE={0 if release else 1}",
+        f"SR_SOURCE_COMMIT={CONFIG['runtime']['commit']}",
+        f"PSP_ORACLE_SOURCE_COMMIT={CONFIG['runtime']['commit']}",
         f"RUNTIME_OPT={'-O2' if release else '-O1'}", f"RECOMP_OPT={'-O2' if release else '-O0'}",
     ]
 

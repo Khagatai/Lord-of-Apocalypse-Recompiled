@@ -37,6 +37,19 @@ class RgfEdits(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, "copy"):
             append_edits(index, io.BytesIO(archive), io.BytesIO(archive[:-1]), {(0x40000, digest(b"AB")): b"X"})
 
+    def test_scoped_translation_preserves_distinct_copies(self):
+        index,archive=self.fixture();archive=archive[:2048]+archive[:2048];target=io.BytesIO(archive)
+        rebuilt,report=append_edits(index,io.BytesIO(archive),target,{(0,0,0x40000,digest(b'AB')):b'ONE',(1,0,0x40000,digest(b'AB')):b'TWO'})
+        groups=parse_index(rebuilt,len(target.getvalue()))
+        self.assertEqual(list(resources(target,groups)),[(0,0x40000,b'ONE'),(1,0x40000,b'TWO')])
+        self.assertEqual(report['replacement_instances'],2)
+        self.assertEqual(target.getvalue()[:len(archive)],archive)
+
+    def test_conflicting_global_and_scoped_rules_are_refused(self):
+        index,archive=self.fixture()
+        with self.assertRaisesRegex(ValueError,'Ambiguous'):
+            append_edits(index,io.BytesIO(archive),io.BytesIO(archive),{(0x40000,digest(b'AB')):b'ONE',(0,0,0x40000,digest(b'AB')):b'TWO'})
+
 
 if __name__ == "__main__":
     unittest.main()

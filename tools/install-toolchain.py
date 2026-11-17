@@ -7,6 +7,26 @@ import subprocess
 import sys
 
 ROOT = Path(__file__).resolve().parents[1]
+sys.path.insert(0, str(ROOT / 'tools'))
+
+
+def verify_framework(root=ROOT):
+    """Check public build sources before downloads; no decrypted game inputs needed."""
+    root = Path(root).resolve()
+    config = __import__('tomllib').loads((root / 'config/lordofapocalypse.toml').read_text())
+    framework = (root / config['runtime']['path']).resolve()
+    if not framework.is_relative_to(root):
+        raise ValueError('Framework path escapes the project')
+    if not (framework / '.git').exists():
+        import source_identity
+        revision = source_identity.verify(root, 'framework')
+    else:
+        revision = subprocess.check_output(
+            ['git', '-c', f'safe.directory={framework.as_posix()}',
+             '-C', str(framework), 'rev-parse', 'HEAD'], text=True).strip()
+    if revision != config['runtime']['commit']:
+        raise ValueError('Framework dependency pins changed')
+    return framework, revision
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
@@ -14,12 +34,7 @@ def main():
     args = parser.parse_args()
     if sys.version_info < (3, 14):
         parser.error("Use supported Python 3.14+ for zstd package extraction")
-    config = __import__("tomllib").loads((ROOT / "config/lordofapocalypse.toml").read_text())
-    framework = ROOT / config["runtime"]["path"]
-    revision = subprocess.check_output(["git", "-c", f"safe.directory={framework.as_posix()}",
-                                       "-C", str(framework), "rev-parse", "HEAD"], text=True).strip()
-    if revision != config["runtime"]["commit"]:
-        raise ValueError("Framework dependency pins changed")
+    framework, revision = verify_framework()
     data = (framework / "assets/prereq_manifest.json").read_bytes()
     manifest = json.loads(data)
     # Python is supplied separately from python.org; preserve every compiler,

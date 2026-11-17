@@ -2,6 +2,7 @@
 import hashlib
 import struct
 import zlib
+from collections import Counter
 from rgf_archive import parse_index, read_group
 
 
@@ -12,8 +13,9 @@ def digest(data):
 def append_edits(index, source, target, replacements):
     """Target must be an identical, separately opened archive copy at EOF.
 
-    Replacements map (resource ID, original payload SHA-256) to bytes.
-    Group membership is preserved; all matching instances are replaced.
+    Global keys are (resource ID, original payload SHA-256). Scoped keys are
+    (group index, occurrence within that group for this ID, ID, source SHA-256).
+    Scoped keys preserve distinct translated copies of originally identical text.
     """
     source.seek(0, 2)
     original_size = source.tell()
@@ -22,6 +24,7 @@ def append_edits(index, source, target, replacements):
         raise ValueError("Expected a sector-aligned archive copy")
     if not replacements:
         raise ValueError("No replacements supplied")
+    if any(not isinstance(key,tuple) or len(key) not in (2,4) for key in replacements):raise ValueError('Invalid replacement key')
     groups = parse_index(index, original_size)
     output = bytearray(index)
     hits = {key: 0 for key in replacements}
@@ -30,10 +33,15 @@ def append_edits(index, source, target, replacements):
     for number, group in enumerate(groups):
         plain = read_group(source, group)
         cursor, parts, entries, modified = 0, [], [], False
+        occurrences=Counter()
         for size, identity in group.entries:
             raw = plain[cursor:cursor + size]
             cursor += size
             key = identity, digest(raw)
+            scoped=number,occurrences[identity],identity,key[1];occurrences[identity]+=1
+            if scoped in replacements:
+                if key in replacements:raise ValueError('Ambiguous global and scoped replacement')
+                key=scoped
             if key in replacements:
                 replacement = replacements[key]
                 if replacement == raw:
@@ -66,14 +74,16 @@ def append_edits(index, source, target, replacements):
     rebuilt = parse_index(output, target.tell())
     # Independent decompression checks every descriptor, including aliases and
     # same-ID variants that must not be changed merely because their ID matches.
-    for before, after in zip(groups, rebuilt):
+    for number,(before, after) in enumerate(zip(groups, rebuilt)):
         old, new = read_group(source, before), read_group(target, after)
         old_cursor = new_cursor = 0
+        occurrences=Counter()
         if len(before.entries) != len(after.entries):
             raise ValueError("Descriptor count changed")
         for (old_size, identity), (new_size, new_identity) in zip(before.entries, after.entries):
             raw = old[old_cursor:old_cursor + old_size]
-            expected = replacements.get((identity, digest(raw)), raw)
+            digest_raw=digest(raw);scoped=number,occurrences[identity],identity,digest_raw;occurrences[identity]+=1
+            expected = replacements.get(scoped,replacements.get((identity,digest_raw),raw))
             actual = new[new_cursor:new_cursor + new_size]
             if identity != new_identity or actual != expected:
                 raise ValueError("Resource verification failed")

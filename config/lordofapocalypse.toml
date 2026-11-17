@@ -13,7 +13,7 @@ branch = "main"
 commit = "b56ff30ef5997b9f168209df8c33156e82402e7b"
 
 [evidence]
-status = "nakagawa-x64-built-14-instruction-prefix-matched-boot-not-validated"
+status = "native-x64-bounded-boot-verified-full-campaign-and-60fps-coop-acceptance-open"
 ppsspp_revision = "1aebad2c651ff9d0684ee335e43aceff8fc7e3ec"
 
 # Addresses below were measured with the pinned PPSSPP debugger; see docs/SURVEY.md.

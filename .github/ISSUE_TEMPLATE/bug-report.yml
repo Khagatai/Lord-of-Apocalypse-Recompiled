@@ -1,0 +1,53 @@
+name: Bug report
+description: Report a problem with installation, gameplay, text, graphics or networking.
+title: "[Bug]: "
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Please use F1 → Tester support to export a local report when possible.
+        Do not attach an ISO, extracted game assets, SDK files or personal saves.
+  - type: input
+    id: version
+    attributes:
+      label: Release version
+      placeholder: v0.9.0-beta.1
+    validations:
+      required: true
+  - type: textarea
+    id: reproduction
+    attributes:
+      label: What happened and how can we reproduce it?
+      description: Include the location or quest, exact steps, and what you expected.
+    validations:
+      required: true
+  - type: dropdown
+    id: fps
+    attributes:
+      label: Gameplay frame rate
+      options:
+        - 30 FPS
+        - 60 FPS
+        - Both
+        - Setup failed before gameplay
+    validations:
+      required: true
+  - type: dropdown
+    id: mode
+    attributes:
+      label: Play mode
+      options:
+        - Solo
+        - Co-op host
+        - Co-op client
+        - Setup / launcher
+  - type: textarea
+    id: hardware
+    attributes:
+      label: PC and graphics settings
+      description: Windows version, CPU, GPU, graphics driver, and relevant settings.
+  - type: textarea
+    id: diagnostics
+    attributes:
+      label: Logs or screenshots
+      description: Attach the tester report or relevant launcher log, after reviewing it for personal information.

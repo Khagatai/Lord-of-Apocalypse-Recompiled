@@ -1,0 +1,17 @@
+{
+  "schema": 1,
+  "framework": {
+    "manifest": "config/local-build-player-framework.json",
+    "sha256": "be5d45ac236b68688cf299ce90f3016b41e4d6a9ffb62ac10669727c9049f5fc",
+    "commit": "8704fba98007fff6d6f930365f2b2142af1bfbba"
+  },
+  "decryptor": {
+    "manifest": "config/local-build-decryptor.json",
+    "sha256": "8eb8da4fb35d1e5fac2859b8fba420ce3905f19600984900f49413f15a767d87",
+    "commit": "c156627db7634d395c380c0a9589130f603307fc"
+  },
+  "original_files": {
+    "manifest": "config/original-disc-files.json",
+    "sha256": "1d79ba7a17c9c29d4eb3e2cca05bdf2dec97a6ba087352f6ae84074b20d670b5"
+  }
+}
