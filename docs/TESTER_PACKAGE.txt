@@ -1,0 +1,71 @@
+Lord of Apocalypse Recomp - v0.9.0-beta.1 Windows x64 tester package
+
+1. Extract the entire ZIP to a writable folder. Do not run inside the ZIP.
+   Use an ASCII-only installation path, for example C:\Games\LordOfApocalypse-Recomp.
+   Spaces are supported. The native runtime currently cannot open files in
+   installation folders containing non-ASCII characters. The ISO picker/setup
+   supports Unicode filenames; the original ISO can stay outside this folder.
+   Direct Japanese play also needs an ASCII-only original ISO path. English
+   play uses the locally prepared images inside the installation folder.
+2. Open LordOfApocalypse.exe and click Play. On first launch, select your own unmodified Japanese
+   Lord of Apocalypse PSP ISO (NPJH50503, disc version 1.01).
+   Alternatively, drag that ISO onto LordOfApocalypse.exe, then click Play.
+3. Setup verifies the dump and prepares the WIP English image
+   locally. The original dump is never patched or copied. Keep it at its chosen
+   location if you want the Japanese language option. Allow roughly 1.2 GB of
+   additional space for the generated images. No ISO is included in this ZIP.
+4. Normal launches use LordOfApocalypse.exe. F1 opens settings and networking.
+   Settings and saves start fresh and are stored under private/settings and
+   private/memstick. F1 settings remain available; the author's saved choices,
+   save progress, network identity and session tokens are not included.
+
+F1 -> Tester support can mark an audio problem, export a small local diagnostic
+ZIP, and open reports or the current save folder. Reports exclude saves, assets,
+raw logs, recordings and network identities. Nothing is uploaded automatically.
+The last exported report is refreshed on normal exit; share it after closing.
+Five distinct save snapshots per language are kept before play; unchanged saves
+are not duplicated. See docs/TESTER_SUPPORT.md for details and restoration.
+
+Required original ISO SHA256:
+3a4d63713880dfb67ade00b6a912ac4975847cec06b1ab341b65963f328e1c93
+An English-patched ISO or another disc revision will be rejected.
+
+Windows 10/11 x64 and a Vulkan-capable graphics driver are required. Windows N
+editions need Microsoft's Media Feature Pack for movie decoding. Python and
+native runtime dependencies are bundled; Git, a compiler, the Steamworks SDK
+and PPSSPP are not required to play. The included source is for reproduction.
+
+F1 or Escape opens the pause menu. Keep the entire extracted folder together;
+the menu fonts and dynamically loaded DLLs are included and checked at launch.
+
+WIP English is the default. Japanese voices/music remain original. Use F1 for
+graphics, controls and language settings. Language and gameplay FPS changes may
+require the menu's restart action. The launcher's basic-graphics checkbox offers
+a troubleshooting preset. Its details box and Open launcher log button expose
+setup errors. Closing the launcher during setup/play minimizes it; close the
+game normally to protect progress. The launcher exits after the game closes.
+
+For Steam multiplayer testing, both players must have Steam running on separate
+accounts. Choose Steam development test in F1 -> Networking, then host/join a
+friend's lobby. It uses the Spacewar sample identity (App ID 480), not a public
+commercial release identity. The room-code service has no deployed endpoint.
+Lobby membership is not proof of synchronized gameplay; test an actual mission.
+
+Known WIP limits: full campaign/combat/co-op and 60-FPS synchronization are not
+fully validated. Intermittent boss/movie/quest-completion audio distortion remains
+under investigation. Translation
+proofreading, later subtitle routes and some decorative inscriptions remain
+under review. Original credited-name spellings and player-entered names remain.
+
+For a bug report, use F1 -> Tester support -> Export bug report, then open the
+report folder after closing the game. Keep native.log and result.json locally
+if further investigation is needed.
+Describe the location, steps, language and 30/60-FPS choice. Check logs for account
+or connection details before sharing. No telemetry/upload is performed by setup.
+
+See LICENSE, CREDITS.md, THIRD_PARTY_NOTICES in the runtime directory, and
+docs/TRANSLATION.md and docs/STEAM_TEST.md for evidence and current limitations.
+This is a local test candidate. Game-derived content and third-party licensing
+review is still required before uploading a public binary release; omission of
+the ISO alone does not clear distribution rights. The separate GitHub source
+folder excludes private/game-derived runtime files. Nothing was uploaded.

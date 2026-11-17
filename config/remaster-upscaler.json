@@ -1,0 +1,17 @@
+{
+  "release": "v0.2.5.0 / Windows 20220424",
+  "source": "https://github.com/xinntao/Real-ESRGAN-ncnn-vulkan",
+  "archive_url": "https://github.com/xinntao/Real-ESRGAN/releases/download/v0.2.5.0/realesrgan-ncnn-vulkan-20220424-windows.zip",
+  "archive_sha256": "abc02804e17982a3be33675e4d471e91ea374e65b70167abc09e31acb412802d",
+  "files": {
+    "realesrgan-ncnn-vulkan.exe": "07e49f7cbb4ede01ae4dd4c399d3a7e5846e3d2085c3128eff881e55cb7b1a0c",
+    "vcomp140.dll": "8f72ef2e483465444b2059fc6744d6cb22cd8d8a27f6fa56befd2a42dcd0f78b",
+    "vcomp140d.dll": "34980f5a28002967d4f2659b10a417b1b9a242e240195947c89195083d146c53",
+    "models/realesrgan-x4plus.param": "35330ececcea33b6c397a72548e788d5d53becee4734c50b7fada36e89f10a86",
+    "models/realesrgan-x4plus.bin": "713ee713b0353afaa27976f0563a64a5043bd70b9bd8936c2e26e25ebcdbcddf",
+    "models/realesrgan-x4plus-anime.param": "2b8fb6e0ae4d2d85704ca08c119a2f5ea40add4f2ecd512eb7f4cd44b6127ed4",
+    "models/realesrgan-x4plus-anime.bin": "fe01c269cfd10cdef8e018ab66ebe750cf79c7af4d1f9c16c737e1295229bacc"
+  },
+  "hash_provenance": "Locally observed bytes downloaded from the official release; not an upstream signature.",
+  "processing": "Offline file input and output only; model files and all game-derived output remain private."
+}

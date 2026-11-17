@@ -1,0 +1,4 @@
+{
+  "libdatachannel": {"url": "https://github.com/paullouisageneau/libdatachannel.git", "revision": "6b1e2e620f1e37f0eafeee702eaea0043cb305fd", "tag": "v0.24.6"},
+  "mbedtls": {"url": "https://github.com/Mbed-TLS/mbedtls.git", "revision": "e185d7fd85499c8ce5ca2a54f5cf8fe7dbe3f8df", "tag": "mbedtls-3.6.5"}
+}

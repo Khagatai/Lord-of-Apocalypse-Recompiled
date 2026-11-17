@@ -1,0 +1,13 @@
+{
+  "schema": 1,
+  "minimum_dense_alpha": 128,
+  "keys": {
+    "000000006de1edf560a0bcff": "Observed town foliage",
+    "00000000dccf9cdd2085d8eb": "Observed town tree",
+    "0000000018bda6ec44605c32": "Observed distant sea rocks",
+    "000000007186b7dbe705446c": "Observed rocky island",
+    "00000000de98aa3bc837d97a": "Observed island vegetation"
+  },
+  "alpha_policy": "Keep every alpha byte from the pinned xBRZ output; restore RGB only.",
+  "effects_policy": "Soft particles, glow, shadow and portal effects retain xBRZ unless explicitly admitted."
+}

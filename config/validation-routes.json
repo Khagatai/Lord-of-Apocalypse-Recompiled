@@ -1,0 +1,31 @@
+{
+  "scope": "bounded-native-checkpoint-input-routes",
+  "boot_events": [
+    [1150, "CIRCLE", 4], [1400, "START", 4], [1700, "START", 4], [2000, "START", 4],
+    [2300, "CIRCLE", 4], [2600, "CIRCLE", 4], [2900, "CIRCLE", 4], [3200, "CIRCLE", 4]
+  ],
+  "routes": {
+    "title": {"boot_events": 4, "frame_window": [2200, 2210], "events": []},
+    "town": {
+      "boot_events": 8, "frame_window": [8200, 8210],
+      "events": [[6000, "LEFT", 60], [6500, "0", 60, 128, 0], [7000, "RIGHT", 60], [7500, "0", 60, 255, 128]]
+    },
+    "sanctuary": {
+      "boot_events": 8, "frame_window": [8900, 8910],
+      "events": [
+        [4500, "0", 90, 128, 255], [4700, "0", 300, 0, 128], [5100, "0", 300, 128, 0],
+        [5500, "0", 120, 128, 0], [5800, "0", 180, 128, 255], [6100, "0", 300, 0, 128],
+        [6500, "0", 180, 128, 255], [6800, "0", 300, 0, 128], [7200, "0", 300, 128, 0],
+        [7600, "0", 120, 128, 0], [8000, "0", 300, 128, 0], [8350, "CIRCLE", 4]
+      ]
+    },
+    "inventory": {
+      "boot_events": 8, "frame_window": [7000, 7010],
+      "events": [[6000, "START", 4], [6300, "CIRCLE", 4]]
+    }
+  },
+  "notes": [
+    "Inputs reproduce the existing bounded routes with the copied english-text-test campaign fixture. They contain no game binaries, assets or save data.",
+    "A successful route is a checkpoint result, not full campaign or matching PPSSPP trace acceptance."
+  ]
+}

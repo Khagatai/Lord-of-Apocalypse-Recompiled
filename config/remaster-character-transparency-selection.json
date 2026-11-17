@@ -1,0 +1,8 @@
+{
+  "scope": "transparent-character-neural-admission-exclusions",
+  "reason": "Preserve reviewed projectile streaks, glows and decoy cards. Some names also identify real monster body atlases, so effect exclusions bind exact batch asset indices. NPC illustration atlases use a separate anime-model batch.",
+  "required_batch_manifest_sha256": "90f71a8d1bdd41d1927c326ecdcee5070460a821a79daf0d9ae2d355970920c6",
+  "required_generation_sha256": "35aa00954bbdd8bac4c2a382e0b4855aabda5e28d9557e461c8b9bc1e8ec709c",
+  "exclude_name_patterns": ["^NPC[0-9]{3}$"],
+  "exclude_asset_indices": [0, 1, 2, 14, 22, 32, 34, 37, 41, 49, 64, 65, 75, 88, 91, 92, 100, 103, 109, 118, 141, 150, 166, 170, 172, 173, 188, 189, 194, 198, 203, 206, 210, 241, 242, 270, 272, 273, 278, 284, 305, 308, 312, 314, 318, 325, 326]
+}

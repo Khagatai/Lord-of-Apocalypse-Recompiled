@@ -1,0 +1,94 @@
+[runtime]
+repository = "https://github.com/Jstar269/Nakagawa-Recomp.git"
+path = "external/nakagawa-recomp"
+branch = "main"
+commit = "8704fba98007fff6d6f930365f2b2142af1bfbba"
+codegen_adapter = "tools/import_trace_codegen.py"
+codegen_adapter_sha256 = "e7652962e5eed3646af07d9333a318788525a4ccb829753839189a83e2c9ba3c"
+timing_codegen_sha256 = "04504d532f559c26842fc28a9436af8eb7ace6bc2ef4d1ab72553c16405048de"
+
+[previous_runtime]
+repository = "https://github.com/Tzeentchnet/psp-recomp.git"
+branch = "main"
+commit = "b56ff30ef5997b9f168209df8c33156e82402e7b"
+
+[evidence]
+status = "nakagawa-x64-built-14-instruction-prefix-matched-boot-not-validated"
+ppsspp_revision = "1aebad2c651ff9d0684ee335e43aceff8fc7e3ec"
+
+# Addresses below were measured with the pinned PPSSPP debugger; see docs/SURVEY.md.
+
+[disc]
+id = "NPJH50503"
+region = "Japan (user-supplied image designation; REGION field = 32768)"
+version = "1.01"
+app_version = "01.00"
+iso_size = 1068498944
+iso_sha1 = "e7809b45b8044aef33081a6c39ed9f1cff755eeb"
+iso_sha256 = "3a4d63713880dfb67ade00b6a912ac4975847cec06b1ab341b65963f328e1c93"
+
+[disc.files]
+"PSP_GAME/SYSDIR/EBOOT.BIN" = "e2d5ab63ff25253b24ee9bac4138daf68965af07"
+"PSP_GAME/SYSDIR/BOOT.BIN" = "4008798e19e92cbb053b3b42116c7f76ab7b773c"
+"PSP_GAME/USRDIR/UPDATA/MODULE/LIBFONT.PRX" = "4577f580720d2a239defab390bd26b9fdb1088cb"
+
+[translations.english_v16]
+file_manifest = "config/translation-baseline.json"
+file_manifest_sha256 = "d25f741c94c995d9689fdcb13df82319cdbca49b6e3fd60c38891093d9debd79"
+file = "private/translation/v1.6/LordOfApocalypse-English-v1.6.iso"
+size = 969379840
+sha256 = "0664c2abf543e23002b2340b9e5a833dcc238420db4cd2d4781e1928ea4db3ae"
+patch_sha256 = "4f344ff39ccfea127272b32bbdf17844fdb0e1013bb2e9b40f1f3fa1c07c2ae7"
+main_code_policy = "unchanged-original-executable"
+completeness = "upstream-partial-translation-not-measured-locally"
+
+[tools.python]
+version = "3.14.0"
+archive_sha256 = "8d4d3590c10449d78aa4375f534e6d5f3027d67fdc362dd1a882279db6f90fdf"
+path = "private/tools/python314/python.exe"
+
+[tools.legacy_python]
+version = "3.12.8"
+archive_sha256 = "8d3f33be9eb810f23c102f08475af2854e50484b8e4e06275e937be61ce3d2fb"
+
+[tools.pspdecrypt]
+repository = "https://github.com/John-K/pspdecrypt.git"
+commit = "c156627db7634d395c380c0a9589130f603307fc"
+
+[tools.ppsspp]
+repository = "https://github.com/hrydgard/ppsspp.git"
+commit = "1aebad2c651ff9d0684ee335e43aceff8fc7e3ec"
+
+[module]
+file = "private/modules/EBOOT.elf"
+name = "SQEX01"
+sha1 = "e4bc2601c7ffb6cee292e8bd9b302f63e6bef863"
+sha256 = "e2199a4797680f5956f357757bf9987c592f1ea002001a7a9557a36ecf51fb5f"
+base = 0x08804000
+entry_relative = 0x003e196c
+entry = 0x08be596c
+gp = 0
+image_size = 0x005a0149
+reported_module_size = 0x005a0200
+
+[module.start_thread]
+uid = 0x113
+priority = 0x20
+stack_size = 0x400
+initial_stack = 0x09fffc00
+sp = 0x09fffe90
+ra = 0x08000030
+argument = "disc0:/PSP_GAME/SYSDIR/EBOOT.BIN"
+argument_length = 33
+argument_pointer = 0x09fffed0
+# attr, next_uid and initial_ge_list_id still require direct oracle evidence.
+
+[dynamic_modules.libfont]
+file = "private/modules/LIBFONT.elf"
+guest_path = "disc0:/PSP_GAME/USRDIR/UPDATA/MODULE/LIBFONT.PRX"
+sha256 = "c0edf06ff6ec56d2824b3fe87ed53758df741fc339c783d4085e630a874e4ffc"
+placement = "runtime"
+policy = "generated-guest-library"
+# Diagnostic loader chose 0x09f4c400; this is not a PPSSPP placement measurement.
+# SR_REAL_MODULE_START=1 links actual guest exports; this PRX has no start routine.
+# Never call the ELF's ffffffff entry. Unload and oracle lifecycle remain unvalidated.

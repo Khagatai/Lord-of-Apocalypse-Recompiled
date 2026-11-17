@@ -1,0 +1,5 @@
+{
+  "scope": "foliage-neural-admission-exclusions",
+  "reason": "Retain grayscale tree-card variants on the original renderer path until their shadow/backdrop use is observed.",
+  "exclude_name_patterns": ["^BG01_AL_TREE0[34]$"]
+}

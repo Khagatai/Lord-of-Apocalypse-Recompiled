@@ -1,0 +1,5 @@
+{
+  "scope": "reviewed-remaining-material-admission-exclusions",
+  "exclude_name_patterns": ["^(?:GLD_WINDOW|BG29_GLD_WINDOW)$"],
+  "reason": "Keep the original scaling for two narrow reflected-highlight panes until their live use is observed. Neural restoration changes the highlight curves. Other reviewed material sets still require independent PNG checks and native compatibility tests."
+}

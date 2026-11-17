@@ -1,0 +1,29 @@
+{
+  "scope": "reviewed-remaining-material-restoration-candidate",
+  "required_catalog_sha256": "baf79aabe24cb216626a3f019be3fc6ba502ebd4e863192d9b786371022d196f",
+  "include_name_patterns": [
+    "MTL0[234]", "MTL_GROUND", "MTL_SINBOL", "ARE_GROUND",
+    "HEI_BUILD2", "HEI_WALL3", "HEI_AMI", "HEI_RAIL", "HEI_LATTICE",
+    "HEI_CHAND(?:_B)?", "HEI_CHESTDECO", "HEI_WEP_MACE", "HEI_BOW", "HEI_FUR",
+    "GLD_WINDOW", "BG29_GLD_WINDOW", "HEI_WINDOW", "SWORD",
+    "UNI_MAIN_RING", "BG29_GLD_MAIN_RING", "UNI_RING_SASAE", "UNI_BAL_TOP", "UNI_ITEM",
+    "BG25_LAS_DOOR", "BG28_A_BRIDGE(?:02)?", "BG28_CASTLE_BODY",
+    "BG11_KME_BUILD_[CD]01", "BG11_KME_GAREKI01", "BG11_KME_TOWER", "BG11_KME_GARDEN", "BG11_KME_SKYDOOM",
+    "BG28_A_CHAIN(?:02)?", "BG28_AL_ROCKGROUND_CRACK(?:02)?",
+    "BG17_AL_DOOR0[23]", "BG17_AL_WINDOW0[13]", "BG17_WINDOW02", "BG17_AL_FENCE",
+    "KUN_FENCE(?:_B)?", "BARRIER_S", "DOOR02", "BG13_KOS_AL_WEP",
+    "BG29_TUTI", "BG21_HON_TURA2", "BG_08_ROCK_07", "BG08_SAND_01", "BG17_SNOW04",
+    "BG25_TURU", "SIN_WOOD_0[234589](?:S)?", "HA_N0[1236]", "HA_N02A", "MORI000",
+    "MOR_FORST[12]", "TR00[12]", "YUK_GRASS", "BG25_LAS_PLNT[12]", "SAB_YASI02", "SAB_SANGO0[12]",
+    "BG_08_TOWN_0[12]", "BG08_TOWER_01", "BG08_BACKGROUND_01", "BG10_ENKEI01", "HKE_BACKGROUND0[13]",
+    "BG49_A_MOUNTAIN", "BG28_A_MOUNTAIN", "KAR_IWABA", "KAR_IRAND", "KAR_SEAROCK",
+    "BG01_DOOM_FRONT", "BG29_DOOM_FRONT", "BG05_AL_DISTANCE02", "BG13_KOS_AL_LAND",
+    "EM03[12]", "GLD_GARGOYLE", "BG29_GLD_GARGOYLE", "TAKARA_MIMIC",
+    "GLD_WEAPON", "BG29_GLD_WEAPON", "HEI_MOUNT", "BG16_MAN", "BG38_MAN"
+  ],
+  "notes": [
+    "Original base artwork reviewed in all 23 remaining-original-sheets-05 contact sheets. This policy selects candidates, not automatic default admission.",
+    "Keep printed maps, books, signs, gravestone inscriptions, tutorial lettering, additive glows, animated water and projectile streaks unchanged.",
+    "Use global identity-conflict checks, retain existing canonical/context replacements, preserve exact pinned-scaler alpha, independently check every generated PNG, review restored artwork and run native tests before admission."
+  ]
+}

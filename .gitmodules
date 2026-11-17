@@ -1,0 +1,8 @@
+[submodule "external/psp-recomp"]
+    path = external/psp-recomp
+    url = https://github.com/Tzeentchnet/psp-recomp.git
+    branch = main
+[submodule "external/nakagawa-recomp"]
+    path = external/nakagawa-recomp
+    url = https://github.com/Jstar269/Nakagawa-Recomp.git
+    branch = main

@@ -1,0 +1,11 @@
+{
+  "scope": "environment-neural-admission-exclusions",
+  "reason": "Keep additive effects, gradients, animated water, skies and text-bearing posters on their existing renderer path until separately validated.",
+  "exclude_name_patterns": [
+    "ADD|GLOW|FOG|MAGIC|WHITEOUT|WATER|BLOODFALL|BLOODSMOKE|POSTER|STAGECHANGE|KOMOREBI|_AURA|_NAMI$|_REF[0-9]|_RAY|_GRA$|_GROW$|_DRIP|_SUN$|_WIND$|_BAT$|_CLOUD|_SKY|SUISY|_HON_KIRETU",
+    "(?:^|_)FIRE$",
+    "^SKY$|^HEI_MAP$|^HEI_CARPET2$|^BG25_LAS_MORY$",
+    "^OB(?:00912|010_PATTERN|01314|46|47|48)$",
+    "KAMINARI|BLACKWIND|WATDROP|SIBUKI|^MOR_SEGMENT|^OB037_UV$|(?:HEI|KAR|GLD|UNI)_KOMONO|BOSEKI|YOUGAN_NAGARE"
+  ]
+}

@@ -1,0 +1,10 @@
+{
+  "scope": "reviewed-corrected-palette-material-candidate",
+  "required_catalog_sha256": "b9fa3212fe952b1386929c4d46a8ff3285da5ff4e55545d39359747f7c48632b",
+  "include_name_patterns": ["(?!BG22_GDW_PILR_NEW$)BG22_GDW.*"],
+  "expected_new_source_sets": 9,
+  "notes": [
+    "Original base art reviewed in gdw-original-sheets-01 after the proven 32-byte CLUT block correction. The pinned catalog also uses exhaustively verified PSP bit replication for colour expansion. Preserve the mixed pink light strip in BG22_GDW_PILR_NEW using ordinary renderer scaling.",
+    "This policy selects private candidates. Require independent actual-PNG checks, restored-art review, collision checks and native compatibility tests before default admission."
+  ]
+}
