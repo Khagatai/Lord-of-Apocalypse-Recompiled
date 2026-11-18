@@ -14,6 +14,10 @@ from iso_edits import append_files,extent_hash,survey
 from mes_codec import GlyphTable
 from message_recipe import reconstruct_bundle
 from texture_text import reconstruct
+from title_description_layout import fit_title_text
+from orb_description_layout import fit_orb_descriptions
+from companion_name_layout import fit_companion_names
+from text_panel_layout import validate as validate_panel_layout
 import setup_progress
 
 def sha(path):
@@ -52,6 +56,17 @@ def main():
         rebuilt=reconstruct_bundle(raw,plan,table) if kind=='message' else reconstruct(raw,plan,ROOT/'private')
         digest=hashlib.sha256(rebuilt).hexdigest()
         if digest!=plan['target_sha256']:raise ValueError('Local resource reconstruction differs')
+        if kind=='message' and key[1]==0x40e2f:
+            rebuilt=fit_title_text(rebuilt,table)
+            digest=hashlib.sha256(rebuilt).hexdigest()
+        if kind=='message' and key[1]==0x40da0:
+            rebuilt=fit_orb_descriptions(rebuilt,table)
+            digest=hashlib.sha256(rebuilt).hexdigest()
+        if kind=='message' and key[1]==0x400f9:
+            rebuilt=fit_companion_names(rebuilt,table)
+            digest=hashlib.sha256(rebuilt).hexdigest()
+        if kind=='message':
+            validate_panel_layout(rebuilt,table,key[1])
         identity=key[0],key[2],key[1],original_hashes[key]
         replacements[identity]=rebuilt;expected[key]=digest
     output.mkdir(parents=True)

@@ -18,6 +18,16 @@ class Scheduling(unittest.TestCase):
         self.assertEqual(setup_resources.compiler_workers(4,64*1024**3,requested=16),4)
 
     @unittest.skipUnless(sys.platform=='win32','Windows process-tree memory cap')
+    def test_compiler_stage_can_import_title_with_bundled_python(self):
+        python=ROOT/'private/tools/python314/python.exe'
+        if not python.is_file():self.skipTest('Bundled Python unavailable')
+        script=ROOT/'tools/setup_resources.py'
+        result=subprocess.run([str(python),str(script),'--stage-gate',str(script),'--help'],
+                              input='start\n',text=True,capture_output=True,timeout=20)
+        self.assertEqual(result.returncode,0,result.stderr)
+        self.assertIn('--jobs',result.stdout)
+
+    @unittest.skipUnless(sys.platform=='win32','Windows process-tree memory cap')
     def test_windows_cap_measures_and_limits_child_commit(self):
         with tempfile.TemporaryDirectory() as tmp:
             probe=Path(tmp)/'probe.py'

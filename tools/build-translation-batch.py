@@ -12,6 +12,7 @@ from mes_codec import Bundle, GlyphTable
 from mes_edits import apply_edits, digest
 from rgf_archive import parse_index, resources
 from rgf_edits import append_edits
+from companion_name_layout import fit_companion_names
 
 
 def file_hash(path):
@@ -32,10 +33,15 @@ def prepare_replacements(manifests, payloads, table):
             raise ValueError("Requested resource variant not found")
         source = payloads[key]
         target = apply_edits(source, table, manifest)
+        if identity == 0x400f9:
+            target = fit_companion_names(target, table)
         if target == source:
             raise ValueError("Manifest contains no actual changes")
         bundle = Bundle.parse(source)
-        changed_blocks = {bundle.offsets[e["message_index"]] for e in manifest["entries"]}
+        after = Bundle.parse(target)
+        if after.offsets != bundle.offsets:
+            raise ValueError('Translation batch changed message aliases')
+        changed_blocks = {index for index, (old, new) in enumerate(zip(bundle.blocks, after.blocks)) if old != new}
         affected += sum(block in changed_blocks for block in bundle.offsets)
         replacements[key] = target
     if not replacements:

@@ -1,113 +1,83 @@
-# Source and installer layout
+# Source and installer distribution
 
-The release target is `v0.9.0-beta.1`, a pre-release for testing. It does not
-represent complete campaign, audio or 30/60 FPS multiplayer acceptance.
+The release candidate is `v0.9.0-beta.4`. Full campaign, intermittent audio
+distortion and 30/60 FPS multiplayer acceptance remain open; use a pre-release.
 
-Under the requested Finished folder:
+## Files and destinations
 
-- `Lord-of-Apocalypse-Recompiled` is the source-only Git export. Its existing
-  README is preserved. Project agent instructions and planning/status notes
-  are excluded; framework revisions remain exact gitlinks.
-- `Release` holds the small `Setup.exe`, its setup-source archive and checksums.
-- `Setup Files For Github` holds the single ISO-builder payload ZIP, the
-  corresponding public tool-source archive and payload checksums.
+Under `Finished/Lord Of Apocalypse Recomp`, `Lord-of-Apocalypse-Recompiled` is
+the source-only Git checkout. Its existing README is preserved. Agent notes,
+game files and personal data are excluded; framework pins remain exact gitlinks.
 
-Upload installer, payload and accompanying source archives as GitHub **release
-assets**, not into the source branch. The checksum files have distinct names.
-Players download Setup.exe; the tool-source archive is optional for players
-but should remain available alongside the release's compiler/library binaries.
+`Release v0.9.0-beta.4` contains all seven release assets. Upload the individual
+files without renaming them or zipping the folder:
 
-## What the payload contains
+| Asset | Purpose |
+| --- | --- |
+| `Setup.exe` | Online installer; the only download most players need |
+| `Launcher-Update-v1.txt` | Discovery marker for compatible installed launchers |
+| `LordOfApocalypse-Setup-Source.zip` | Installer source and embedded manifest |
+| `Lord-of-Apocalypse-Recompiled-v0.9.0-beta.4-ISO-Builder-part01-of01.zip` | Public build sources, dependencies and generation recipes |
+| `LordOfApocalypse-Tool-Sources.zip` | Corresponding compiler/library sources |
+| `Setup-SHA256SUMS.txt` | Installer, update marker and installer-source checksums |
+| `Payload-SHA256SUMS.txt` | Player-payload and tool-source checksums |
 
-The ISO-only payload contains public sources, the portable compiler/Python,
-runtime dependencies and text/layout/HD processing recipes. It contains no
-prepared game executable, decrypted module, flat game-memory image, ISO,
-original/restored game texture or caption bitmap. Saves and preferences are
-excluded. Do not publish locally generated outputs from `private/`.
+These are release assets, not source-branch files. Do not upload older private
+tester packs or locally generated game files. Keep corresponding sources and
+licence notices available alongside their binaries.
 
-First Play asks for the exact original NPJH50503 Japanese ISO. It compiles the
-native executable, reconstructs the English image, renders subtitles and builds
-HD textures locally. The original ISO, game code, movie/audio files and user
-saves are protected. The texture tool is downloaded directly from its publisher,
-with pinned archive/member hashes; all game processing remains local.
-See [ISO_BUILD.md](ISO_BUILD.md) for commands, requirements and verification limits.
+## Player installation
 
-## Installer behaviour
+First Play requires the player's own unmodified NPJH50503 Japanese PSP ISO,
+disc 1.01. Its exact SHA256 is enforced before generation. The payload contains
+no prepared game executable, generated game C, decrypted module, game-memory
+image, ISO, game textures, subtitle bitmaps, saves or personal preferences.
 
-Setup.exe pins payload names, sizes and SHA256. URLs target the matching tag in
-`Khagatai/Lord-of-Apocalypse-Recompiled`. A draft release is not a public download
-location. Keep asset names unchanged unless the installer is rebuilt.
+The native executable, WIP English image and subtitles are generated locally.
+Japanese audio remains unchanged. Original textures are the default; render
+scale, FSR and filtering remain available. HD environments/models are optional
+and generated locally, which can take hours. See [ISO_BUILD.md](ISO_BUILD.md).
 
-Verified local payload ZIPs beside Setup.exe, or in the sibling `Setup Files For
-Github` folder, are used without a download. Extraction verifies every listed
-file, rejects unsafe paths and nonempty installation targets, supports resumable
-downloads and cancellation, and offers a desktop shortcut. Use a short ASCII
-path. Allow about 18 GB free for compilation and generated game/HD files.
+Players need Windows x64, a Vulkan driver and about 18 GB free for installation,
+compilation and optional full HD generation. Use a short ASCII install path.
+Python and the compiler are bundled; no separate emulator or Git is required.
 
-Normal startup reuses prepared files. The launcher shows first-setup progress,
-including HD job counts. HD processing can take many minutes to several hours
-depending on CPU/GPU. Japanese remains selectable; standalone English v1.6 is
-retired. Networking and tester support remain in F1.
+## Preparation and checks
 
-## Preparation and gates
+Build the launcher with `tools/build-windows-launcher.py`, then inventory with
+`tools/prepare-iso-release.py --version 0.9.0-beta.4 --output <folder>`.
+The report starts with publication gates unset. Exercise the installer engine
+in an empty short path, run first setup from the original ISO alone, check
+repeat setup and boot at 30 and 60 FPS with isolated saves. Run regression tests
+and audit the complete archive before recording those checks as passed.
+An unfinished optional HD run must never be reported as a completed HD build.
 
-Use `tools/prepare-iso-release.py --version 0.9.0-beta.2 --output <payload-folder>`
-to inventory and verify the ISO-only payload. Specify the version without the
-leading `v`. The build report supplies the installer version and URL. Publish
-each update under its new `v<version>` tag. Editing the files on an existing tag
-does not trigger an update prompt.
-Use `tools/build-online-setup.py --report <verified ISO release report>` only
-after complete first-run generation, installer extraction and native boot checks
-pass. Its publication guard does not accept a partial HD run as complete.
-Attach `Launcher-Update-v1.txt` from the installer output beside the matching
-`Setup.exe` and payload. It marks the release as supporting in-place updates.
-Allow GitHub to calculate the installer digest before testing the update prompt.
-Use `tools/export-github-source.py` for the source export. It preserves README
-and Git history, stages source changes, and does not commit or push them.
+Only then run `tools/build-online-setup.py --report <verified report> --output
+<Setup.exe>` with its publication guard enabled. Generate matching checksums and
+update `config/release-download.json`. Export source with
+`tools/export-github-source.py --destination <GitHub checkout>`; it preserves
+README and Git history, stages changes, and does not commit or push.
 
-`tools/prepare-github-assets.py --local-tester-candidate` is the historical private
-tester packager and includes game-derived outputs. It is **not** the public
-release workflow. Superseded private tester ZIPs must not be uploaded.
+Never use the historical `prepare-github-assets.py --local-tester-candidate`
+for public uploads: that private packager includes game-derived output.
 
-The exact compiler/library source archives and their hash manifest accompany
-the release. Keep project and third-party notices. Passing these technical
-inventory/install checks does not establish complete gameplay acceptance.
+## Publishing beta.4
 
-## Uploading the beta.3 pre-release to GitHub
+1. Review, commit and push the prepared source checkout in GitHub Desktop.
+2. In Releases, choose **Draft a new release**. Create **v0.9.0-beta.4** from
+   the pushed commit and select **Pre-release**.
+3. Paste the prepared release notes and attach all seven files listed above.
+   Keep filenames unchanged: Setup pins the tag, payload filename, size and hash.
+4. Wait for uploads to finish, then publish. Draft assets are unavailable at
+   public download URLs. A new tag is required for the update prompt; replacing
+   beta.3 assets does not trigger one.
+5. Download just the published Setup.exe into an empty folder and test that it
+   fetches the payload. Check an existing compatible launcher offers beta.4 on
+   Play. These live-publication checks remain pending until the release exists.
 
-1. Export the current source to the GitHub checkout with
-   `tools/export-github-source.py --destination <GitHub checkout>`. In GitHub
-   Desktop, review the changes, commit, and push the release branch. Keep the
-   ISO, generated game files, HD textures, saves, and release archives out of the
-   source commit.
-2. Open the repository's **Releases** page and click **Draft a new release**.
-   Create `v0.9.0-beta.3` from the commit you just pushed. Use the title
-   `Lord of Apocalypse — v0.9.0-beta.3` and select **Pre-release**. The tag and
-   filenames are part of the installer's download URL. [GitHub release instructions](https://docs.github.com/en/repositories/releasing-projects-on-github/managing-releases-in-a-repository#creating-a-release)
-3. Paste these notes into the draft.
+Setup verifies every managed file and preserves saves, settings and ISO selection
+during updates. Beta.4 changes native and English-image inputs: expect one local
+rebuild on next Play. HD remains opt-in. Back up saves before beta updates.
+Verified payload ZIPs beside Setup.exe can be used without downloading them.
 
-   > New in beta.3: Settings → Build lets you choose compiler jobs, set a Windows
-   > build memory cap, and pick Standard, Fast, or Low memory HD processing.
-   > Original textures are the default. Run Setup.exe and provide your own
-   > unmodified Japanese PSP ISO (NPJH50503, disc 1.01).
-
-4. Keep the release as a draft until the beta.3 clean first-run checks pass and
-   the public installer is built. The local `Setup-QA.exe` is the test build. The
-   completed upgrade test verified package replacement, Build settings, and the
-   unchanged native build fingerprint. A clean ISO build and native boot for
-   this candidate are still pending.
-5. Attach the following individual files from the matching release output.
-   Keep the filenames as generated.
-
-   | Files | Where they come from |
-   | --- | --- |
-   | `Setup.exe`, `Launcher-Update-v1.txt`, `LordOfApocalypse-Setup-Source.zip` | Final beta.3 installer build |
-   | `Lord-of-Apocalypse-Recompiled-v0.9.0-beta.3-ISO-Builder-part01-of01.zip` | Beta.3 source and tools payload |
-   | `LordOfApocalypse-Tool-Sources.zip` | Matching compiler and library source archive |
-   | `Setup-SHA256SUMS.txt`, `Payload-SHA256SUMS.txt` | Checksums for the exact files being uploaded |
-
-6. Wait for the uploads to finish, then click **Publish release**. From an empty
-   folder, download just `Setup.exe` and confirm it can fetch the published
-   payload. Separately, click **Play** in an installed beta.2 launcher and
-   confirm it offers `v0.9.0-beta.3`. The update check uses the new tag, installer
-   digest, and update marker. Beta.1 players can start with the new `Setup.exe`.
+[GitHub release instructions](https://docs.github.com/en/repositories/releasing-projects-on-github/managing-releases-in-a-repository#creating-a-release)

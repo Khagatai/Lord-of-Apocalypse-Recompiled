@@ -41,6 +41,8 @@ def verify_title_inputs():
         raise ValueError("Codegen adapter identity mismatch")
     if hashlib.sha256((ROOT/'tools/frame_rate_codegen.py').read_bytes()).hexdigest()!=CONFIG['runtime']['timing_codegen_sha256']:
         raise ValueError('Timing codegen identity mismatch')
+    if hashlib.sha256((ROOT/'tools/companion_name_codegen.py').read_bytes()).hexdigest()!=CONFIG['runtime']['companion_name_codegen_sha256']:
+        raise ValueError('Companion name codegen identity mismatch')
     for module in (CONFIG["module"], CONFIG["dynamic_modules"]["libfont"]):
         path = ROOT / module["file"]
         if hashlib.sha256(path.read_bytes()).hexdigest() != module["sha256"]:
@@ -228,14 +230,14 @@ def build(stage, jobs, profile="diagnostic", *, force=False):
         if dll.is_file():
             shutil.copy2(dll, destination / dll.name)
         extension = {name: hashlib.sha256((ROOT/'tools'/name).read_bytes()).hexdigest()
-                     for name in ('in-game-settings.c', 'title_settings_menu.h', 'overlay-settings.mk', 'gameplay_fps.c', 'gameplay-fps.mk', 'frame_rate_codegen.py',
+                     for name in ('in-game-settings.c', 'title_settings_menu.h', 'overlay-settings.mk', 'gameplay_fps.c', 'gameplay-fps.mk', 'frame_rate_codegen.py', 'companion_name_codegen.py',
                                   'coop-runtime.mk','coop_hle.c','coop_service_wait.h','coop_transport.c','coop_transport.h','online_runtime.c','online_runtime.h',
                                   'movie_subtitles.c','movie_caption_format.h','media-runtime.mk','audio_diagnostics.h')}
         (destination/'host-ui-build.json').write_text(json.dumps({
             'framework_commit': CONFIG['runtime']['commit'], 'host_extension_sha256': extension,
             'executable_sha256': hashlib.sha256(data).hexdigest(),
             'scope': 'title-owned-overlay-renderer-and-optional-timing' if renderer else 'title-owned-overlay-and-optional-timing',
-            'renderer':renderer, 'media_runtime':media, 'guest_code_modified': 'conditional-60fps-timing', 'guest_image_modified': False,
+            'renderer':renderer, 'media_runtime':media, 'guest_code_modified': 'conditional-60fps-timing-and-bounded-party-name-copy', 'guest_image_modified': False,
             'flat_image_sha256':hashlib.sha256(flat.read_bytes()).hexdigest()}, indent=2)+'\n')
         if flat_before and hashlib.sha256(flat.read_bytes()).hexdigest()!=flat_before:
             raise RuntimeError('Unexpected guest image change during host-only build')

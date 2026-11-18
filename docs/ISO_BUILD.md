@@ -19,7 +19,8 @@ On first Play, choose the original ISO. Setup performs these local stages:
    including game code and audio, are independently checked against retail JP.
 4. Render subtitles locally; recover original credit name glyphs from the ISO.
    Exercise the actual caption writer in all four PSP pixel formats.
-5. Generate the HD environment/model texture pack locally, in bounded batches.
+5. If explicitly enabled, generate the optional HD environment/model texture
+   pack locally, in bounded batches. Original textures are the default.
    Original 2D UI and dialogue portraits remain in use. No movie/audio files
    are rewritten. Only successful owned checkpoints can resume.
 
@@ -34,8 +35,11 @@ in cost. Stages without measurable totals show their activity instead of invente
 counts. 100% is emitted only after the installation's ready marker is written.
 New builds save per-stage durations and exit codes in
 `private/local-build/setup-timings.json` for performance investigations.
-Compiler concurrency is selected from available CPUs and RAM, capped at eight;
-`--jobs 1` through `--jobs 8` override it. HD processing uses memory-bounded
+Automatic compiler concurrency is selected from available CPUs and RAM, capped
+at eight. `--jobs 1` through `--jobs 16` set a manual upper bound (or `--jobs 0`
+selects Auto). Available CPUs and RAM can reduce a requested job count.
+Settings > Build also exposes compiler jobs, a Windows memory cap and the HD
+processing profile. HD processing uses memory-bounded
 batches (up to 64 jobs by default), two GPU processing workers, persistent native
 image helpers and bounded archive/decoded-pixel caches. No HD images are bundled.
 For a device requiring lower inference concurrency, the individual

@@ -4,8 +4,9 @@ path = "external/nakagawa-recomp"
 branch = "main"
 commit = "8704fba98007fff6d6f930365f2b2142af1bfbba"
 codegen_adapter = "tools/import_trace_codegen.py"
-codegen_adapter_sha256 = "e7652962e5eed3646af07d9333a318788525a4ccb829753839189a83e2c9ba3c"
+codegen_adapter_sha256 = "9cfae05225a94c578b8ceb7b275d275868c343be13e9592021992ad062218544"
 timing_codegen_sha256 = "04504d532f559c26842fc28a9436af8eb7ace6bc2ef4d1ab72553c16405048de"
+companion_name_codegen_sha256 = "a69cdd50e9dc3cb9d80b9db029ced67838419b811a81ef80c65e9903ec1e5ee5"
 
 [previous_runtime]
 repository = "https://github.com/Tzeentchnet/psp-recomp.git"

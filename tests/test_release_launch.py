@@ -25,6 +25,7 @@ class ReleaseLaunch(unittest.TestCase):
             return hashlib.sha256(path.read_bytes()).hexdigest()
         config['runtime']['codegen_adapter_sha256']=fixture(config['runtime']['codegen_adapter'])
         config['runtime']['timing_codegen_sha256']=fixture('tools/frame_rate_codegen.py')
+        config['runtime']['companion_name_codegen_sha256']=fixture('tools/companion_name_codegen.py')
         for module in (config['module'],config['dynamic_modules']['libfont']):
             module['sha256']=fixture(module['file'])
         (self.root/'config').mkdir(exist_ok=True)

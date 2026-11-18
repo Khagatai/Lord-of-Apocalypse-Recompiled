@@ -1,0 +1,512 @@
+{
+  "schema": 1,
+  "resource_id": "00040da0",
+  "width": 144,
+  "rows": 4,
+  "entries": {
+    "63": {
+      "source_text_sha256": "824ccf43c05869116dfdcb4e174345b23b5631966fd712985eba28f50891a6cf",
+      "text": "A trainee knight's primer orb. Boosts physical damage."
+    },
+    "71": {
+      "source_text_sha256": "18b4190774f74bed2715b95c9478b237c3ee2da1fa26677f37877dc151549c90",
+      "text": "An orb of hard-hitting techniques. Makes monsters easier to stun."
+    },
+    "73": {
+      "source_text_sha256": "0c79be287a2499b288b19a590c9694f7ded730d259aeb137148732c02ed2e6f5",
+      "text": "An orb of greater impact. Strengthens stagger and stun attacks."
+    },
+    "75": {
+      "source_text_sha256": "d55376de44ab76f1a05cc0d98c322cc35a73462d8353968a150e11fc9f755592",
+      "text": "An orb of fighting spirit. Makes monsters easier to stagger."
+    },
+    "77": {
+      "source_text_sha256": "31d504102ccf0ef76f844e55ab87db2f27f84c63a2cba55be9e0cbc0e643f7af",
+      "text": "An orb praising soul-fueled blows. Greatly improves staggering."
+    },
+    "79": {
+      "source_text_sha256": "ca9e5ab3a413a7cd71743aa0f267f97de5b78a91dc81ceba3ca12c4528a6e8f4",
+      "text": "A gambler's comeback orb. Raises critical-hit chance."
+    },
+    "81": {
+      "source_text_sha256": "64533cc8b04b8843adc01592b8d61541df0789ce4cacf005ab02163c0dc2c61d",
+      "text": "An orb of a warrior's lucky wins. Greatly raises critical-hit chance."
+    },
+    "103": {
+      "source_text_sha256": "8e861b03684225f3b1d260460e0e4c409cae13049dbbe1ea20fe5962f9d13db1",
+      "text": "An orb praising the Spirit Father. Strengthens all Elements."
+    },
+    "105": {
+      "source_text_sha256": "e04ba9e337303dd02379e51d3fd5bdbe9f898151099e2e77da2642ccbe929924",
+      "text": "An orb praising the Fire Spirit. Boosts fire damage and burning."
+    },
+    "107": {
+      "source_text_sha256": "aece278c97f218fbea3e3397644ef5392fa9234c33ed3d14d4a28c1d08adb3b8",
+      "text": "An orb bearing the Fire Spirit's name. Further strengthens burning."
+    },
+    "109": {
+      "source_text_sha256": "b7d433c78ae90cd14307698c00eb75de82cec22e459f606ddccdc544d0feaded",
+      "text": "An orb praising the Thunder Spirit. Boosts thunder damage and paralysis."
+    },
+    "111": {
+      "source_text_sha256": "4e9ed36c2dc5f7ac67f2d3df5750df65fb57adacb7c02202329ee1e91c75e939",
+      "text": "An orb bearing the Thunder Spirit's name. Further strengthens paralysis."
+    },
+    "117": {
+      "source_text_sha256": "ab2cbdc1e58e5c48989f37c32e62e2adda01be81fdb870516d14c4edda49cc53",
+      "text": "An orb praising the Light Spirit. Strengthens light-based stun."
+    },
+    "119": {
+      "source_text_sha256": "3d039902b1e6e8f5158ea77fcb1237a9a83e710fcb9643e3f0190bd5657323bd",
+      "text": "An orb bearing the Light Spirit's name. Further strengthens light-based stun."
+    },
+    "123": {
+      "source_text_sha256": "f939271fcd3a624b0c7f3356e44e5db6fcb1f06adb45c64359908001edc6f427",
+      "text": "An efficient killer's proof. Makes monsters less likely to target you."
+    },
+    "125": {
+      "source_text_sha256": "dd0cf89de1868dd0fc8970fb0b6d704cd25175a14f73b6f77379d969e1474628",
+      "text": "An ancient assassin's legacy orb. Further reduces monsters' targeting."
+    },
+    "133": {
+      "source_text_sha256": "6fa1a4aa33ff183d178562f04dd709060451e543aed008e5f6793d9b4c370435",
+      "text": "An orb of basic medicine. Improves the effects of recovery items."
+    },
+    "135": {
+      "source_text_sha256": "a8320fa5ae6fe604cc5bc9c359938c5029a89676cdcfb8ab582e4206ee673151",
+      "text": "A master doctor's proof. Greatly improves recovery item effects."
+    },
+    "137": {
+      "source_text_sha256": "d7e65462948e52760af26149dbfa7ab21436455cf99e2d10388b6655aa12cc62",
+      "text": "A fortress guard's safety charm. Reduces physical damage taken."
+    },
+    "145": {
+      "source_text_sha256": "e0a3319949f599b8805edbd801e89e89528187a9644eaeca83f9c4172399297b",
+      "text": "An orb of endurance training. Makes you harder to stun."
+    },
+    "147": {
+      "source_text_sha256": "71f431eb0e046cab1c98e1f096af095eddcecdd9730b782a83ddad8d1a403474",
+      "text": "An orb of words that anchor the mind. Makes you much harder to stun."
+    },
+    "149": {
+      "source_text_sha256": "1001cedfc1e7e4117afa4b0ba4e40ed40ff2579a40f89f4e5404c8ff5529e40b",
+      "text": "An orb of firm posture. Makes you harder to stagger."
+    },
+    "153": {
+      "source_text_sha256": "bee6b559c39c6cee16fe4266255355859eba9fd788f4af021d991a1b00cfcff7",
+      "text": "An orb of the Spirit Father's blessing. Raises resistance to all Elements."
+    },
+    "175": {
+      "source_text_sha256": "d63c540e46e734227067cf36e388f425f849e974fc55a4be672937709554f110",
+      "text": "An orb blessed by the Fire Spirit. Reduces fire damage and resists burning."
+    },
+    "177": {
+      "source_text_sha256": "a332bf7eb5a8bb4d61bbe11f1aa070c311cf92fc2706bd48ca9412c61b8ea02c",
+      "text": "An orb with a fire-repelling guardian. Further increases burn resistance."
+    },
+    "179": {
+      "source_text_sha256": "8d642675af4b9955dfcbb461e96ab6f161218942454ff38854b1c22dc674b0db",
+      "text": "A Thunder Spirit's blessed orb. Reduces thunder damage and resists paralysis."
+    },
+    "181": {
+      "source_text_sha256": "0da9d2ec85473a99188a2433c62085bd61c185ddd95b4b16d59265374932a0f5",
+      "text": "An orb with a thunder guardian. Further raises paralysis resistance."
+    },
+    "183": {
+      "source_text_sha256": "1980c89d0e82d3cca439e95744ac4772c496bff26efdab539f7a18fddeb903a4",
+      "text": "A Dark Spirit's blessed orb. Reduces dark damage and resists slow."
+    },
+    "185": {
+      "source_text_sha256": "73d1deece98872bcd7d4d163b456dc695634cd74ee33d3c290cb6999517d84f2",
+      "text": "An orb with a darkness guardian. Further raises slow resistance."
+    },
+    "187": {
+      "source_text_sha256": "de9d2d3328e1d38c69673a0b768c202a5485bbdec251e4b2b7f18cbe75844f78",
+      "text": "A Light Spirit's blessed orb. Raises resistance to light-based stun."
+    },
+    "189": {
+      "source_text_sha256": "55c8b27401e3737d655776bb010d49844ff919c5327151ad17d1b1e36cbe9be6",
+      "text": "An orb with a light guardian. Further raises light-based stun resistance."
+    },
+    "191": {
+      "source_text_sha256": "0a32e0c18b6cf6663a07b3b5bdab5db91041560de148e463d9991236e9f8d2cc",
+      "text": "A Poison Spirit's blessed orb. Raises poison resistance."
+    },
+    "193": {
+      "source_text_sha256": "65ee9535aeec493c4e0df5ed8abffcf0d4d11a35d4d05224b03a460c388fe0dc",
+      "text": "An orb with a poison guardian. Further raises poison resistance."
+    },
+    "195": {
+      "source_text_sha256": "9678b533de8a07d2b0241872d6cc78061f9642eb00fe5e6daab7ee35acda133d",
+      "text": "An endless warrior's record. Reduces the Pulse gained through actions."
+    },
+    "197": {
+      "source_text_sha256": "2c5de11530d39c71c35e0d490afafb25b5811aefae3de960a3532591b4093656",
+      "text": "An orb bearing a casting seal. Lets you move while casting Elements."
+    },
+    "199": {
+      "source_text_sha256": "7bdb8188ce29be307d29c6bdb5631e6a6f9945c723e7ca568cb72432a7641063",
+      "text": "An orb of suggestion. Your body guards on its own while idle."
+    },
+    "201": {
+      "source_text_sha256": "7abb3132c5da27d610c698e3247dd104e7b9c9be362ad5412f93c1876106cafd",
+      "text": "An orb seeking divine sight. Locks onto weak points. (Deleted)"
+    },
+    "211": {
+      "source_text_sha256": "97eaca34ba3a876de09ca3c584d2641d77ed8aa9242c226f4df59dd4158032d9",
+      "text": "A treasure hunter's last words. Makes monsters drop items more often."
+    },
+    "219": {
+      "source_text_sha256": "81f5b8b5da62cf32e170e4bd85d07b1c14eb8398357c05b884b96304e762438f",
+      "text": "An undefeated master's orb. Greatly boosts weapon mastery gained."
+    },
+    "221": {
+      "source_text_sha256": "654870e5217bf1bec8cfe71331ba8d33edf389db17deaaa07995217ab56902e8",
+      "text": "An orb of a great witch's notes. Boosts Element mastery gained."
+    },
+    "223": {
+      "source_text_sha256": "be6cc868a93efcf64d08c3fbfcf387ef703afdf3eba6a0ba12d6e32d924e90e4",
+      "text": "A great witch's Element lore orb. Greatly boosts Element mastery gained."
+    },
+    "225": {
+      "source_text_sha256": "9789e5148bdd0a9d6b385c3482f6ecefe635e942cda5f450e577a3390f419bc6",
+      "text": "An orb of unearthly voices. Monsters cannot detect you in the field. (Deleted)"
+    },
+    "227": {
+      "source_text_sha256": "92b9bab8c035ce50bf6f3e8f9b38db575f497e9b60a74bb789a3a56b344977ca",
+      "text": "A lone swordsman's arts. Slash to erase some field enemies. (Deleted)"
+    },
+    "237": {
+      "source_text_sha256": "c3103df4424322116d821b079f1926a13b0e1b7e55fdbfacc02eb454b250bc64",
+      "text": "An orb of basic prescriptions. Extends item effect durations."
+    },
+    "243": {
+      "source_text_sha256": "b4acfa8548696ea6eb357a0c45de30c1f5954b04bb6effda51140313a70eac33",
+      "text": "A dying soldier's resolve. Boosts physical damage when near death."
+    },
+    "245": {
+      "source_text_sha256": "9198274611e1b23ae588070b115998e51efaf9260968046e205dca56f238f1f6",
+      "text": "An old soldier's final battle orb. Greatly boosts physical damage near death."
+    },
+    "249": {
+      "source_text_sha256": "bc7d00579927be990c94c1d4f5d337553e43f7939011b74c3f93808d32c3a9e1",
+      "text": "An orb sent to an ailing lover. Boosts HP restored by Life Injection."
+    },
+    "251": {
+      "source_text_sha256": "90d73b096f08d834499ebf5d0d608c14e03f12dde1688c38ff207f6154cffe95",
+      "text": "An orb of a mighty giant's bracelet. Shortens Battle Art charge time."
+    },
+    "257": {
+      "source_text_sha256": "cce41da049e37ebbf73b0d279859a5df679360685132a6309e9005b9bb5916a7",
+      "text": "An uncaught thief's crime record. Boosts gains to the escape gauge."
+    },
+    "261": {
+      "source_text_sha256": "8b4622469e0a9fc7883cd369f6f646b63dfb0f77bc7e1c07c42c45ca9eacd431",
+      "text": "The name of 1 man who defied an empire. Makes cinematic inputs easier."
+    },
+    "263": {
+      "source_text_sha256": "cc799d75cb01d39a8bc518d5edf0f9a2d0f367da1bda9c25901a49a144305f98",
+      "text": "An orb of basic tactics. Stops monsters from calling for allies."
+    },
+    "267": {
+      "source_text_sha256": "edf1b6cde651269f7b55822addc7730383eb1d1eb9462d3752bf3a96e97cda75",
+      "text": "A young lionhearted king's orb. Negates monsters' Pulse Break."
+    },
+    "269": {
+      "source_text_sha256": "8fba40b79c14a8baf0095dec297466a1046a2631de76836322cf09235f878120",
+      "text": "An iron-walled guard unit's emblem. Negates DEF down."
+    },
+    "382": {
+      "source_text_sha256": "a7ccdf144a7fb02df1589722a0067c4b8f0f128c35f94a6b7e15c8354d04cdf3",
+      "text": "An orb of black-armored warriors' rites. Negates ATK down."
+    },
+    "384": {
+      "source_text_sha256": "8301bf46cf18ac2bd5164c524717116017fdab0cba6aea3ed7aad86fe0600910",
+      "text": "An orb signed by a master swordsman. Negates blindness."
+    },
+    "390": {
+      "source_text_sha256": "df29cfbe5cb31b093e21c7acd24729c883028f50a598aa61788d131c42eb97ae",
+      "text": "An orb of a god's inviolable throne. Negates all monster skills."
+    },
+    "392": {
+      "source_text_sha256": "d44f4f31b4e8ca3e2395fd4c958813e46d4cc287810242f97251ff656f7a7dba",
+      "text": "A small infiltration unit's orb. Makes raid encounters less likely."
+    },
+    "394": {
+      "source_text_sha256": "b1bbef679eb69f2189270a8d5e447c43a3f867238c7b575f758a9fff70ce4027",
+      "text": "An orb of struggle against the unknown. Raises Core drop chance."
+    },
+    "396": {
+      "source_text_sha256": "0e42e1792c3f9f850aa5f1068af90588e21d6f288075900eb8dd5a72bcef7d8f",
+      "text": "An orb of hard-won truth. Further raises Core drop chance."
+    },
+    "398": {
+      "source_text_sha256": "0c4506d22711210f39ebd67d115b78c10bb5fd9f285a8c8eac2bd0bc79971ccd",
+      "text": "An orb of an old farming couple. Increases materials gathered in the field."
+    },
+    "400": {
+      "source_text_sha256": "189d6eac779b199e131d3b7ff81a1b89cef289d5c3066814ad1744e3eba0b7fc",
+      "text": "An orb of a farming magnate's life. Further boosts field material yields."
+    },
+    "402": {
+      "source_text_sha256": "0150526392894c2b4059b1d12bea99ef5a6e815dcfc192be38d310bc7cbe2deb",
+      "text": "An old duelist's winning secret. Makes powerful monsters less likely to flee."
+    },
+    "425": {
+      "source_text_sha256": "04e2322b63be8fa8dececa5fd42dfb967a96cde4db7f4ae3499a5664a83d9416",
+      "text": "An elite dragon knight's orb. Further increases physical damage dealt."
+    },
+    "427": {
+      "source_text_sha256": "8e256327e82090fbea71974b665009abbde7ed64abfecd6d5d4e439e1e23f84b",
+      "text": "A master's vital-point orb. Makes monsters even easier to stun."
+    },
+    "429": {
+      "source_text_sha256": "e62b7e350ce0fc81917db4b65f71041e8942a6d414c72f2441108d723abd3ffd",
+      "text": "A legend of god-possessed fists. Makes monsters even easier to stagger."
+    },
+    "431": {
+      "source_text_sha256": "73091b1707b6d05658e31fc0a561f0b7009399f2d24c97a2c86bff82050d156e",
+      "text": "An orb of a man's fated luck and woes. Further raises critical-hit chance."
+    },
+    "433": {
+      "source_text_sha256": "3f6340ed7359b35f63c8200eb63b790bdf8609e69da95e66c9ae10bf3c75bfa2",
+      "text": "An orb praising the Ice Spirit. Boosts ice damage and freezing."
+    },
+    "435": {
+      "source_text_sha256": "f2aa5bfda97f801e98e21ddd6500497b0eb4c236eb2e4b8ee55c2a61e8340da0",
+      "text": "An orb bearing the Ice Spirit's name. Further strengthens freezing."
+    },
+    "439": {
+      "source_text_sha256": "511f0b03b758e0ed90498e59448323ebe9b0b31b372fc695f269e988a46a37f3",
+      "text": "An orb bearing the Wind Spirit's name. Greatly boosts wind damage."
+    },
+    "441": {
+      "source_text_sha256": "7b1e2951243626bab83ceebea3a988b6b793500ffd5e9eb05de22ac90bb71edc",
+      "text": "An orb praising the Earth Spirit. Boosts earth damage and DEF down."
+    },
+    "443": {
+      "source_text_sha256": "58d17dddc2ac358bf204a555e85b6f64e443f43a9cf47f616d19f3351eb2655d",
+      "text": "An orb bearing the Earth Spirit's name. Further strengthens DEF down."
+    },
+    "445": {
+      "source_text_sha256": "4eb4afaa0a6de9563e11427cf98e4f01c7242abfcc1360481b14fce222f8e12f",
+      "text": "An orb proving a royal guard's loyalty. Further reduces physical damage taken."
+    },
+    "447": {
+      "source_text_sha256": "8c8f9d976a992e003637b5f3e78b3248007d003272f899ade38bd92527a5c5ee",
+      "text": "An orb of a battlefield guardian angel. Makes you even harder to stun."
+    },
+    "449": {
+      "source_text_sha256": "5378fe5617ac596d47ba68ce556718532c6c84536702fef2afcf9ad6a65941a9",
+      "text": "An orb of an unshakable war god. Makes you even harder to stagger."
+    },
+    "451": {
+      "source_text_sha256": "52a571327f1f48c3bebf4bdadc533da9a767ef83a88d57dd1701601373c35584",
+      "text": "An orb blessed by the Ice Spirit. Reduces ice damage and resists freezing."
+    },
+    "457": {
+      "source_text_sha256": "3fb49611da814e61c524638d75f98e8019f7a7a932117cfe8bafff1fdd2a1c12",
+      "text": "An orb with a wind-repelling guardian. Further raises wind resistance."
+    },
+    "459": {
+      "source_text_sha256": "99183575a0407b1b28abdbcbb5c2f6fcfa707346d5591c7631a9ac47fd21b32d",
+      "text": "An Earth Spirit's blessed orb. Reduces earth damage and resists DEF down."
+    },
+    "461": {
+      "source_text_sha256": "11899f0fc03fe086910151c89ae97e4c87f7539d9e015c4200ef7c973a8a16ce",
+      "text": "An orb with an earth guardian. Further raises DEF down resistance."
+    },
+    "463": {
+      "source_text_sha256": "8f1dd9b1195d0eab34b47d2a159558019b472a06509d56d0c3a5c211201489cc",
+      "text": "An orb of a raging fire dragon's crest. Protects against heat and burning."
+    },
+    "465": {
+      "source_text_sha256": "84b14e5034730242533751eb8cd38f1bdfbf57ca4ae13943c4090d91a0affcc9",
+      "text": "A thunder emperor's crest orb. Protects against paralysis."
+    },
+    "467": {
+      "source_text_sha256": "71466e63b2415dc74826707df949036ef475a679fc02d94211aef664f9300d3c",
+      "text": "A nether dark king's crest orb. Protects against blindness and slow."
+    },
+    "469": {
+      "source_text_sha256": "ca77876209916dac711ff603178e36c677d0bbd6363fbe4fbc5da49adb0b9ca3",
+      "text": "The sealed ice queen's crest orb. Protects against bitter cold and freezing."
+    },
+    "471": {
+      "source_text_sha256": "50556fcd1c4417b8f7ade6dd602c48227778cfe86623534f1a9bad71b5739d86",
+      "text": "The revered white serpent god's crest. Protects against toxic swamps and poison."
+    },
+    "473": {
+      "source_text_sha256": "97321f75927402a111e5e9facbc1912451fa17303f3a35e2686c72be0181949b",
+      "text": "A telekinetic orb. Stirs your body to speed recovery from stun and freezing."
+    },
+    "475": {
+      "source_text_sha256": "d433710f6454effb8f20dc9227c34b68277624c7ab8e05cc3ff95df8cbb6df3e",
+      "text": "A thousand-mile steed's orb. Greatly raises AGI and running speed."
+    },
+    "477": {
+      "source_text_sha256": "56a56a1f8c20e99bfb1cd5ea1018c7892c38aa7b10ffef4756f6338e3cfb4dd6",
+      "text": "An unyielding king's orb. Shortens fallen mercenaries' revival time."
+    },
+    "481": {
+      "source_text_sha256": "831de0c69c1b5ffcf8c26d880a8fad5908c9449d5a0b5b05d83ade214c70a0de",
+      "text": "A beloved king's orb. Makes mercenaries gain friendship faster after battle."
+    },
+    "483": {
+      "source_text_sha256": "dd8548c48174b4f8ea286200864fd8a02f2dbcb3f42f557777d62860fdea7e1f",
+      "text": "An orb of a hundred-battle veteran. Helps mercenaries learn battle tactics."
+    },
+    "485": {
+      "source_text_sha256": "ad4dac9210a5a6f1178cb6e3c298b874d4437945cd8be2893db9d4f8ef0bd6a0",
+      "text": "An orb of a great tactician's winning plan. Boosts mercenaries' damage."
+    },
+    "487": {
+      "source_text_sha256": "84b6a29eb4cd75841854921eeae0802bd7bba11912704bef33001f3420b253a4",
+      "text": "An orb of a tactician's stalwart circle. Reduces mercenaries' damage taken."
+    },
+    "489": {
+      "source_text_sha256": "3d0f398826373c9515d22fec031a05119ce1969e8fdbc5837768bffe6bb81120",
+      "text": "An orb of rousing army songs. Speeds mercenaries' recovery from stun and freezing."
+    },
+    "558": {
+      "source_text_sha256": "9198274611e1b23ae588070b115998e51efaf9260968046e205dca56f238f1f6",
+      "text": "An old soldier's final battle orb. Greatly boosts physical damage near death."
+    },
+    "560": {
+      "source_text_sha256": "90d73b096f08d834499ebf5d0d608c14e03f12dde1688c38ff207f6154cffe95",
+      "text": "An orb of a mighty giant's bracelet. Shortens Battle Art charge time."
+    },
+    "564": {
+      "source_text_sha256": "bcc2c3a423bf283013a5d67e4998b8b1bff47931c6ded7c0b072a803710fb37b",
+      "text": "An orb of arts to restrain magic. Weakens all Elements."
+    },
+    "566": {
+      "source_text_sha256": "29f54653592efa4b7bac59a5ecbc776e9953eab4e31f85f571806df45a4ad23c",
+      "text": "An orb of focused strikes. Makes monsters easier to stun."
+    },
+    "568": {
+      "source_text_sha256": "4c1de0125263c6cf7fa2b61f0473fa446703d72a3a2750821dd9e54d4072d228",
+      "text": "An orb of self-imposed trials. Makes monsters harder to stun."
+    },
+    "570": {
+      "source_text_sha256": "4f0e9d9bc3aab20ac019c65ad95b7888f551b6694a5f39b465c3abb9e7ed787e",
+      "text": "A veteran vanguard's orb. Makes monsters more likely to target you."
+    },
+    "572": {
+      "source_text_sha256": "a5bfd43d86f8650b75a871db268240f826a02a8de8408617485f153ef290f8e4",
+      "text": "An orb of the hunter-slaying black wolf. Monsters target you less often."
+    },
+    "574": {
+      "source_text_sha256": "765d1305856c24ae9824411e42bec076d9d070cf9c1391fa436296fb901c82d9",
+      "text": "A centuries-old elder's breathing lore. Raises maximum HP."
+    },
+    "576": {
+      "source_text_sha256": "47edb15470e2380765024e66b44620d254f0d21b104d41614a5d4f7232e9caf1",
+      "text": "An orb of basic field first aid. Improves recovery item effects."
+    },
+    "578": {
+      "source_text_sha256": "576c05217af8fdf3ae49235074981de3946097e8f6e7dfd5de20844eddf7e704",
+      "text": "An orb of a master's timed force. Reduces Pulse gained through actions."
+    },
+    "580": {
+      "source_text_sha256": "7bdb8188ce29be307d29c6bdb5631e6a6f9945c723e7ca568cb72432a7641063",
+      "text": "An orb of suggestion. Your body guards on its own while idle."
+    },
+    "582": {
+      "source_text_sha256": "de03993b9a559ac85b6f54ca5fad2e7c30ea0175fc2ddd72db574f5c0af9a3da",
+      "text": "An orb of complex drug formulas. Extends item effect durations."
+    },
+    "584": {
+      "source_text_sha256": "b4e06b60e9d9ba57f251c6c713911a71e8a5734d879a256586361e65168f815c",
+      "text": "An orb of a great strategist's arts. Greatly boosts mercenaries' damage."
+    },
+    "586": {
+      "source_text_sha256": "110eb373355863ebeb8a224b0c9c30571f9b905118156aed6867938f44d979db",
+      "text": "An unflinching heavy warrior's last tale. Makes you harder to stagger."
+    },
+    "588": {
+      "source_text_sha256": "54a7cca145dbcbee0d584a971e17d9b11cca26cfa2609326ab41d58d91babc80",
+      "text": "An orb of twisting blows for greater impact. Makes monsters easier to stagger."
+    },
+    "590": {
+      "source_text_sha256": "97f4497532ba845d2e329edf5c04f8df3437b21f937cff71a0b6e977b7265b7a",
+      "text": "A village defender's agile footwork. Reduces physical damage taken."
+    },
+    "592": {
+      "source_text_sha256": "4f8168b445e94f174adbd7ebff1435ac205409b6a9c485017788dee33c1ee496",
+      "text": "An orb teaching focused spellcasting. Strengthens all Elements."
+    },
+    "594": {
+      "source_text_sha256": "8bb3b98ded700e31d23da0ccafd8c8cc0254b8dafa8a4d68a326ed916846dbb7",
+      "text": "A relentless assault captain's orb. Makes monsters easier to stagger."
+    },
+    "596": {
+      "source_text_sha256": "33ebd5b9e1b07e3aefaf088791c27d0817590759adcdb76b914a918a56ec3c4f",
+      "text": "An outnumbered warrior's last orb. Makes monsters easier to stagger."
+    },
+    "598": {
+      "source_text_sha256": "6ab03aa88cda0a441e2631b971687ad1ba7f57a89ddd1b3c6e02d61763e1a3ba",
+      "text": "An Element-defeated fighter's warning. Weakens resistance to all Elements."
+    },
+    "600": {
+      "source_text_sha256": "5df220611742ec70e8aee4c0ce39ffa95ea493e8c6700a156e97b31132f69a33",
+      "text": "An orb sealing a mighty monster's soul. Raises all Element resistances."
+    },
+    "602": {
+      "source_text_sha256": "5df220611742ec70e8aee4c0ce39ffa95ea493e8c6700a156e97b31132f69a33",
+      "text": "An orb sealing a mighty monster's soul. Raises all Element resistances."
+    },
+    "604": {
+      "source_text_sha256": "5df220611742ec70e8aee4c0ce39ffa95ea493e8c6700a156e97b31132f69a33",
+      "text": "An orb sealing a mighty monster's soul. Raises all Element resistances."
+    },
+    "654": {
+      "source_text_sha256": "e5b2567fd047489375c73f214dddc31d761ab255f3e79910ea03375b3d82ebd8",
+      "text": "An orb of condensed earth Elements. Raises earth resistance."
+    },
+    "656": {
+      "source_text_sha256": "e5b2567fd047489375c73f214dddc31d761ab255f3e79910ea03375b3d82ebd8",
+      "text": "An orb of condensed earth Elements. Raises earth resistance."
+    },
+    "658": {
+      "source_text_sha256": "e5b2567fd047489375c73f214dddc31d761ab255f3e79910ea03375b3d82ebd8",
+      "text": "An orb of condensed earth Elements. Raises earth resistance."
+    },
+    "660": {
+      "source_text_sha256": "0febd87027e8433b9090316401152626bb59076a590be30adc563e48fefbf5d0",
+      "text": "An evil dragon's sealed soul. Raises resistance to fire and poison."
+    },
+    "662": {
+      "source_text_sha256": "0febd87027e8433b9090316401152626bb59076a590be30adc563e48fefbf5d0",
+      "text": "An evil dragon's sealed soul. Raises resistance to fire and poison."
+    },
+    "664": {
+      "source_text_sha256": "0febd87027e8433b9090316401152626bb59076a590be30adc563e48fefbf5d0",
+      "text": "An evil dragon's sealed soul. Raises resistance to fire and poison."
+    },
+    "666": {
+      "source_text_sha256": "46cd413e2ced114bb377ba9fdd9e2f2fe1b796faef2c2f94f6068f7b94315b97",
+      "text": "A graceful eastern warrior's orb. Boosts physical damage dealt."
+    },
+    "668": {
+      "source_text_sha256": "65207b2fa4c297256b6a526495c8503cbf565f27db3130bbfbd7abdd48da67d4",
+      "text": "An orb awarded to a skilled captain. Boosts physical damage dealt."
+    },
+    "670": {
+      "source_text_sha256": "3f0a038702cfe9a42a289643bc2a7cd64f69b84a985d13415f0340c1b208fdd7",
+      "text": "An orb of sheer willpower to endure attacks. Makes you harder to stun."
+    },
+    "678": {
+      "source_text_sha256": "7eee34be6288d8e2fd545c9d92651a116f58ebc172149c1195605b4d1c7e2974",
+      "text": "An ideal-driven conqueror king's life. Makes you harder to stagger and stun."
+    },
+    "680": {
+      "source_text_sha256": "7eee34be6288d8e2fd545c9d92651a116f58ebc172149c1195605b4d1c7e2974",
+      "text": "An ideal-driven conqueror king's life. Makes you harder to stagger and stun."
+    },
+    "682": {
+      "source_text_sha256": "7eee34be6288d8e2fd545c9d92651a116f58ebc172149c1195605b4d1c7e2974",
+      "text": "An ideal-driven conqueror king's life. Makes you harder to stagger and stun."
+    }
+  }
+}

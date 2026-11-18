@@ -1,5 +1,28 @@
 # English translation integration
 
+The 2026-11-18 [panel audit](UI_LAYOUT.md) supersedes the image hashes below.
+It adds crafting/orb wrapping, concise orb wording and shorter title-list names.
+All recorded panel bounds pass. Full campaign visual coverage remains open.
+
+## Character title description layout, 2026-11-18
+
+The character creator's title list now wraps descriptions within 174 source
+pixels and four rows, using the existing game font. All 500 descriptions in
+each of the four `00040e2f` resource occurrences pass the layout check. Against
+the previous recipe, 279 descriptions per occurrence change. Four longer
+entries have concise wording checked against their original Japanese.
+
+`tools/title_description_layout.py` runs after verified message reconstruction
+in `tools/build-iso-english.py`. The image-stage fingerprint includes the layout
+code. The generation path reproduces the four updated working resource bundles
+byte for byte. The working source ISO and archive were updated in place.
+
+Private evidence is under `private/character-title-layout/`. Native creation
+captures show the initial title and Spear Gunner descriptions inside the panel
+at 30 FPS. Four focused layout tests and 18 existing message, item-layout and
+ISO-admission tests pass. A separate PPSSPP replay, full campaign review and
+release-package rebuild remain pending for this change.
+
 ## Current WIP — pass 23 English editorial review, 2026-11-16
 
 The source-only editorial pass changes 1,543 variant-specific message blocks

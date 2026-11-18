@@ -1,0 +1,667 @@
+{
+  "schema": 1,
+  "resource_id": "00040e2f",
+  "maximum_advance": 174,
+  "entries": {
+    "12": {
+      "source_text_sha256": "31699bfaa0d050170e8bc7001e68083eaadd7767953abb14ad1acf941a6b40ab",
+      "text": "Dragon and Storm's Fate"
+    },
+    "14": {
+      "source_text_sha256": "a00642933223131bbd3fbca6982e4716e124641103d8badbfb69f932a8d6b9d9",
+      "text": "With the Twin Serpents"
+    },
+    "15": {
+      "source_text_sha256": "abe668e89d45112aa2f752b92de00cd249a5ed5958e981cbfbc08dc1651d5b79",
+      "text": "Trial of Ruin and Slaughter"
+    },
+    "16": {
+      "source_text_sha256": "8687403f2740b5018012dce31f9bb17d5fa072090c2b0de4c61d6dd846368d49",
+      "text": "Vermilion and the New King"
+    },
+    "18": {
+      "source_text_sha256": "99996e91a65e6f2e77d8f9cf164eed2371ca731df751a8dcd180603af75ff79e",
+      "text": "Evil Dragon's Second Death"
+    },
+    "19": {
+      "source_text_sha256": "b2b1876de37c6a97aac9582ad07e2489238cfed2773b38a3ddc4e20f9cbc1668",
+      "text": "White Knight, King's Resolve"
+    },
+    "20": {
+      "source_text_sha256": "1743b93572d755fac5a2c37c81146af5183282508a38e9979274e284fce92d09",
+      "text": "Sovereign's Cyclic Memories"
+    },
+    "21": {
+      "source_text_sha256": "012d1dec09efb051c31dbbe70498b3ee902cb2f3feadecfe97fb4cc47a33450f",
+      "text": "Witness to the Beginning"
+    },
+    "22": {
+      "source_text_sha256": "1618a1d45c4b315436d68e36ee91838898fb82a4512d5e88a70dddd197a1a74b",
+      "text": "Witness to Awakening"
+    },
+    "23": {
+      "source_text_sha256": "c369d5d268b10b793143b2156b8e9981f0600a409b365cc5a9280d6f67933e45",
+      "text": "Witness to Memory Fragments"
+    },
+    "24": {
+      "source_text_sha256": "df0fecfdbe7203b1a4918e3f04b0926394d7df6ab0cf00f5b85feab82f1ac48c",
+      "text": "Witness to Chaos's Advance"
+    },
+    "27": {
+      "source_text_sha256": "f5384611a4923651870bcdfbe05e701df69b4452e61cc830b674bad35e00a384",
+      "text": "Witness to Memory's Corridor"
+    },
+    "28": {
+      "source_text_sha256": "6009925a096ab89a978faa9242d7f6e25bb8b76e7fb6c4a4eebbac0e57daf483",
+      "text": "Witness to Cyclic Memories"
+    },
+    "29": {
+      "source_text_sha256": "139c64718a47370ffcfcffc49787378d50bce11f2cbb34bf14a539a2adf8b41b",
+      "text": "Witness to the Final Trial"
+    },
+    "30": {
+      "source_text_sha256": "36d674068aaa6a6fe58a332dcb0fa4f5339526c78343bdc44365360fba6baa2a",
+      "text": "Witness to the King's End"
+    },
+    "32": {
+      "source_text_sha256": "773f2a3091a156c4a74e931d6d568b8446f29787cf35b38f9bd6499ba38ab08b",
+      "text": "Master of the Beginning"
+    },
+    "34": {
+      "source_text_sha256": "f6fe57e01abc1c78770fbcb550749dcd9b44096605a332dc9fa662cdd20b2c7e",
+      "text": "Master of Memory Fragments"
+    },
+    "36": {
+      "source_text_sha256": "f834f66e5f839c73450996f38fa6a41387319efce342970d37c786bb13f7d69b",
+      "text": "Master of Trial's Hour"
+    },
+    "38": {
+      "source_text_sha256": "cbe03ece0d51800b6d11f6457a1bad0a7bdf036e1c7ae8fd569c951604e8ac49",
+      "text": "Master of Memory's Corridor"
+    },
+    "39": {
+      "source_text_sha256": "a221e00e3065aab7561641512321e87cb0ec081befa622605200c265c4fc7510",
+      "text": "Master of Cyclic Memories"
+    },
+    "40": {
+      "source_text_sha256": "a493c90acc9c854b67a54805d76b5fb6d7747c69dd707ef636252ab335833f66",
+      "text": "Master of the Final Trial"
+    },
+    "41": {
+      "source_text_sha256": "bd9da1e78c3225ee9f52bbc0ae37443a13443e309214d50a4cf2a9829a45e5f3",
+      "text": "Master of the King's End"
+    },
+    "42": {
+      "source_text_sha256": "ce1f61ac41c6a64c7b1ae3df5a2a1d297077418a7db5e64701815ad5d4565b93",
+      "text": "King of Every Challenge"
+    },
+    "48": {
+      "source_text_sha256": "ef9a9560fb1cf15f77c7c4a652d92f93d8882dc59b9eb6abb4badb96f0db9f06",
+      "text": "Wetland Runner"
+    },
+    "52": {
+      "source_text_sha256": "a40e5606a547827fe9dc2c79d3f4a5fdba466739523728c3b496d548590f4c89",
+      "text": "Sacred Cavern Explorer"
+    },
+    "55": {
+      "source_text_sha256": "245870eaf1b8961df2ef264c252648ae3bbe6e3f9f2ce8822ee32705a4945e54",
+      "text": "All Lands Pacified"
+    },
+    "61": {
+      "source_text_sha256": "4266a46325aaf53129e60929dc06327f2a773a71a36a578274e5d9c394004306",
+      "text": "Wandering Twin Swordsman"
+    },
+    "62": {
+      "source_text_sha256": "9cb94c954dc76c5194ebba3d1f897e413643d5480df19f59b33aa2bf8e2d8020",
+      "text": "Twinblade of Justice"
+    },
+    "63": {
+      "source_text_sha256": "439fff58128abaf1b164d4b951e51318eb823271f27d5545ff2ac28c9f352b0d",
+      "text": "King-Burying Twin Swordsman"
+    },
+    "64": {
+      "source_text_sha256": "1c97c52f80216560d9e6dcbb32f5639935a0f55bbeed742ccd940bf8b120862c",
+      "text": "Evil-Slaying Twin Swordsman"
+    },
+    "65": {
+      "source_text_sha256": "ffd398c003ae227e58daab9f01cd74b602ae40f7c0c11aea7d05735608995369",
+      "text": "God-Sworn Twin Swordsman"
+    },
+    "67": {
+      "source_text_sha256": "a76508b075bb88d1b7b695b87ff4c9eae38b955acf4d02defa0793b26b630cc3",
+      "text": "Bold Axe Thrower"
+    },
+    "68": {
+      "source_text_sha256": "e002782d67841ed7939113c58bd4785f581b37f2cbd6f4405dbb2b7311c9776a",
+      "text": "Defiant Axe Thrower"
+    },
+    "70": {
+      "source_text_sha256": "2a278409b6d32a612737850ad2f957b2cdf8d94caceea6e7959244f7e28a689b",
+      "text": "Demon-Hunting Axe King"
+    },
+    "71": {
+      "source_text_sha256": "f8f562a38398bcc37438460c73f12aecfada396cbd918d28f7780d91912fdc12",
+      "text": "Graceful Squire"
+    },
+    "74": {
+      "source_text_sha256": "ad041d1509ea50eeb1c7d0b05d99127f345128894d2127cda1ebbe7aac88fc31",
+      "text": "Darkness-Banishing Templar"
+    },
+    "75": {
+      "source_text_sha256": "b9bafc7e22568973e5db6ee71e4d500714edf77d7c5f60202caa2d463015827d",
+      "text": "Knight King of the God Age"
+    },
+    "76": {
+      "source_text_sha256": "987bbc084d0e4a692b40628f9036934bad837f9f3ac7b186792b3563ccb9ace2",
+      "text": "Rampaging Oathbreaker Monk"
+    },
+    "77": {
+      "source_text_sha256": "1c592369f2bd73c2771cdfe75bc21d90b3be26254623b4c322fb9414d96cb4f5",
+      "text": "Salvation-Seeking Monk"
+    },
+    "80": {
+      "source_text_sha256": "1ff5beb55ad724bf0290a9661eb9df098db547dcc9121297210e6acd7c4236fc",
+      "text": "Enlightened Warrior Monk"
+    },
+    "85": {
+      "source_text_sha256": "8b1572bf853e1cfa8a88a10d60b64434ed922bbd4a3d50c58a6312e665f6ea27",
+      "text": "War God in Heavy Armor"
+    },
+    "86": {
+      "source_text_sha256": "47b26839afe02d8774b85f43ef6202a73f25d9be0d0c0d6a59e15689d8edbf94",
+      "text": "Axe Fighter of Judgment"
+    },
+    "89": {
+      "source_text_sha256": "aeba1f170e2f55d03b4a02f3744f4c72572fef2c04ba4f73abb261954a6f624f",
+      "text": "Taboo-Touched Axe King"
+    },
+    "90": {
+      "source_text_sha256": "03e2b40caa6efbe62522b5b9fb7b4785c0aadbd0fe4f5bb92b6bf3d2f66c9d7e",
+      "text": "Invincible Axe God"
+    },
+    "91": {
+      "source_text_sha256": "2d33bca46bcc7c84f3ae9d74b1182d20273724aadb95919e82330dad6263d89e",
+      "text": "Battlefield-Dancing Gunner"
+    },
+    "95": {
+      "source_text_sha256": "0f7a500293bfbb47e8622a91dae673bf57cea20180d53c3684fc801925cab50a",
+      "text": "Doom-Bringing Spear Gunner"
+    },
+    "100": {
+      "source_text_sha256": "3d49ac6a9c495f882c7b08f6e761ce69a4e00244e191b550aa816898ed48dfe9",
+      "text": "Dark-Night Elementalist"
+    },
+    "101": {
+      "source_text_sha256": "b3ed860d3e9e42c60419bae6153750590ac6ecba2317d5e7e063a7d276a4ee96",
+      "text": "Flowing-Earth Elementalist"
+    },
+    "102": {
+      "source_text_sha256": "2549deb423f26a70b4d963b91f8d8ef68eb6d489720074d9f3f02fc0518fdc56",
+      "text": "Master of All Elements"
+    },
+    "103": {
+      "source_text_sha256": "ff8a4561a5cb7edc30f93697665c5993f7b7f82ab2c47994b5f8707ffcf2d579",
+      "text": "Heaven-Famed Elementalist"
+    },
+    "104": {
+      "source_text_sha256": "2f67663a1be6b01b87dba3040d796c86cecea9916e8baad60b066e573be1d794",
+      "text": "Enlightened Elementalist"
+    },
+    "105": {
+      "source_text_sha256": "cde0d8e5b04a95b7d9671ed99c790902467129494f36256ff324ba0b82a4d55b",
+      "text": "Supreme Elementalist [Source]"
+    },
+    "132": {
+      "source_text_sha256": "cffbb6e9b8f7699ce7822d1a6beb4d4f08a367a3a2c4bb4435fd14f018630680",
+      "text": "Mercenary World's Charisma"
+    },
+    "139": {
+      "source_text_sha256": "a3f1199af1f51dd838c15315521c8138a056fb69704b5b09e628e509e6adf5e6",
+      "text": "Mighty Beast Destroyer"
+    },
+    "151": {
+      "source_text_sha256": "bd69aa32ea66ab71057e0bfa3d1e3b7f776183fe45553015728ac898a7ee6b02",
+      "text": "Heavenwing Destroyer"
+    },
+    "161": {
+      "source_text_sha256": "278fda7f1e69e926d77af98db3b726fa65a156e478d7c5d3c5d1f5b452ed6822",
+      "text": "Stout Serpent Destroyer"
+    },
+    "169": {
+      "source_text_sha256": "a31f855fc18cc184e3fe2bf8c351247dae0aa5fff962047b6c5b872f5af31be4",
+      "text": "Curse Root Destroyer"
+    },
+    "181": {
+      "source_text_sha256": "caaf4255da418662377a1d4f671bdf1e9245a0d54878e195d27148fbdb4af3c0",
+      "text": "Magic Slime Destroyer"
+    },
+    "183": {
+      "source_text_sha256": "48382fb974c931271712949cecaa967d069f4f926974c31ff891a3961d2512c2",
+      "text": "Thunder Beast Destroyer"
+    },
+    "185": {
+      "source_text_sha256": "32b1baa11b44ecb32155844ea95d4ee91f2dd0bddc2b8ddd8f8351080e0b0634",
+      "text": "Flame Beast Destroyer"
+    },
+    "189": {
+      "source_text_sha256": "d087ecfe1544c4e22daffe4eb456726302c9ab6305fd447173baa37695d218c9",
+      "text": "Succubus Destroyer"
+    },
+    "191": {
+      "source_text_sha256": "ad10029a01d481478eacd5de8362134fab99707b77f7cfa33c8fa22b845289aa",
+      "text": "Moonlight Demon Destroyer"
+    },
+    "195": {
+      "source_text_sha256": "89ceb0204b958654013bc3f41a55e1deb5084f46124c56adff6216fb6d92ad6d",
+      "text": "Nether Soul Destroyer"
+    },
+    "199": {
+      "source_text_sha256": "36b42f6a833fb2060d6601aea02a3264f021ebf34078509b5a2a959d72e788f7",
+      "text": "Warring Demon Bull Destroyer"
+    },
+    "201": {
+      "source_text_sha256": "39ebf978ce3be472931441952226250d08fd36ff2266cb4b802138cda59bfabf",
+      "text": "Serpent Goddess Destroyer"
+    },
+    "203": {
+      "source_text_sha256": "6bb51797a13fea294b4413850465b66e0ca4d503fd3727ea79f8a89ae0502d43",
+      "text": "Golden Rooster Destroyer"
+    },
+    "205": {
+      "source_text_sha256": "fbe7a43abf209777e8166ce051908408e424984dc2ed2197fba2c698fd94aa37",
+      "text": "Toxic Violet Fowl Destroyer"
+    },
+    "207": {
+      "source_text_sha256": "99d53b2ae3119a3dc3609aae1d329b5c93e17da11e8ba8c6e12ea2914f8e8266",
+      "text": "Phantom Beast God Destroyer"
+    },
+    "211": {
+      "source_text_sha256": "256a1779ec47238239828e3497126b1abe4d577e0a30811cac1b236b0a8d9654",
+      "text": "Fierce Demon Beast Destroyer"
+    },
+    "213": {
+      "source_text_sha256": "de523d4625150dff594be7ed73da0bfe9a752f39314efe5b420dbd5196c8303a",
+      "text": "Sacred Tree Destroyer"
+    },
+    "215": {
+      "source_text_sha256": "76b4f7f1337de349797481f76554a501af29deb42765604ec0310ba9a1f64ecf",
+      "text": "Ice Spirit Tree Destroyer"
+    },
+    "217": {
+      "source_text_sha256": "468db598f59e1d3851d3019791e0e099ec80403f592ea0cd87a3c998ad4fdf54",
+      "text": "World Serpent Destroyer"
+    },
+    "219": {
+      "source_text_sha256": "5d8761c53670c4fa8360faf2f54c5a01b62d3549a97aa4c7b3c52e4e18603780",
+      "text": "Evil Serpent God Destroyer"
+    },
+    "229": {
+      "source_text_sha256": "6f82e2d60d2402e5e56e5572f96181b05c480aab859591cce1771822bb594bd9",
+      "text": "Hellfire Destroyer"
+    },
+    "231": {
+      "source_text_sha256": "4021530fa2e4c8b4b898a36c2580037e11d917a26d2a57862444733cf48b544f",
+      "text": "Water Spirit Destroyer"
+    },
+    "233": {
+      "source_text_sha256": "bd1b8b7cb2189def9ef7d6508fe52cdba25be5e0a568a6690b36c257aaad842a",
+      "text": "Rotting Dragon Destroyer"
+    },
+    "237": {
+      "source_text_sha256": "0cd372792b43157ae20826e33c11e6d355084efefe4c2d97178964a9afc53dee",
+      "text": "Ramming Dragon Destroyer"
+    },
+    "241": {
+      "source_text_sha256": "db5f7edec00cd42f94574e1eee5f09d40fa9622ab030bc9b80d0dd73b0aecf9b",
+      "text": "Underworld King Destroyer"
+    },
+    "243": {
+      "source_text_sha256": "260ac940bdc00a9a59bca78a9646ab5cf6baeb56e9878e17c51f1bc058075e7f",
+      "text": "Evil Knight Destroyer"
+    },
+    "247": {
+      "source_text_sha256": "fbc033cea3614b3974450579c6a1f9135dd72f008d49c44a9d691761b9bce610",
+      "text": "Giant Scorpion Destroyer"
+    },
+    "251": {
+      "source_text_sha256": "d7b3edf4754b7b2940a0566bf2534e175c80425003de42f007751501894e557e",
+      "text": "Valkyrie Destroyer"
+    },
+    "255": {
+      "source_text_sha256": "8ec3717ea02dc8cff2a40135cf3d3ce94c5618f719f9e6da11d0f0a75b00b44f",
+      "text": "Thunder God Destroyer"
+    },
+    "256": {
+      "source_text_sha256": "cd37d9a9745cd0c093d1f3ac94711bcaccd419cf5a153777f8f153da49a77a1b",
+      "text": "Heir to the Thunder God"
+    },
+    "258": {
+      "source_text_sha256": "01bf881743b63f08ab09272f16c553e92e0db613b136b1a4d0ed6f592d20633a",
+      "text": "Wind God Destroyer"
+    },
+    "259": {
+      "source_text_sha256": "eabe3bbf8c5fbe4214a9dd6c8d9637df6197ae1e9404880208a86df9e34691f8",
+      "text": "Heir to the Wind God"
+    },
+    "261": {
+      "source_text_sha256": "ba061373d6fe778fcfec35c0a408e770e6b0a70b02bd8d7380fa81cc55378fc9",
+      "text": "Twin Serpent Destroyer"
+    },
+    "262": {
+      "source_text_sha256": "ee38698ef9155584639066c7e648c560226cfa275b3fd0e5cb279c731e5bfdfa",
+      "text": "Heir to the Twin Serpents"
+    },
+    "264": {
+      "source_text_sha256": "5943b96bfab0aa5304dbe6aad8d1ec8296927779163e2e647456451ef86469c2",
+      "text": "Wrathful Serpent Destroyer"
+    },
+    "265": {
+      "source_text_sha256": "4788cf4d36abe973e4cb1751982dabb1fceee17a4b71fdeb26d972bfeb19eda3",
+      "text": "Heir to the Wrathful Serpent"
+    },
+    "267": {
+      "source_text_sha256": "9c17d051228198962aaea2088f8f61de039a7e327927764270f24c8b2ff7ffe2",
+      "text": "Giant God Destroyer"
+    },
+    "268": {
+      "source_text_sha256": "d6f082c29d3191fcfc3f415b690c391053f2dcd4ba4196ec1af8fb7640b8f155",
+      "text": "Heir to the Giant God"
+    },
+    "271": {
+      "source_text_sha256": "673863845072818ac487b8ca3a586add7efb32601d3668c49dbcd4c12341a436",
+      "text": "Heir to the Crimson Giant God"
+    },
+    "273": {
+      "source_text_sha256": "5e52270b5e714816d9ce844fc26a21eea0a2dccd01923df612c1112203d147e6",
+      "text": "Giant Shield Destroyer"
+    },
+    "274": {
+      "source_text_sha256": "006622de56ca2522c17dabdd54d2f5d95a1f853b860becbbdcdf6182ff678aaf",
+      "text": "Heir to the Giant Shield"
+    },
+    "276": {
+      "source_text_sha256": "a7f8ef7af76ad1202ef0884f1e2de9e7ef07578a66a2528b3f28e031f8e6cd44",
+      "text": "Flame God Destroyer"
+    },
+    "277": {
+      "source_text_sha256": "158b7ee29c55572ec6104eb22e169b92999f6bf78e87cb500d7cf88458aa5dbe",
+      "text": "Heir to the Flame God"
+    },
+    "279": {
+      "source_text_sha256": "3098c04bdb9b78bf4201b9ae8c5004b6a35e9c98e05172b48103d55abe5ff259",
+      "text": "Great Flame God Destroyer"
+    },
+    "280": {
+      "source_text_sha256": "53f504caf86cbe4829ba0d3aaaab11c8b481c90d907e135744b91204939bd653",
+      "text": "Heir to the Great Flame God"
+    },
+    "282": {
+      "source_text_sha256": "5b1f32acac6530a2a70f0f20616f5060db7a7022b624d5841e45709a69a9ba02",
+      "text": "Radiant Flame God Destroyer"
+    },
+    "283": {
+      "source_text_sha256": "0f945e5e56b66ef11dd07f4858502669bdc8d3cf612d91496096221186e9cbdf",
+      "text": "Heir to Radiant Flame God"
+    },
+    "285": {
+      "source_text_sha256": "9d74353be27997e0238032e2662c47909f6748996f820c7ebbee8843d05cb4a3",
+      "text": "Dragon Emperor Destroyer"
+    },
+    "286": {
+      "source_text_sha256": "22fdbb744e83f7825378a3fb7dcd7b205c2d39553db315d7b89b063b81beae29",
+      "text": "Heir to the Dragon Emperor"
+    },
+    "288": {
+      "source_text_sha256": "2097c11f59d937eaa01d62f900be1d62040c07f2ec6154f419f7b1bc6b3decff",
+      "text": "Imperial Dragon Destroyer"
+    },
+    "289": {
+      "source_text_sha256": "cbe8ca4c19e46b30cf70f7ab61fa4287826a42f4db21db3b18b740218f7bcad3",
+      "text": "Heir to the Imperial Dragon"
+    },
+    "291": {
+      "source_text_sha256": "0fde0c1cb7102343d0509c770b42579dee404152fac6b92cd06df2da944e8426",
+      "text": "Apocalypse Dragon Destroyer"
+    },
+    "292": {
+      "source_text_sha256": "a1a2307b8842fac11f2b06af4996b50737a1889e74b1ecebe5fb4eec11cf0c46",
+      "text": "Heir to the Apocalypse Dragon"
+    },
+    "294": {
+      "source_text_sha256": "6fce4ccfebb267af76a3e95d237cfb0cdadd59238e2fc2e13d5da043703053b9",
+      "text": "Evil Dragon Destroyer"
+    },
+    "295": {
+      "source_text_sha256": "b9847cb1ce80cf54e572ff047d336a2c63604d50d54a3bca12683e782f506c97",
+      "text": "Heir to the Evil Dragon"
+    },
+    "297": {
+      "source_text_sha256": "33d8d8c0931356da48a3d5e17b5199d421fa4cee1e28f538d43a800e0655e241",
+      "text": "Black Dragon Destroyer"
+    },
+    "298": {
+      "source_text_sha256": "c2da5e25c3b8cb06d9bb8d5fc5d89ff2262bf546ef537b6f4e6508d6d60a1ca1",
+      "text": "Heir to the Black Dragon"
+    },
+    "300": {
+      "source_text_sha256": "1603e96eddb7a5a1987781808e3d9281f4c705dbc37b678b43d8f77678a696a4",
+      "text": "Phoenix Dragon Destroyer"
+    },
+    "301": {
+      "source_text_sha256": "023c39abf22a25761afac62f4c4729ae7749de0cf69b83faef1eae2d3440ca14",
+      "text": "Heir to the Phoenix Dragon"
+    },
+    "303": {
+      "source_text_sha256": "881c01dd91ac985d8ab03440b462e55a81456b46e34db89134a5aae1a63a399e",
+      "text": "Dragonrider Destroyer"
+    },
+    "304": {
+      "source_text_sha256": "8e8b581ffa02f5e291f21dc43538962111a8a66b3485cf156443a4bc6b0dc9cc",
+      "text": "Heir to the Dragonrider"
+    },
+    "306": {
+      "source_text_sha256": "df86f7c07facc2dde80503d7fb00077254d7f383fc88f023ca6dc67330063bb9",
+      "text": "Golden Dragonrider Slayer"
+    },
+    "307": {
+      "source_text_sha256": "097a7ccd9f42ce46394f72aa5753c83738e1aed6478def52fb9df46efe49853d",
+      "text": "Golden Dragonrider's Heir"
+    },
+    "309": {
+      "source_text_sha256": "9ffa01423df0639c22740080966b75c62dc2da037604a5fa1ffe5b74eb1032bb",
+      "text": "Blacksteel Dragonrider Slayer"
+    },
+    "310": {
+      "source_text_sha256": "57374ea0f2508d899346745f431e493187ca3a7ef62774fc927b60a326913c97",
+      "text": "Blacksteel Dragonrider's Heir"
+    },
+    "313": {
+      "source_text_sha256": "7376eb9cc2f1f2c3d99099af1c4bebeb4eb7002d8bdbedf766216df972307d06",
+      "text": "Heir to Vermilion"
+    },
+    "316": {
+      "source_text_sha256": "7b35dcdaa4238c941ca18436905e4722568e5049a15443cb07e8fa6080c366a8",
+      "text": "The Vermilion King's Heir"
+    },
+    "318": {
+      "source_text_sha256": "19b0c9a302131af8e0e9039ac7c5968040c5d93ac631afe8e49ddaff666abd4b",
+      "text": "Chaos King Destroyer"
+    },
+    "319": {
+      "source_text_sha256": "5900a5f12d67c2b96eba43668b3d9ccea5cb5bdb69b6c0eb177a169a55e78c05",
+      "text": "Heir to the Chaos King"
+    },
+    "321": {
+      "source_text_sha256": "eec95ddd022a70a2ed2d0dcf5e506f0a0a2769a958172faa0e0b02ce20b24ad9",
+      "text": "Iron Knight Destroyer"
+    },
+    "322": {
+      "source_text_sha256": "18e99a0c57c5e449f2626be28ffbb5de8177ddb40e8991604eb3ef8905ac592c",
+      "text": "Heir to the Iron Knight"
+    },
+    "324": {
+      "source_text_sha256": "04503d1a63d6f44df45508982ace4bea6161a49715777b2bdfad6178583d1a5c",
+      "text": "Holy Knight Destroyer"
+    },
+    "325": {
+      "source_text_sha256": "c255c3434517902a3fd9420d3c3bb6c6d59f6dbac9a2223366648234f263193b",
+      "text": "Heir to the Holy Knight"
+    },
+    "327": {
+      "source_text_sha256": "6c63c1cc1174e4effda7bdddc715a7c64a069248a889855aef15d53b17a0d0f2",
+      "text": "Ultimate Knight Destroyer"
+    },
+    "328": {
+      "source_text_sha256": "909d96d9a68276744176e45e949b06b10d6863f56eb8b93c20d5b3a7aa2ed370",
+      "text": "Heir to the Ultimate Knight"
+    },
+    "330": {
+      "source_text_sha256": "a02509f8e6dc29f6d2f5b9cae1d739f276fdab44aa82ed4553550df7fcda417f",
+      "text": "Black Abomination Destroyer"
+    },
+    "331": {
+      "source_text_sha256": "6f36bcaace32972920950e105865286f0627410e1f89abfc192767bc7e545003",
+      "text": "Black Abomination's Heir"
+    },
+    "333": {
+      "source_text_sha256": "94d97294d170c6cf8458ffaa73cd0a4974d9c585455ba371c2055a6f3be1b3ae",
+      "text": "White Chaos Destroyer"
+    },
+    "334": {
+      "source_text_sha256": "7e4fe0c7ac92c813297e325ac85a7a59a85ac9622dde550dc12b466f1dedd352",
+      "text": "Heir to White Chaos"
+    },
+    "336": {
+      "source_text_sha256": "a29b4f99738b81176e91e93afe80992640501fe3bf93a1db78d7716dd881b00c",
+      "text": "Warrior King Destroyer"
+    },
+    "337": {
+      "source_text_sha256": "b7b515ed692ff1095467b8f9b97bbde43df2082eefbf5585ec626ef6b43d6ba6",
+      "text": "Heir to the Warrior King"
+    },
+    "339": {
+      "source_text_sha256": "d6e7cda4807bf89f6b362d5ffd6cd36153f654a4e94035b579b55560dd738b7a",
+      "text": "Oracle King Destroyer"
+    },
+    "340": {
+      "source_text_sha256": "eea6ea3f00b9ab73785b6606d3ff67d98c133abbffe9395b6a8cf7629f019963",
+      "text": "Heir to the Oracle King"
+    },
+    "346": {
+      "source_text_sha256": "324073b419f011125821c86069dc27bc15ead325a5eb6c38870bdc6b4f9d6814",
+      "text": "Meeting a Comrade-in-Arms"
+    },
+    "353": {
+      "source_text_sha256": "4940caeaa8937ae9e5cb59415114dfd1c4c9000c986dbdfd5575ee7c3bc9e335",
+      "text": "Socially Savvy"
+    },
+    "354": {
+      "source_text_sha256": "8648209d10ce4980459db36b3888f62be2cf002769e7d28bced034c60d79951d",
+      "text": "Builder of Immense Wealth"
+    },
+    "359": {
+      "source_text_sha256": "4486a3486cbeaeb25f56460836cd8ef7fa9124dc824512a9829c213bb4c4080c",
+      "text": "Dimensional Killer"
+    },
+    "360": {
+      "source_text_sha256": "504b92859894323c674371db1d615e35a3a8873071fe91f7d9cdd807344d3eae",
+      "text": "Traveler Through the Ages"
+    },
+    "361": {
+      "source_text_sha256": "f7a6ffd7c1027726ee07990b6b91d542100a403a326d7e3053c03c7d0aeae5a7",
+      "text": "Quite the Enthusiast"
+    },
+    "372": {
+      "source_text_sha256": "85451f360ecf4874f9a5f8ccac141ec7ba2c42195bc3c29d4c092c4fa383ce8d",
+      "text": "Battle-Hardened Veteran"
+    },
+    "373": {
+      "source_text_sha256": "969f96b40ab88643dc22b6bc70149cf8c78bf75eb60924ac54566ab2e47c689b",
+      "text": "Shatterer of a Thousand Dead"
+    },
+    "374": {
+      "source_text_sha256": "4409e02faffa8efb2a1a7c9dd6f342dd28c6742ca04046b9479c9baf16572d6f",
+      "text": "Signal of Counterattack"
+    },
+    "376": {
+      "source_text_sha256": "678027827b285e4f14f17ccdbcb647c7053f302a7aa6819ef8dde28cc127dea5",
+      "text": "Breaker of 1,000 Counters"
+    },
+    "379": {
+      "source_text_sha256": "510af3794eb7366e4ff0fe89a4c15a6c310312a173bc8ca3e1866b4383b88749",
+      "text": "King of 100 Demon Beasts"
+    },
+    "410": {
+      "source_text_sha256": "f45627786862cc62c6a1bce2d835016c502688ef564bfda5e6b561b0239fdc5d",
+      "text": "Ultimate Summoner"
+    },
+    "413": {
+      "source_text_sha256": "b4fccb7dc0b891cb3a9eff69a0a34faef039206af0d51f0260d512b0c4c6e6a3",
+      "text": "Failure Breeds Success"
+    },
+    "427": {
+      "source_text_sha256": "4f1e4605755b2c3621f2579edbb2b0f28347cb34dd57c91db902ef0704be3081",
+      "text": "Blessing of Ecstasy"
+    },
+    "431": {
+      "source_text_sha256": "f994501604f36fca880949d4ea5968a52d95fcc270e071007d92e81c09e33cb2",
+      "text": "Thunder God's Oathbearer"
+    },
+    "432": {
+      "source_text_sha256": "96dd4a636f69b9a93a20f03c6eb71530d808960e405a76c9691188d91e98052d",
+      "text": "Dragon God's Oathbearer"
+    },
+    "433": {
+      "source_text_sha256": "55ed50b562e58b9529f530993cb0fd2e0ac4e0152914a0b2e8eed475f1b8ffc9",
+      "text": "Serpent God's Oathbearer"
+    },
+    "435": {
+      "source_text_sha256": "6b45ca90100d5bb93a8ccee45b255f00d81734d7f196c2e9782fc9e73818e81a",
+      "text": "Celestial God's Oathbearer"
+    },
+    "438": {
+      "source_text_sha256": "2246948b39dffa1f425ab189158e8976f9f3d3fc1548ea2329f7e126b8fa8ef5",
+      "text": "Wrath God's Oathbearer"
+    },
+    "444": {
+      "source_text_sha256": "419f54aac5e0d0f594667b89e0264af468d294e060842e5f1683aabfeeb5c39b",
+      "text": "Bearer of Unhealing Wounds"
+    },
+    "445": {
+      "source_text_sha256": "c1239e2734ae9bc5e0a386878623be45da6b1c49ba6c9e6bb1f6a4edfcc05b99",
+      "text": "Offense Is the Best Defense"
+    },
+    "449": {
+      "source_text_sha256": "bf8836d9810128f067e18ce558ca57438c3545ccd3e8925e40617943ef914f4a",
+      "text": "Seeing Is Believing!"
+    },
+    "451": {
+      "source_text_sha256": "6be70cf9f30d64d6f649b1974fbd24ee6010d69cfb358c376257e7b2144bce6d",
+      "text": "Reader of Hostility's Flow"
+    },
+    "460": {
+      "source_text_sha256": "40648e8008ca5f44a64197bad9b4cd67d1131490146171da889c36066d9ba5e3",
+      "text": "Reducer of Corpses to Dust"
+    },
+    "461": {
+      "source_text_sha256": "6c700794ebe090934776ed45d25c8b066f6f5eb3e9a36dd851e23a9164557ca6",
+      "text": "Souls of Gathered Heroes"
+    },
+    "462": {
+      "source_text_sha256": "182a70f026ac144c235b1e72aadbd81e8d74082250303b1b8be6ec9a4d159dee",
+      "text": "10,000 Foes' Bloodied Slayer"
+    },
+    "472": {
+      "source_text_sha256": "5458e6a2bfc3932ec7e9c6b3df011eed593df9e68d881b9607d858b81c9eb09f",
+      "text": "Gpara Editorial Team's Hope"
+    },
+    "479": {
+      "source_text_sha256": "3b1abb68d86c6dfcb00b0e5e75aeece5fede8401679f5c36925823d4e0079c41",
+      "text": "Slender Editorial Staffer"
+    },
+    "481": {
+      "source_text_sha256": "f167c2a27d09a3e9599f55c4bc0c5c700dbd6ebcf2f6be42e8ef6e04232b415c",
+      "text": "Strike at a Vital Point!"
+    }
+  }
+}

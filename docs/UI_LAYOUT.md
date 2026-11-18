@@ -1,5 +1,52 @@
 # English text layout corrections
 
+## Panel audit and crafting correction, 2026-11-18
+
+The current audit scans all 21,815 MES entries across 73 distinct resource
+variants. Recorded geometry covers 2,209 shared item descriptions, 500 title
+names, 500 title descriptions and 196 crafting/orb descriptions. All 3,405
+entries fit their recorded width and row limits after this update.
+
+The crafting table was separate from the earlier equipment/item tables.
+Its descriptions now use 144 pixels of advance and at most four rows, leaving
+space for the stat line. Fifty descriptions use word-preserving wrapping.
+The other 146 have concise wording checked against the original Japanese,
+including all race Mark/Ward variants. The title list also has 165 shorter
+names checked against the Japanese. Existing game font sizes are retained.
+
+The source image and archive were updated in place. Generation from the
+original ISO reproduces all 103 message-bundle recipes and the working message
+payloads exactly. The generation check validates 6,405 panel occurrences,
+including repeated tables. `text_panel_layout.py` enforces recorded bounds
+after reconstruction and before ISO construction. Image-stage update
+fingerprints include the layout code and wording/geometry configuration.
+
+Native Vulkan captures in the accelerated 30 FPS diagnostic show God Mark,
+God Ward and Fire Mark inside the crafting sidebar, with their stat lines
+visible below. A pinned PPSSPP interpreter/software replay reaches Spear Gunner
+in character creation and shows the same three-line arrangement inside the
+title panel. This is a visual layout comparison. Blacksmith entry has only
+been checked in the native runtime. All 380 source tests pass.
+
+The full visual audit remains open. There are 12,726 entries whose caller
+geometry needs measuring and 967 entries with runtime controls/substitutions.
+These remain review work. The atlas audit covers 266 lettering blocks and
+flags five reduced-font labels, one one-pixel left ink overhang and 112
+horizontally condensed graphic blocks. Their final sprite placement and
+readability need visual review before changing the artwork.
+
+Private reports, captures and reproduction scripts are under
+`private/panel-layout-audit/`. Repeat the static checks with these commands.
+
+```powershell
+private/tools/python314/python.exe tools/audit-text-panels.py
+powershell -NoProfile -File tools/audit-ui-lettering.ps1
+```
+
+The current source image SHA256 is
+`b579e7cf22f371afd7b9a12049c87f5ed1efc078643651a57b2e0f0b3571e2d9`.
+Release packaging and a complete campaign visual review remain pending.
+
 The source WIP image contains corrections for character creation,
 settings/results labels, startup caution, Turnslash help, and the shared
 equipment, consumable and material description tables. No networking executable,

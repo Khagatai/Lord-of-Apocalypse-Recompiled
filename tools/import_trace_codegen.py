@@ -30,6 +30,8 @@ def traced_import(addr, lib, nid, lle_import_seam=None, *, options=None):
 def main():
     import frame_rate_codegen
     frame_rate_codegen.install(codegen)
+    import companion_name_codegen
+    companion_name_codegen.install(codegen)
     codegen.import_stub_text = traced_import
     return codegen.main(sys.argv)
 

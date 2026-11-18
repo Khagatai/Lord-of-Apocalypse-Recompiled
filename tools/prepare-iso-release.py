@@ -79,7 +79,7 @@ def inventory(work, launcher=None):
         path=ROOT/'private/local-build'/source;name='private/distribution/recipes/'+kind+'.json';add(path,name)
         recipes[kind]=dict(path=name,sha256=sha(path))
     original=dict(size=title.CONFIG['disc']['iso_size'],sha256=title.CONFIG['disc']['iso_sha256'])
-    native_tools = set('title.py import_trace_codegen.py frame_rate_codegen.py mip_runtime_patch.py media_runtime_patch.py '
+    native_tools = set('title.py import_trace_codegen.py frame_rate_codegen.py companion_name_codegen.py mip_runtime_patch.py media_runtime_patch.py '
                        'iso_local_setup.py survey-disc.py build-prx-helper.py prx-decrypt.cpp'.split())
     native_tools.update('in-game-settings.c title_settings_menu.h gameplay_fps.c coop_hle.c coop_service_wait.h '
                         'coop_transport.c coop_transport.h online_runtime.c online_runtime.h movie_subtitles.c '
@@ -93,12 +93,17 @@ def inventory(work, launcher=None):
         return hashlib.sha256(json.dumps(tree, sort_keys=True).encode()).hexdigest()
     native = {name for name in items if name in native_configs or name.startswith(native_prefixes)
               or (name.startswith('tools/') and (Path(name).name in native_tools or name.endswith('.mk')))}
-    def content_identity(recipe_keys, source_names):
-        return identity({recipes[k]['path'] for k in recipe_keys} | {'tools/'+name for name in source_names.split()})
+    def content_identity(recipe_keys, source_names, extra_files=()):
+        return identity({recipes[k]['path'] for k in recipe_keys} |
+                        {'tools/'+name for name in source_names.split()} | set(extra_files))
     fingerprints = dict(native=identity(native),
         text=content_identity(('textures',), 'build-local-text-images.py render-text-worker.ps1 text_render_worker.py '
                               'render-local-credits.ps1 render-caption-atlas.ps1 texture_text.py inventory-textures.py xet_codec.py'),
-        image=content_identity(('messages','textures'), 'build-iso-english.py iso_archive.py message_recipe.py rgf_archive.py'),
+        image=content_identity(('messages','textures'), 'build-iso-english.py iso_archive.py message_recipe.py rgf_archive.py '
+                               'title_description_layout.py orb_description_layout.py companion_name_layout.py item_description_layout.py '
+                               'text_panel_layout.py mes_tokens.py',
+                               extra_files=('config/title-name-wording.json', 'config/orb-panel-wording.json',
+                                            'config/text-panel-layout.json')),
         captions=content_identity(('captions',), 'build-local-movie-captions.py build-movie-helper.py movie-caption-survey.c '
                                   'validate-movie-captions.py render-caption-atlas.ps1 render-text-worker.ps1 text_render_worker.py'),
         HD=identity({recipes['HD']['path'],'config/remaster-upscaler.json','config/hd-compatible-pipelines.json',
@@ -115,7 +120,7 @@ def inventory(work, launcher=None):
 
 def main():
     p=argparse.ArgumentParser(description=__doc__);p.add_argument('--output',type=Path,required=True)
-    p.add_argument('--version',default='0.9.0-beta.2',help='Version without the leading v used in GitHub tags')
+    p.add_argument('--version',default='0.9.0-beta.4',help='Version without the leading v used in GitHub tags')
     p.add_argument('--launcher',type=Path,help='Use a launcher built separately for this version')
     p.add_argument('--report',type=Path,help='Write the build report here instead of the default staging path');a=p.parse_args()
     version_key(a.version)

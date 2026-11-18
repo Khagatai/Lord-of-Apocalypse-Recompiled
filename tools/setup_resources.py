@@ -146,6 +146,8 @@ if __name__=='__main__':
         # The launcher can schedule more compiler jobs without changing title.py
         # or causing a cached native build to be recompiled on upgrade.
         import argparse
+        # The distributed Python uses a ._pth file, which omits the script directory.
+        sys.path.insert(0, str(Path(__file__).resolve().parent))
         import title
         p=argparse.ArgumentParser(description='Run a native stage from local player setup')
         p.add_argument('stage',choices=('generate','build'))
