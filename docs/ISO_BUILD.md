@@ -48,10 +48,21 @@ For a device requiring lower inference concurrency, the individual
 The recipe audit found no unreferenced jobs or included dialogue portraits.
 Texture-key aliases already share jobs. UI-named textures are retained where
 exclusive 2D use has not been established; shared 3D atlases must remain covered.
-After full pack validation, unmapped generated PNGs left by interrupted batches
-are removed with hash/size records. Known previous pipeline checkpoints can be
-adopted only with identical recipe/archive/model/framework identities and verified
-completed PNG hashes. Unknown existing outputs remain protected.
+Updates reconcile HD jobs by their source pixels and processing settings, rather
+than discarding the pack when the English archive changes. Each job commits its
+mip dimensions, source RGBA hashes, wrap mode, scaler/restoration model and detail
+pass. Runtime/pixel-pipeline compatibility and applicable model-file hashes are
+also checked. Existing PNG hashes and dimensions are verified before reuse.
+Only new, changed, missing or damaged jobs require generation. Logs show reused
+jobs and jobs needing generation; checking a large pack still takes time.
+
+Keep both `private/hd-remaster-pack` and `private/local-build/HD-work` when moving
+an installation. The latter contains the completion proofs. Normal installer
+updates preserve both. A fresh install without those files still needs its first
+HD build. Unknown ownership or linked paths are rejected without deleting them.
+Metadata transitions can retry after interruption. Unmapped generated PNGs are
+pruned only after the complete replacement mapping passes validation; no second
+full texture pack is copied or retained.
 The pinned Real-ESRGAN tool is downloaded directly from its publisher during
 first HD setup; the archive and individual required files are hash-verified.
 Game data never leaves the PC. Internet access is needed for this tool download.

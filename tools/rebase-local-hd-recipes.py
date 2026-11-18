@@ -68,6 +68,27 @@ def rebase(original,catalog,report,rendered):
         complete_campaign_visual_validation=False)
 
 
+def save_recipe(output,result,root=ROOT):
+    output=Path(output)
+    if not output.resolve().is_relative_to(root/'private'):raise ValueError('Keep local HD recipes private')
+    load=lambda path:json.loads(path.read_text(encoding='utf-8'))
+    data=json.dumps(result,indent=2)+'\n'
+    stamp=output.with_suffix('.owner.json')
+    if output.is_symlink() or stamp.is_symlink():raise ValueError('Linked local HD recipe')
+    if output.exists() and output.read_text()!=data:
+        previous=sha(output.read_bytes())
+        owners=[root/'private/hd-remaster-pack/owner.json',root/'private/local-build/HD-work/owner.json']
+        owned=any(p.is_file() and load(p).get('tool')=='ISO-local-HD-v1' and load(p).get('recipe_sha256')==previous for p in owners)
+        owned=owned or (stamp.is_file() and load(stamp)==dict(tool='rebase-local-hd-recipes-v1',sha256=previous))
+        if not owned:raise ValueError('Existing locally rebased HD recipe is not owned; preserved')
+    temporary=output.with_suffix('.tmp')
+    if temporary.is_symlink():raise ValueError('Linked temporary HD recipe')
+    temporary.write_text(data);temporary.replace(output)
+    temporary=stamp.with_suffix('.tmp')
+    if temporary.is_symlink():raise ValueError('Linked temporary HD recipe owner')
+    temporary.write_text(json.dumps(dict(tool='rebase-local-hd-recipes-v1',sha256=sha(output.read_bytes())))+'\n');temporary.replace(stamp)
+
+
 def main():
     p=argparse.ArgumentParser(description=__doc__)
     for name in ('recipes','catalog','rendered','output'):p.add_argument('--'+name,type=Path,required=True)
@@ -76,9 +97,7 @@ def main():
         if not path.resolve().is_relative_to(ROOT/'private'):raise ValueError('Keep local HD recipes private')
     load=lambda path:json.loads(path.read_text(encoding='utf-8'))
     result=rebase(load(a.recipes),load(a.catalog/'catalog.json'),load(a.catalog/'result.json'),load(a.rendered))
-    data=json.dumps(result,indent=2)+'\n'
-    if a.output.exists() and a.output.read_text()!=data:raise ValueError('Existing locally rebased HD recipe differs')
-    a.output.write_text(data)
+    save_recipe(a.output,result)
     print(json.dumps({k:v for k,v in result.items() if k not in ('jobs','groups','exclusions')},indent=2),flush=True)
 
 

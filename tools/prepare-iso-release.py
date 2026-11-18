@@ -109,7 +109,7 @@ def inventory(work, launcher=None):
         HD=identity({recipes['HD']['path'],'config/remaster-upscaler.json','config/hd-compatible-pipelines.json',
                      'external/nakagawa-recomp/third_party/xbrz/xbrz.c','external/nakagawa-recomp/src/rt/gpu_sdl3vk/tex_scale.c'} |
                     {'tools/'+name for name in ('build-local-hd-pack.py rebase-local-hd-recipes.py catalog-remaster-textures.py '
-                                                'hd_native.py hd-native.c hd_work.py neural_texture.py model-detail.h inventory-textures.py').split()}))
+                                                'hd_native.py hd-native.c hd_work.py hd_checkpoint_cache.py neural_texture.py model-detail.h inventory-textures.py').split()}))
     build=dict(schema=1,pipeline_revision=3,original=original,recipes=recipes,stage_inputs=fingerprints,
                default_language='english-text-test',Japanese_audio=True)
     raw=(json.dumps(build,indent=2)+'\n').encode();path=work/'player-build.json';path.write_bytes(raw);add(path,'config/player-build.json')
@@ -120,7 +120,7 @@ def inventory(work, launcher=None):
 
 def main():
     p=argparse.ArgumentParser(description=__doc__);p.add_argument('--output',type=Path,required=True)
-    p.add_argument('--version',default='0.9.0-beta.4',help='Version without the leading v used in GitHub tags')
+    p.add_argument('--version',default='0.9.0-beta.5',help='Version without the leading v used in GitHub tags')
     p.add_argument('--launcher',type=Path,help='Use a launcher built separately for this version')
     p.add_argument('--report',type=Path,help='Write the build report here instead of the default staging path');a=p.parse_args()
     version_key(a.version)

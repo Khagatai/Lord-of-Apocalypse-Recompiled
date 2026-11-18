@@ -1,4 +1,4 @@
-import importlib.util,sys,unittest
+import importlib.util,sys,unittest,json,tempfile,hashlib
 from pathlib import Path
 ROOT=Path(__file__).resolve().parents[1];sys.path.insert(0,str(ROOT/'tools'))
 import sampler_pack
@@ -6,6 +6,23 @@ s=importlib.util.spec_from_file_location('local_hd_rebase',ROOT/'tools/rebase-lo
 
 
 class LocalHdRebase(unittest.TestCase):
+    def test_owned_previous_local_recipe_can_refresh_repeatedly(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root=Path(tmp);folder=root/'private/local-build';folder.mkdir(parents=True)
+            out=folder/'local-HD-recipes-v2.json';out.write_text('old generated recipe')
+            owner=folder/'HD-work/owner.json';owner.parent.mkdir()
+            owner.write_text(json.dumps(dict(tool='ISO-local-HD-v1',recipe_sha256=hashlib.sha256(out.read_bytes()).hexdigest())))
+            m.save_recipe(out,dict(current=1),root)
+            m.save_recipe(out,dict(current=2),root)
+            self.assertEqual(json.loads(out.read_text()),dict(current=2))
+
+    def test_unknown_existing_recipe_is_preserved(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root=Path(tmp);folder=root/'private/local-build';folder.mkdir(parents=True)
+            out=folder/'local-HD-recipes-v2.json';out.write_text('user file')
+            with self.assertRaisesRegex(ValueError,'not owned'):m.save_recipe(out,dict(current=1),root)
+            self.assertEqual(out.read_text(),'user file')
+
     def fixture(self):
         key='000000001234abcd56781234';digest='a'*64
         ref=dict(resource_id='00020001',source_sha256='b'*64,texture_index=0,name='PB00_00')

@@ -3,11 +3,11 @@
 No prepared game pixels or runtime capture is used. Process bounded batches;
 keep one generated pack and remove inference scratch after each checkpoint.
 """
-import argparse,collections,hashlib,importlib.util,json,re,subprocess,sys,time
+import argparse,collections,contextlib,hashlib,importlib.util,json,re,subprocess,sys,time
 from pathlib import Path
 ROOT=Path(__file__).resolve().parents[1];sys.path.insert(0,str(ROOT/'tools'))
 import title,neural_texture,sampler_pack,texture_pack
-import hd_native,hd_work
+import hd_native,hd_work,hd_checkpoint_cache
 from graphics_settings import preference_lock
 from rgf_archive import parse_index,read_group,resources
 from xet_codec import Xet
@@ -51,6 +51,11 @@ def compile_helpers(work,env):
 
 
 def build(archives,recipe_path,pack,work,batch_size=64,limit=None,threads='1:2:2',*,batch_mib=256,cache_mib=64):
+    with contextlib.ExitStack() as cleanup:
+        return _build(archives,recipe_path,pack,work,batch_size,limit,threads,batch_mib=batch_mib,cache_mib=cache_mib,cleanup=cleanup)
+
+
+def _build(archives,recipe_path,pack,work,batch_size,limit,threads,*,batch_mib,cache_mib,cleanup):
     archives,recipe_path,pack,work=map(lambda p:Path(p).resolve(),(archives,recipe_path,pack,work))
     for path in (archives,recipe_path,pack,work):
         if not path.is_relative_to(ROOT/'private'):raise ValueError('HD build data must remain private')
@@ -67,15 +72,13 @@ def build(archives,recipe_path,pack,work,batch_size=64,limit=None,threads='1:2:2
     processing_sources=hd_work.processing_sources(ROOT)
     identity=dict(tool='ISO-local-HD-v1',recipe_sha256=sha(recipe_raw),archive_sha256=archive_sha,
         processing_sources=processing_sources,model_pins=pins['files'],framework_commit=title.CONFIG['runtime']['commit'])
-    compatibility=json.loads((ROOT/'config/hd-compatible-pipelines.json').read_text());migrations=[]
-    for folder in (pack,work):
-        if folder.exists():
-            owner=json.loads((folder/'owner.json').read_text()) if (folder/'owner.json').is_file() else None
-            if owner!=identity and compatible_owner(owner,identity,compatibility):
-                migrations.append((folder,owner))
-            elif owner!=identity:
-                raise ValueError('Refusing to replace existing unowned HD folder: '+str(folder))
-        else:folder.mkdir(parents=True);write_json(folder/'owner.json',identity)
+    compatibility=json.loads((ROOT/'config/hd-compatible-pipelines.json').read_text())
+    def cache_progress(checked,total,reused,wanted):
+        print(f'Verifying cached HD textures: {checked} / {total} checkpoints',flush=True)
+        print(f'Preparing HD textures: {reused} / {wanted} jobs complete',flush=True)
+    cached=hd_checkpoint_cache.reconcile(recipe,pack,work,identity,compatibility,cache_progress)
+    print(f"HD cache: reusing {cached['reused_jobs']} / {cached['total_jobs']} verified jobs; "
+          f"{cached['pending_jobs']} need generation ({cached['repair_jobs']} need repair).",flush=True)
     tasks=recipe['jobs'];completed=work/'completed';completed.mkdir(exist_ok=True);scratch=work/'scratch';scratch.mkdir(exist_ok=True)
     wanted={(int(j['reference']['resource_id'],16),j['reference']['source_sha256']) for j in tasks.values()};locations={}
     groups=parse_index(index,rzp.stat().st_size)
@@ -90,9 +93,8 @@ def build(archives,recipe_path,pack,work,batch_size=64,limit=None,threads='1:2:2
                 offset+=length
     if set(locations)!=wanted:raise ValueError('Some HD source resources are absent')
     env=title.environment()
-    native=hd_native.Native(scratch)
     png_spec=importlib.util.spec_from_file_location('local_pack_png',ROOT/'tools/inventory-textures.py');png=importlib.util.module_from_spec(png_spec);png_spec.loader.exec_module(png)
-    done={};files={};names={};next_file=0;level_cache={};checked_files={};output_cache={};content_hits=0;inference_launches=0
+    done={};files={};names={};next_file=0;level_cache={};checked_files=dict(cached['verified_files']);output_cache={};content_hits=0;inference_launches=0
     def level_token(job,level):
         return sha(json.dumps(dict(dimensions=job['dimensions'][level],source=job['source_rgba_sha256'][level],
             wrap=job['wrap'],method=job['method'],model=job['model'],detail=job.get('detail_pass')),sort_keys=True).encode())
@@ -115,10 +117,6 @@ def build(archives,recipe_path,pack,work,batch_size=64,limit=None,threads='1:2:2
             tokens=row.get('result_tokens',[])
             if len(tokens)==len(row['levels']) and tokens[number]:output_cache[tokens[number]]=level
         done[job]=row
-    if migrations:
-        write_json(work/'migration.json',dict(verified_completed_jobs=len(done),verified_unique_PNGs=len(checked_files),previous_owners=[v for _,v in migrations],
-            pixel_semantics=compatibility['pixel_semantics']))
-        for folder,_ in migrations:write_json(folder/'owner.json',identity)
     def add_png(data,w,h,level):
         nonlocal next_file
         digest=sha(data);name=files.get(digest)
@@ -129,6 +127,9 @@ def build(archives,recipe_path,pack,work,batch_size=64,limit=None,threads='1:2:2
             temp=pack/(name+'.tmp');temp.write_bytes(data);temp.replace(pack/name);files[digest]=name;names[name]=digest
         return dict(file=name,width=w,height=h,sha256=digest)
     pending=[j for j in tasks if j not in done];started=time.monotonic();processed=0
+    print(f'Preparing HD textures: {len(done)} / {len(tasks)} jobs complete',flush=True)
+    native=hd_native.Native(scratch) if pending else None
+    if native:cleanup.callback(native.close)
     if limit is not None:pending=pending[:limit]
     decoded=hd_work.ByteCache(cache_mib*1024**2);archive_cache=hd_work.ByteCache(cache_mib*1024**2)
     with rzp.open('rb') as stream:
@@ -208,7 +209,6 @@ def build(archives,recipe_path,pack,work,batch_size=64,limit=None,threads='1:2:2
             print(f'Preparing HD textures: {len(done)} / {len(tasks)} jobs complete',flush=True)
             clear_work(scratch)
     if len(done)!=len(tasks):
-        native.close()
         return dict(state='GENERATING',completed_jobs=len(done),total_jobs=len(tasks),ready_to_play=False)
     textures=[]
     for group in recipe['groups']:
@@ -226,9 +226,11 @@ def build(archives,recipe_path,pack,work,batch_size=64,limit=None,threads='1:2:2
     if removed:write_json(work/'orphan-cleanup.json',dict(removed=removed,bytes_removed=sum(row['size'] for row in removed)))
     result=dict(state='HD_GENERATED',completed_jobs=len(done),total_jobs=len(tasks),groups=len(textures),images=checked['images'],
         pack_manifest_sha256=checked['sample_manifest_sha256'],game_pixels_bundled=False,original_UI_and_portraits=True,complete_campaign_validation=False,
-        inference_launches=inference_launches,decoded_cache_hits=decoded.hits,archive_cache_hits=archive_cache.hits,content_reuse_hits=content_hits,
+        inference_launches=inference_launches,reused_jobs=cached['reused_jobs'],generated_jobs=processed,repair_jobs=cached['repair_jobs'],
+        decoded_cache_hits=decoded.hits,archive_cache_hits=archive_cache.hits,content_reuse_hits=content_hits,
         orphan_PNGs_removed=len(removed),GPU_threads=threads,batch_limit=batch_size,batch_mib=batch_mib,cache_mib=cache_mib)
-    write_json(work/'result.json',result);native.close();return result
+    write_json(work/'result.json',result)
+    return result
 
 
 def main():

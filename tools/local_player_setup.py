@@ -277,7 +277,9 @@ def prepare_hd(records, work, fingerprints):
     setup_progress.emit('tools')
     run('upscaler_dependency.py')
     hd_recipe=local(records['HD']['path'])
-    if json.loads((rendered/'result.json').read_text()).get('platform_rasterization_variants'):
+    original_hd=json.loads(hd_recipe.read_text())
+    if (json.loads((rendered/'result.json').read_text()).get('platform_rasterization_variants')
+            or (original_hd['archive_sha256'],original_hd['index_sha256'])!=(archive_sha,index_sha)):
         setup_progress.emit('catalog')
         # A catalog describes one exact archive pair. Keep it through resume.
         catalog=work/'current-HD-catalog'
@@ -293,25 +295,11 @@ def prepare_hd(records, work, fingerprints):
         rebased=work/'local-HD-recipes-v2.json'
         run('rebase-local-hd-recipes.py','--recipes',hd_recipe,'--catalog',catalog,'--rendered',rendered/'result.json','--output',rebased)
         hd_recipe=rebased
-    # Scheduling-only releases can reuse checked PNGs and partial work.
-    if hd_input is not None:
-        import hd_work
-        recipe=json.loads(hd_recipe.read_text())
-        if (recipe.get('archive_sha256'),recipe.get('index_sha256'))!=(archive_sha,index_sha):
-            raise ValueError('HD recipe does not describe the current archives; existing texture files preserved')
-        hd_pin=sha(hd_recipe)
-        compatible=json.loads((ROOT/'config/hd-compatible-pipelines.json').read_text())['legacy_processing_sources']
-        allowed=[hd_work.processing_sources(ROOT),*compatible]
-        expected={'archive_sha256':archive_sha,'framework_commit':title.CONFIG['runtime']['commit'],
-                  'model_pins':json.loads((ROOT/'config/remaster-upscaler.json').read_text())['files']}
-        with preference_lock(work/'HD-generation.lock'):
-            for name,folder in (('HD-jobs',work/'HD-work'),('HD-pack',local('private/hd-remaster-pack'))):
-                owner=cache_owner(folder,'ISO-local-HD-v1')
-                same_pixels=owner.get('recipe_sha256')==hd_pin and owner.get('processing_sources') in allowed
-                setup_cache(work,name,hd_input,folder,'ISO-local-HD-v1',expected,compatible=same_pixels)
-    import hd_recipe_migration
-    migration=hd_recipe_migration.migrate(ROOT,hd_recipe)
-    if migration:print(json.dumps(migration,indent=2),flush=True)
+    recipe=json.loads(hd_recipe.read_text())
+    if (recipe.get('archive_sha256'),recipe.get('index_sha256'))!=(archive_sha,index_sha):
+        raise ValueError('HD recipe does not describe the current archives; existing texture files preserved')
+    # The builder reconciles individual content-addressed jobs under its lock.
+    # Never delete a complete HD pack because an archive or release hash changed.
     profile=BUILD_OPTIONS['hd_profile']
     batch,batch_mib,cache_mib,threads=setup_resources.HD_PROFILES[profile]
     print(f'HD processing: {profile}, up to {batch} jobs per batch, GPU workers {threads}.',flush=True)
@@ -320,6 +308,8 @@ def prepare_hd(records, work, fingerprints):
         '--batch-mib',batch_mib,'--cache-mib',cache_mib,'--threads',threads)
     hd_report=json.loads((work/'HD-work/result.json').read_text())
     if hd_report.get('state')!='HD_GENERATED':raise RuntimeError('HD generation has not completed')
+    if hd_input is not None:
+        for name in ('HD-jobs','HD-pack'):atomic_json(work/(name+'-inputs.json'),dict(sha256=hd_input))
 
 
 def write_ready(work, image, expected, outputs, *, show_progress=True):
