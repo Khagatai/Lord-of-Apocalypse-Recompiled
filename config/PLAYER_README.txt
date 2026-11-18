@@ -1,4 +1,4 @@
-Lord of Apocalypse Recompiled - v0.9.0-beta.1 - Windows x64
+Lord of Apocalypse Recompiled - Windows x64
 
 1. Download Setup.exe from the matching GitHub release and run it. It downloads
    verified public build tools and generation instructions, without game files.
@@ -18,6 +18,20 @@ Lord of Apocalypse Recompiled - v0.9.0-beta.1 - Windows x64
    it from F1 > Settings > Advanced and restart. The first HD build may take
    hours and downloads a verified public texture tool. Allow about 18 GB free
    disk space for installation and full HD setup. Completed batches resume.
+
+Settings > Build controls first-run resource use. Set a maximum of 1-16 compiler
+jobs, leave Auto to size the workload for this PC, or set a Windows memory cap.
+The cap applies to each build stage's process tree and is separate from graphics
+card memory. The launcher reports peak committed memory during setup.
+Choose Fast HD processing for larger batches or Low memory for smaller batches
+and fewer GPU workers. All profiles use the same texture quality.
+
+When you click Play, the launcher checks for newer supported GitHub releases.
+You can update or continue playing your installed version. Setup checks the
+package files and keeps your saves, settings and ISO selection. A launcher-only
+update can reuse a verified native build. A change to native build inputs can
+require local recompilation. The first update from an older beta may also need
+one build to establish the build fingerprint.
 
 Required ISO SHA256:
 3a4d63713880dfb67ade00b6a912ac4975847cec06b1ab341b65963f328e1c93

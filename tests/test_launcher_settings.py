@@ -3,9 +3,21 @@ from pathlib import Path
 ROOT=Path(__file__).resolve().parents[1];sys.path.insert(0,str(ROOT/'tools'))
 import graphics_settings as settings
 import launcher_settings
+import setup_resources
 import title
 
 class SharedLauncherSettings(unittest.TestCase):
+    def test_in_game_graphics_save_preserves_the_launcher_build_choices(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            path=Path(tmp)/'graphics.json'
+            build=setup_resources.from_codes((12,3,2))
+            settings.save(settings.DEFAULTS,path,setup=build)
+            settings.save(dict(settings.DEFAULTS,gameplay_fps=60),path)
+            graphics,stored=settings.read_preferences(path)
+            self.assertEqual(stored,dict(compiler_jobs=12,memory_gib=8,hd_profile='fast'))
+            self.assertEqual(graphics['gameplay_fps'],60)
+            self.assertNotIn('setup',graphics)
+
     def test_removed_v16_profile_migrates_to_wip_without_changing_other_choices(self):
         self.assertEqual(settings.OPTIONS['variant'],('english-text-test','japanese'))
         with tempfile.TemporaryDirectory() as tmp:

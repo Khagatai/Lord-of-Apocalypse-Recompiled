@@ -50,21 +50,21 @@ def compile_helpers(work,env):
         for command in commands:subprocess.run(command,env=env,stdout=log,stderr=subprocess.STDOUT,check=True,timeout=120)
 
 
-def build(archives,recipe_path,pack,work,batch_size=64,limit=None,threads='1:2:2'):
+def build(archives,recipe_path,pack,work,batch_size=64,limit=None,threads='1:2:2',*,batch_mib=256,cache_mib=64):
     archives,recipe_path,pack,work=map(lambda p:Path(p).resolve(),(archives,recipe_path,pack,work))
     for path in (archives,recipe_path,pack,work):
         if not path.is_relative_to(ROOT/'private'):raise ValueError('HD build data must remain private')
     if work.is_relative_to(pack) or pack.is_relative_to(work) or pack==archives:raise ValueError('Separate HD source, pack and scratch folders')
-    if not 1<=batch_size<=128 or threads not in ('1:1:1','1:2:2'):raise ValueError('Use bounded HD batches/threads')
+    if (not 1<=batch_size<=128 or threads not in ('1:1:1','1:2:2') or
+            not 64<=batch_mib<=512 or not 16<=cache_mib<=96):
+        raise ValueError('Use bounded HD batches, caches and threads')
     recipe_raw=recipe_path.read_bytes();recipe=json.loads(recipe_raw)
     if recipe.get('schema')!=1 or recipe.get('game_pixels_included') is not False:raise ValueError('Unknown HD recipe')
     index=(archives/'REGFILE.RZL').read_bytes();rzp=archives/'REGFILE.RZP'
     with rzp.open('rb') as stream:archive_sha=hashlib.file_digest(stream,'sha256').hexdigest()
     if sha(index)!=recipe['index_sha256'] or archive_sha!=recipe['archive_sha256']:raise ValueError('HD source archives differ')
     tool=ROOT/'private/tools/realesrgan-20220424/package';pins=neural_texture.verify_tool(tool)
-    processing_sources={name:sha((ROOT/'tools'/name).read_bytes()) for name in
-        ('build-local-hd-pack.py','neural_texture.py','scale-mip-texture.c','decode-private-png.c','sharpen-model-texture.c','inventory-textures.py',
-         'hd_native.py','hd-native.c','model-detail.h','hd_work.py')}
+    processing_sources=hd_work.processing_sources(ROOT)
     identity=dict(tool='ISO-local-HD-v1',recipe_sha256=sha(recipe_raw),archive_sha256=archive_sha,
         processing_sources=processing_sources,model_pins=pins['files'],framework_commit=title.CONFIG['runtime']['commit'])
     compatibility=json.loads((ROOT/'config/hd-compatible-pipelines.json').read_text());migrations=[]
@@ -130,10 +130,10 @@ def build(archives,recipe_path,pack,work,batch_size=64,limit=None,threads='1:2:2
         return dict(file=name,width=w,height=h,sha256=digest)
     pending=[j for j in tasks if j not in done];started=time.monotonic();processed=0
     if limit is not None:pending=pending[:limit]
-    decoded=hd_work.ByteCache(64*1024**2);archive_cache=hd_work.ByteCache(64*1024**2)
+    decoded=hd_work.ByteCache(cache_mib*1024**2);archive_cache=hd_work.ByteCache(cache_mib*1024**2)
     with rzp.open('rb') as stream:
         start=0
-        for batch in hd_work.batches(tasks,pending,batch_size):
+        for batch in hd_work.batches(tasks,pending,batch_size,batch_mib*1024**2):
             clear_work(scratch);prepared={};inferences={}
             for job_id in batch:
                 job=tasks[job_id];ref=job['reference'];loc=locations[int(ref['resource_id'],16),ref['source_sha256']]
@@ -227,7 +227,7 @@ def build(archives,recipe_path,pack,work,batch_size=64,limit=None,threads='1:2:2
     result=dict(state='HD_GENERATED',completed_jobs=len(done),total_jobs=len(tasks),groups=len(textures),images=checked['images'],
         pack_manifest_sha256=checked['sample_manifest_sha256'],game_pixels_bundled=False,original_UI_and_portraits=True,complete_campaign_validation=False,
         inference_launches=inference_launches,decoded_cache_hits=decoded.hits,archive_cache_hits=archive_cache.hits,content_reuse_hits=content_hits,
-        orphan_PNGs_removed=len(removed),GPU_threads=threads,batch_limit=batch_size)
+        orphan_PNGs_removed=len(removed),GPU_threads=threads,batch_limit=batch_size,batch_mib=batch_mib,cache_mib=cache_mib)
     write_json(work/'result.json',result);native.close();return result
 
 
@@ -235,11 +235,13 @@ def main():
     p=argparse.ArgumentParser(description=__doc__);p.add_argument('--archives',type=Path,required=True);p.add_argument('--recipes',type=Path,required=True)
     p.add_argument('--pack',type=Path,default=ROOT/'private/hd-remaster-pack');p.add_argument('--work',type=Path,default=ROOT/'private/local-build/HD-work')
     p.add_argument('--batch-size',type=int,default=64);p.add_argument('--threads',choices=('1:1:1','1:2:2'),default='1:2:2')
+    p.add_argument('--batch-mib',type=int,default=256);p.add_argument('--cache-mib',type=int,default=64)
     p.add_argument('--limit',type=int,help='Bounded development check; never marks a partial pack ready')
     a=p.parse_args()
     if a.limit is not None and a.limit<1:raise ValueError('Limit must be positive')
     with preference_lock(ROOT/'private/local-build/HD-generation.lock'):
-        print(json.dumps(build(a.archives,a.recipes,a.pack,a.work,a.batch_size,a.limit,a.threads),indent=2),flush=True)
+        print(json.dumps(build(a.archives,a.recipes,a.pack,a.work,a.batch_size,a.limit,a.threads,
+                               batch_mib=a.batch_mib,cache_mib=a.cache_mib),indent=2),flush=True)
 
 
 if __name__=='__main__':main()

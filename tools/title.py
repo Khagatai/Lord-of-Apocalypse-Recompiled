@@ -145,7 +145,7 @@ def make_arguments(profile="diagnostic"):
         f"RUNTIME_OPT={'-O2' if release else '-O1'}", f"RECOMP_OPT={'-O2' if release else '-O0'}",
     ]
 
-def build(stage, jobs, profile="diagnostic"):
+def build(stage, jobs, profile="diagnostic", *, force=False):
     verify_inputs()
     env = environment()
     make = SDK / "bin/mingw32-make.exe"
@@ -182,6 +182,7 @@ def build(stage, jobs, profile="diagnostic"):
             if stage=='generate' and p.suffix in ('.c','.h')}
     command = [str(make), '-f', 'Makefile', '-f', '../../tools/overlay-settings.mk', '-f', '../../tools/gameplay-fps.mk', *extra_make,
                *make_arguments(profile), f"-j{jobs}", "pipeline" if stage == "generate" else "compile"]
+    if force:command.append('--always-make')
     log_path = destination / (stage + ".log")
     print(f"{stage}: running pinned framework; log: {log_path}", flush=True)
     import setup_progress
@@ -245,8 +246,9 @@ def main():
     parser.add_argument("stage", choices=("generate", "build"))
     parser.add_argument("--jobs", type=int, choices=range(1, 9), default=4)
     parser.add_argument("--profile", choices=("diagnostic", "release"), default="diagnostic")
+    parser.add_argument('--force', action='store_true', help='Rebuild after native input fingerprints change')
     args = parser.parse_args()
-    build(args.stage, args.jobs, args.profile)
+    build(args.stage, args.jobs, args.profile, force=args.force)
 
 if __name__ == "__main__":
     main()

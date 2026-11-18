@@ -6,6 +6,18 @@ import local_player_setup as setup
 
 
 class PlayerSetupAdmission(unittest.TestCase):
+    def test_native_reuse_uses_build_identity_not_release_version(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            build = Path(tmp)/'host-ui-build.json'
+            stamp = Path(tmp)/'native-inputs.json'
+            build.write_text('verified artifacts')
+            self.assertFalse(setup.native_cache_matches(build, stamp, 'native A'))
+            stamp.write_text(json.dumps(dict(input_sha256='native A',build_manifest_sha256=setup.sha(build))))
+            self.assertTrue(setup.native_cache_matches(build, stamp, 'native A'))
+            self.assertFalse(setup.native_cache_matches(build, stamp, 'native B'))
+            build.write_text('different artifacts')
+            self.assertFalse(setup.native_cache_matches(build, stamp, 'native A'))
+
     def test_base_launch_skips_hd_and_remains_ready_after_interrupted_opt_in(self):
         with tempfile.TemporaryDirectory() as tmp, patch.object(setup, 'ROOT', Path(tmp)):
             image = Path(tmp)/'game.iso'

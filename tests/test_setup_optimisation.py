@@ -13,6 +13,32 @@ class Scheduling(unittest.TestCase):
         self.assertEqual(setup_resources.compiler_workers(1,64*1024**3),1)
         self.assertEqual(setup_resources.compiler_workers(32,3*1024**3),1)
         self.assertEqual(setup_resources.compiler_workers(8,10*1024**3),5)
+        self.assertEqual(setup_resources.compiler_workers(20,64*1024**3,requested=16),16)
+        self.assertEqual(setup_resources.compiler_workers(20,64*1024**3,requested=16,memory_gib=8),5)
+        self.assertEqual(setup_resources.compiler_workers(4,64*1024**3,requested=16),4)
+
+    @unittest.skipUnless(sys.platform=='win32','Windows process-tree memory cap')
+    def test_windows_cap_measures_and_limits_child_commit(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            probe=Path(tmp)/'probe.py'
+            probe.write_text('''import subprocess,sys
+code = """import ctypes,sys
+k=ctypes.windll.kernel32
+k.VirtualAlloc.restype=ctypes.c_void_p
+print(bool(k.VirtualAlloc(None,int(sys.argv[1])*1024**2,0x3000,4)))
+"""
+for mib in ('48','192'):
+    subprocess.run([sys.executable,'-c',code,mib],check=True)
+''')
+            with setup_resources.run_stage(probe,[],128*setup_resources.MIB,stdout=subprocess.PIPE,
+                                           text=True) as (process,job):
+                # The gate closes stdin before the stage starts. Read only stdout.
+                with process.stdout:
+                    output=process.stdout.read()
+                self.assertEqual(process.wait(timeout=20),0)
+                self.assertEqual(output.splitlines(),['True','False'])
+                # Windows can count a denied allocation in the raw peak.
+                self.assertGreaterEqual(job.peak(),48*setup_resources.MIB)
     def test_byte_cache_lru_and_oversized_entries(self):
         c=hd_work.ByteCache(6)
         self.assertEqual(c.get('a',lambda:b'123'),b'123')

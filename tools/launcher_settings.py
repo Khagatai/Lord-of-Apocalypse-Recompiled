@@ -3,6 +3,7 @@ import argparse,json,sys
 from pathlib import Path
 sys.path.insert(0,str(Path(__file__).resolve().parent))
 import graphics_settings as settings
+import setup_resources
 ROOT=Path(__file__).resolve().parents[1]
 
 def snapshot(path=settings.SETTINGS):
@@ -30,9 +31,12 @@ def controls_reference(profile):
         '', 'F1 or Escape opens the in-game menu.',
         'The in-game Controls page shows the full active bindings.'])
 
-def emit(path):
-    value,token=snapshot(path)
+def emit(path, include_build=False):
+    with settings.preference_lock(path):
+        value,build = settings.read_preferences(path)
+        token = settings.fingerprint(path)
     print('LOA_SETTINGS 1',token,*settings.menu_codes(value))
+    if include_build:print('LOA_BUILD',*setup_resources.codes(build))
     profile=json.loads((ROOT/'config/controller-camera.json').read_text(encoding='utf-8'))
     print(controls_reference(profile))
 
@@ -40,12 +44,17 @@ def main():
     parser=argparse.ArgumentParser(description=__doc__);group=parser.add_mutually_exclusive_group(required=True)
     group.add_argument('--read',action='store_true');group.add_argument('--save',nargs=len(settings.OPTIONS),type=int)
     parser.add_argument('--expected');parser.add_argument('--preferences',type=Path,default=settings.SETTINGS)
+    parser.add_argument('--include-build',action='store_true')
+    parser.add_argument('--build-codes',type=int,nargs=len(setup_resources.OPTIONS))
     args=parser.parse_args();path=args.preferences.resolve()
     if not path.is_relative_to(ROOT/'private') or path.suffix!='.json':raise ValueError('Keep preferences in private storage.')
     if args.save is not None:
         if args.expected is None:raise ValueError('Load the current settings before saving.')
-        settings.save(settings.from_menu(args.save),path,expected=args.expected)
-    emit(path)
+        build = setup_resources.from_codes(args.build_codes) if args.build_codes is not None else None
+        settings.save(settings.from_menu(args.save),path,expected=args.expected,setup=build)
+    elif args.build_codes is not None:
+        parser.error('--build-codes requires --save')
+    emit(path,args.include_build)
 
 if __name__=='__main__':
     try:main()

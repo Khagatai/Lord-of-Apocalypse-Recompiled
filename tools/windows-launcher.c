@@ -24,9 +24,12 @@
 #define ID_SETTINGS_TAB 120
 #define ID_SETTING_ROW 200
 #define ID_PRESET 230
+#define BUILD_SETTINGS_COUNT 3
+#define LAUNCH_SETTINGS_COUNT (LOA_SETTINGS_COUNT+BUILD_SETTINGS_COUNT)
+#define LAUNCH_TAB_COUNT 6
 static HWND main_window,status_label,play_button,safe_box,details,log_button,expand_button,hover_button;
-static HWND settings_button,settings_back,settings_save,settings_tabs[5],settings_rows[LOA_SETTINGS_COUNT],preset_buttons[3];
-static int settings_page,settings_tab,settings_loaded,child_mode,settings_codes[LOA_SETTINGS_COUNT],settings_saved[LOA_SETTINGS_COUNT];
+static HWND settings_button,settings_back,settings_save,settings_tabs[LAUNCH_TAB_COUNT],settings_rows[LAUNCH_SETTINGS_COUNT],preset_buttons[3];
+static int settings_page,settings_tab,settings_loaded,child_mode,settings_codes[LAUNCH_SETTINGS_COUNT],settings_saved[LAUNCH_SETTINGS_COUNT];
 static char settings_token[65],settings_output[8192];static size_t settings_output_length;
 static wchar_t settings_controls[4096];
 static HFONT font,title_font,logo_font,logo_small_font,small_font,mono_font,button_font;
@@ -36,6 +39,7 @@ static UINT dpi=96;
 static int expanded,launch_error,animation;
 static HICON app_icon;
 static HANDLE child,read_pipe;
+static HANDLE session_lock=INVALID_HANDLE_VALUE;
 static wchar_t root[32768],log_path[32768];
 static HANDLE log_file=INVALID_HANDLE_VALUE;
 static int game_started;
@@ -43,6 +47,7 @@ static char pending[32768];
 static size_t pending_len;
 static int setup_active;
 static unsigned setup_percent;
+static unsigned setup_peak_mib,setup_cap_mib;
 static ULONGLONG setup_started,setup_elapsed,last_elapsed_second;
 static void set_status(const wchar_t *value,int error);
 typedef struct {unsigned stage,done,total,percent;} SetupProgress;
@@ -185,8 +190,14 @@ static void paint_background(HDC dc){
     RECT sub={x,vertical(150),x+w,vertical(184)};
     if(setup_active){
         ULONGLONG seconds=child?(GetTickCount64()-setup_started)/1000:setup_elapsed;
-        wchar_t summary[160];swprintf(summary,160,L"Estimated overall: %u%%  |  Elapsed: %lluh %llum %llus",setup_percent/10,
+        wchar_t summary[192];swprintf(summary,192,L"Estimated overall: %u%%  |  Elapsed: %lluh %llum %llus",setup_percent/10,
             (unsigned long long)(seconds/3600),(unsigned long long)(seconds/60%60),(unsigned long long)(seconds%60));
+        if(setup_peak_mib){
+            size_t used=wcslen(summary);
+            if(setup_cap_mib&&setup_peak_mib>setup_cap_mib)swprintf(summary+used,192-used,L"\nMemory limit reached (%u MiB)",setup_cap_mib);
+            else if(setup_cap_mib)swprintf(summary+used,192-used,L"\nPeak committed: %u / %u MiB",setup_peak_mib,setup_cap_mib);
+            else swprintf(summary+used,192-used,L"\nPeak committed: %u MiB",setup_peak_mib);
+        }
         label(dc,font,MUTED,sub,summary,DT_WORDBREAK);
     }else label(dc,font,MUTED,sub,L"Pick up where you left off. Your settings stay with you.",DT_WORDBREAK);
     RECT state={x,vertical(294),x+w,vertical(368)};box(dc,state,PANEL,EDGE,12);
@@ -245,7 +256,7 @@ static void track_button(HWND hwnd){
 }
 static LRESULT CALLBACK styled_button_proc(HWND hwnd,UINT msg,WPARAM wp,LPARAM lp){
     int id=GetDlgCtrlID(hwnd);
-    if(id>=ID_SETTING_ROW&&id<ID_SETTING_ROW+LOA_SETTINGS_COUNT){
+    if(id>=ID_SETTING_ROW&&id<ID_SETTING_ROW+LAUNCH_SETTINGS_COUNT){
         if(msg==WM_GETDLGCODE&&(wp==VK_LEFT||wp==VK_RIGHT))return DLGC_WANTARROWS|DLGC_BUTTON;
         if(msg==WM_KEYDOWN&&(wp==VK_LEFT||wp==VK_RIGHT)&&IsWindowEnabled(hwnd)){settings_change(id-ID_SETTING_ROW,wp==VK_LEFT?-1:1);return 0;}
     }
@@ -304,9 +315,15 @@ static void output_line(const char *bytes,int length) {
     int n=MultiByteToWideChar(CP_UTF8,0,bytes,length,text,32764);
     text[n]=0;
     SetupProgress setup;
+    unsigned peak,cap;char tail;
+    if(!game_started&&sscanf(bytes,"LOA_SETUP_MEMORY %u %u %c",&peak,&cap,&tail)==2&&peak<4194304&&cap<=32768){
+        if(peak>setup_peak_mib)setup_peak_mib=peak;
+        setup_cap_mib=cap;InvalidateRect(main_window,NULL,FALSE);return;
+    }
     if(parse_setup_progress(bytes,&setup)){
         if(game_started && setup.stage==0){
             game_started=0;setup_active=0;
+            setup_percent=setup_peak_mib=setup_cap_mib=0;
             ShowWindow(main_window,SW_RESTORE);
         }
         if(!game_started){setup_update(setup);return;}
@@ -370,6 +387,7 @@ static void finish(void) {
 static void launch(int argc,wchar_t **argv) {
     child_mode=0;
     setup_active=0;setup_percent=0;setup_elapsed=0;last_elapsed_second=0;
+    setup_peak_mib=setup_cap_mib=0;
     wchar_t python[32768],script[32768],manifest[32768],command[32768]={0};size_t used=0;
     swprintf(python,32768,L"%ls\\private\\tools\\python314\\python.exe",root);
     swprintf(manifest,32768,L"%ls\\private\\distribution\\release.json",root);
@@ -398,6 +416,8 @@ static void launch(int argc,wchar_t **argv) {
      * console flashes while leaving ISO dialogs and the SDL game window visible. */
     SetEnvironmentVariableW(L"PYTHONUTF8",L"1");SetEnvironmentVariableW(L"PYTHONUNBUFFERED",L"1");
     SetEnvironmentVariableW(L"LOA_GUI_LAUNCHER",L"1");
+    wchar_t pid[16];swprintf(pid,16,L"%lu",(unsigned long)GetCurrentProcessId());
+    SetEnvironmentVariableW(L"LOA_LAUNCHER_PID",pid);
     BOOL started=CreateProcessW(python,command,NULL,NULL,TRUE,CREATE_NEW_CONSOLE,NULL,root,&si,&pi);
     DWORD error=GetLastError();CloseHandle(write_pipe);if(input!=INVALID_HANDLE_VALUE)CloseHandle(input);
     if(!started) {
@@ -419,6 +439,23 @@ static LRESULT CALLBACK window_proc(HWND hwnd,UINT msg,WPARAM wp,LPARAM lp) {
         argv=CommandLineToArgvW(GetCommandLineW(),&argc);
         /* WM_CREATE runs before CreateWindow returns the handle to wWinMain. */
         main_window=hwnd;
+        if(session_lock==INVALID_HANDLE_VALUE){
+            wchar_t folder[32768], lock_path[32768];
+            swprintf(folder,32768,L"%ls\\private",root);CreateDirectoryW(folder,NULL);
+            swprintf(folder,32768,L"%ls\\private\\launcher",root);CreateDirectoryW(folder,NULL);
+            swprintf(lock_path,32768,L"%ls\\session.lock",folder);
+            session_lock=CreateFileW(lock_path,GENERIC_READ|GENERIC_WRITE,0,NULL,OPEN_ALWAYS,FILE_ATTRIBUTE_NORMAL,NULL);
+            if(session_lock==INVALID_HANDLE_VALUE){
+                MessageBoxW(hwnd,L"The launcher or an update is already running, or this folder is read-only.",L"Lord of Apocalypse",MB_OK|MB_ICONINFORMATION);
+                return -1;
+            }
+            swprintf(lock_path,32768,L"%ls\\update-in-progress.json",folder);
+            if(GetFileAttributesW(lock_path)!=INVALID_FILE_ATTRIBUTES){
+                MessageBoxW(hwnd,L"An update was interrupted. Run the same Setup.exe with --update and this installation path to recover.",
+                            L"Lord of Apocalypse",MB_OK|MB_ICONINFORMATION);
+                return -1;
+            }
+        }
         panel_brush=CreateSolidBrush(PANEL);details_brush=CreateSolidBrush(RGB(10,16,24));background_brush=CreateSolidBrush(BG);
         status_label=CreateWindowW(L"STATIC",L"Game files will be checked before launch.",WS_CHILD|WS_VISIBLE|SS_LEFT,0,0,0,0,hwnd,NULL,NULL,NULL);
         play_button=CreateWindowW(L"BUTTON",L"Play",WS_CHILD|WS_VISIBLE|WS_TABSTOP|BS_OWNERDRAW,0,0,0,0,hwnd,(HMENU)ID_PLAY,NULL,NULL);

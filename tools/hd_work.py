@@ -2,6 +2,13 @@
 from collections import OrderedDict
 import hashlib,json,re
 
+PIXEL_PIPELINE_FILES = ('build-local-hd-pack.py','neural_texture.py','scale-mip-texture.c','decode-private-png.c',
+                        'sharpen-model-texture.c','inventory-textures.py','hd_native.py','hd-native.c','model-detail.h','hd_work.py')
+
+
+def processing_sources(root):
+    return {name:hashlib.sha256((root/'tools'/name).read_bytes()).hexdigest() for name in PIXEL_PIPELINE_FILES}
+
 def content_token(baseline,padded,model,detail,w,h):
     # Equal RGBA byte streams can describe differently shaped images.
     return hashlib.sha256(json.dumps(dict(dimensions=[w*4,h*4],baseline=hashlib.sha256(baseline).hexdigest(),

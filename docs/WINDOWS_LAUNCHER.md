@@ -59,6 +59,31 @@ private/tools/python314/python.exe tools/launch-preview.py --variant saved
 private/tools/python314/python.exe tools/launch-preview.py --variant saved --check-cached
 ```
 
+Packaged launchers check for a newer version when you click **Play**. You can
+install it or play the current version. The check uses public GitHub releases
+and includes prereleases for players on a prerelease. A failed or offline check
+allows the game to start. Setup verifies the download and compares installed
+package files by SHA-256. It replaces changed files and leaves local data such
+as saves, settings and the selected ISO in place.
+
+The first release with this feature must be installed once by opening its
+`Setup.exe`, choosing the existing installation folder and confirming the update.
+After that, the launcher can offer newer releases. Launcher-only updates reuse
+the native executable when its build fingerprint matches. Changes to native
+sources or build tools can trigger a rebuild. Changes to content generation
+inputs can refresh the affected generated outputs separately. Older installations
+without a native fingerprint may compile once to establish it.
+
+Use **Settings > Build** before Play to choose an Auto or 1–16 compiler job
+ceiling, an optional 4–32 GiB memory cap, and Standard, Low memory or Fast HD
+processing. Job counts can be lowered automatically by CPU availability and RAM.
+The Windows limit applies to committed memory for each build process tree. It
+does not limit GPU VRAM or the game at runtime. If a stage reports an allocation
+failure under a cap, increase the cap or lower concurrency and retry. The
+launcher shows the highest measured stage peak and logs each stage's peak.
+Fast uses larger HD batches and Low memory uses smaller batches and fewer
+workers. Both use the same restoration, texture quality and saved checkpoints.
+
 Cloning the source repository alone does not supply the prepared runtime,
 private translation data or game assets. Follow REPRODUCTION.md for development.
 The optional multiplayer provider remains a Steam App ID 480 development test.

@@ -6,6 +6,7 @@ from pathlib import Path
 import tempfile
 import contextlib
 import hashlib
+import setup_resources
 
 def fingerprint(path):
     return hashlib.sha256(Path(path).read_bytes()).hexdigest() if Path(path).exists() else 'missing'
@@ -92,10 +93,13 @@ def validate(value):
     return result
 
 
-def load(path=SETTINGS):
+def read_preferences(path):
     if not path.exists():
-        return dict(DEFAULTS)
+        return dict(DEFAULTS), dict(setup_resources.DEFAULTS)
     value = json.loads(path.read_text(encoding='utf-8'))
+    setup = dict(setup_resources.DEFAULTS)
+    if isinstance(value,dict) and 'setup' in value:
+        setup = setup_resources.validate(value.pop('setup'))
     # Exact legacy schema only: retain every saved choice and default the new
     # opt-in effect to off. Do not conceal malformed or unknown preferences.
     if isinstance(value, dict) and value.get('schema') == 1:
@@ -105,17 +109,25 @@ def load(path=SETTINGS):
         if missing and legacy_missing in (set(), {'texture_scale', 'hd_ui'}, {'hd_ui'}) and set(value) == {'schema', *(set(OPTIONS)-missing)}:
             for key in missing:
                 value[key] = ORIGINAL[key]
-    return validate(value)
+    return validate(value), setup
 
 
-def save(value, path=SETTINGS, *, expected=None):
+def load(path=SETTINGS):
+    return read_preferences(path)[0]
+
+
+def save(value, path=SETTINGS, *, expected=None, setup=None):
     with preference_lock(path):
         if expected is not None and fingerprint(path)!=expected:
             raise ValueError('Settings changed elsewhere. Reopen settings to load the latest choices.')
-        _save(value,path)
+        _save(value,path,setup=setup)
 
-def _save(value, path):
+def _save(value, path, *, setup=None):
     checked = validate({'schema': 1, **value})
+    if setup is None:
+        setup = read_preferences(path)[1]
+    setup = setup_resources.validate(setup)
+    if setup != setup_resources.DEFAULTS:checked['setup'] = setup
     path.parent.mkdir(parents=True, exist_ok=True)
     temporary = None
     try:

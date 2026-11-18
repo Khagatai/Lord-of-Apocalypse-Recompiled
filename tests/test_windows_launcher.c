@@ -2,6 +2,10 @@
 #include "../tools/windows-launcher.c"
 #include <assert.h>
 int wmain(void) {
+    int settings[LAUNCH_SETTINGS_COUNT];char token[65];const char *controls;
+    assert(settings_parse("LOA_SETTINGS 1 missing 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0\r\nLOA_BUILD 16 3 2\r\ncontrols\n",settings,token,&controls));
+    assert(settings[LOA_SETTINGS_COUNT]==16&&settings[LOA_SETTINGS_COUNT+1]==3&&settings[LOA_SETTINGS_COUNT+2]==2&&!strcmp(controls,"controls\n"));
+    assert(!settings_parse("LOA_SETTINGS 1 missing 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0\nLOA_BUILD 17 3 2\n",settings,token,&controls));
     SetupProgress progress;
     assert(parse_setup_progress("LOA_SETUP_PROGRESS 3 42 111 41",&progress));
     assert(progress.stage==3 && progress.done==42 && progress.total==111 && progress.percent==41);

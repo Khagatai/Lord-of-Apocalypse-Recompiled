@@ -9,6 +9,18 @@
       "decode-private-png.c": "b7d9294f5dbf3db25fef7be61514d60933423f2e47568d0afac258e1940e0472",
       "sharpen-model-texture.c": "2afda77c0339a02cf4dc65a79368f4e2249ff28c7141276e2e70f812c99a1873",
       "inventory-textures.py": "310c9964cd817b51eea80737cfd21fcd1777c6f610b8d21451dcc8914e433651"
+    },
+    {
+      "build-local-hd-pack.py": "c23a7bae537b8ccf42219aeb73ca9f6d37c8ed8ca697c55ff02a9a1b052663f9",
+      "neural_texture.py": "e91c74d5aa43376167a34eb7f47466b4702a5c6b70838e32fe52b93bde4a3e89",
+      "scale-mip-texture.c": "be096e9f05b4e4f5e0dd4af238d5c39f216177768a5f2e7cfab02f9553163cb0",
+      "decode-private-png.c": "b7d9294f5dbf3db25fef7be61514d60933423f2e47568d0afac258e1940e0472",
+      "sharpen-model-texture.c": "2ac98ecc1192bf5792aefe4f551be651a80f8401b009380406f158de2bc7f4f4",
+      "inventory-textures.py": "310c9964cd817b51eea80737cfd21fcd1777c6f610b8d21451dcc8914e433651",
+      "hd_native.py": "8322b60766412b61bec7ab1438c3993d1dd4d8ffbea309f26e34b13dcb5d359d",
+      "hd-native.c": "1233339598fc78e7571cd7a684de17488fc497625b9542159f94b591d1bf0aef",
+      "model-detail.h": "26427c58ab8dd4aec87924dc7833010514f5c8cf1c26ea492094dccfea64d4fa",
+      "hd_work.py": "f0dc4b75e71d68c038ac64cd76434ebb6b4cede287023d9129e0d51793753fc6"
     }
   ]
 }
