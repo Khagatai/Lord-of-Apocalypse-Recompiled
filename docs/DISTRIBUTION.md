@@ -1,6 +1,6 @@
 # Source and installer distribution
 
-The release candidate is `v0.9.0-beta.5`. Full campaign, intermittent audio
+The release candidate is `v0.9.0-beta.6`. Full campaign, intermittent audio
 distortion and 30/60 FPS multiplayer acceptance remain open; use a pre-release.
 
 ## Files and destinations
@@ -9,7 +9,7 @@ Under `Finished/Lord Of Apocalypse Recomp`, `Lord-of-Apocalypse-Recompiled` is
 the source-only Git checkout. Its existing README is preserved. Agent notes,
 game files and personal data are excluded; framework pins remain exact gitlinks.
 
-`Release v0.9.0-beta.5` contains all seven release assets. Upload the individual
+`Release v0.9.0-beta.6` contains all seven release assets. Upload the individual
 files without renaming them or zipping the folder:
 
 | Asset | Purpose |
@@ -17,7 +17,7 @@ files without renaming them or zipping the folder:
 | `Setup.exe` | Online installer; the only download most players need |
 | `Launcher-Update-v1.txt` | Discovery marker for compatible installed launchers |
 | `LordOfApocalypse-Setup-Source.zip` | Installer source and embedded manifest |
-| `Lord-of-Apocalypse-Recompiled-v0.9.0-beta.5-ISO-Builder-part01-of01.zip` | Public build sources, dependencies and generation recipes |
+| `Lord-of-Apocalypse-Recompiled-v0.9.0-beta.6-ISO-Builder-part01-of01.zip` | Public build sources, dependencies and generation recipes |
 | `LordOfApocalypse-Tool-Sources.zip` | Corresponding compiler/library sources |
 | `Setup-SHA256SUMS.txt` | Installer, update marker and installer-source checksums |
 | `Payload-SHA256SUMS.txt` | Player-payload and tool-source checksums |
@@ -45,7 +45,7 @@ Python and the compiler are bundled; no separate emulator or Git is required.
 ## Preparation and checks
 
 Build the launcher with `tools/build-windows-launcher.py`, then inventory with
-`tools/prepare-iso-release.py --version 0.9.0-beta.5 --output <folder>`.
+`tools/prepare-iso-release.py --version 0.9.0-beta.6 --output <folder>`.
 The report starts with publication gates unset. Exercise the installer engine
 in an empty short path, run first setup from the original ISO alone, check
 repeat setup and boot at 30 and 60 FPS with isolated saves. Run regression tests
@@ -61,23 +61,23 @@ README and Git history, stages changes, and does not commit or push.
 Never use the historical `prepare-github-assets.py --local-tester-candidate`
 for public uploads: that private packager includes game-derived output.
 
-## Publishing beta.5
+## Publishing beta.6
 
 1. Review, commit and push the prepared source checkout in GitHub Desktop.
-2. In Releases, choose **Draft a new release**. Create **v0.9.0-beta.5** from
+2. In Releases, choose **Draft a new release**. Create **v0.9.0-beta.6** from
    the pushed commit and select **Pre-release**.
 3. Paste the prepared release notes and attach all seven files listed above.
    Keep filenames unchanged: Setup pins the tag, payload filename, size and hash.
 4. Wait for uploads to finish, then publish. Draft assets are unavailable at
    public download URLs. A new tag is required for the update prompt; replacing
-   beta.4 assets does not trigger one.
+   beta.5 assets does not trigger one.
 5. Download just the published Setup.exe into an empty folder and test that it
-   fetches the payload. Check an existing compatible launcher offers beta.5 on
+   fetches the payload. Check an existing compatible launcher offers beta.6 on
    Play. These live-publication checks remain pending until the release exists.
 
 Setup verifies every managed file and preserves saves, settings and ISO selection
-during updates. Beta.5 can reuse verified native and English-image outputs from
-beta.4; older releases may require a rebuild. HD remains opt-in. Existing HD jobs are verified by their
+during updates. Beta.6 can reuse verified native and English-image outputs from
+beta.5; older releases may require a rebuild. HD remains opt-in. Existing HD jobs are verified by their
 source pixels and processing identity: only new, changed, missing or damaged
 jobs are regenerated. Keep the HD pack and its HD-work completion records;
 normal in-place updates preserve both. Back up saves before beta updates.

@@ -2,6 +2,14 @@
 #include "../tools/windows-launcher.c"
 #include <assert.h>
 int wmain(void) {
+    wchar_t game[32768],iso[32768],message[1024];
+    assert(locations_parse("LOA_LOCATIONS 1\r\nD:\\game files\r\nD:\\disc.iso\r\nVerified\r\n",game,iso,message));
+    assert(!wcscmp(game,L"D:\\game files")&&!wcscmp(iso,L"D:\\disc.iso")&&!wcscmp(message,L"Verified"));
+    assert(locations_parse("LOA_LOCATIONS 1\nD:\\game\n\n\n",game,iso,message));assert(!iso[0]);
+    assert(!locations_parse("LOA_LOCATIONS 2\nD:\\game\n\n\n",game,iso,message));
+    assert(!locations_parse("LOA_LOCATIONS 1\n\n\n\n",game,iso,message));
+    assert(!locations_parse("LOA_LOCATIONS 1\nD:\\game\n\xff\n\n",game,iso,message));
+    assert(!locations_parse("LOA_LOCATIONS 1\nD:\\game\n\n\ntrailing",game,iso,message));
     int settings[LAUNCH_SETTINGS_COUNT];char token[65];const char *controls;
     assert(settings_parse("LOA_SETTINGS 1 missing 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0\r\nLOA_BUILD 16 3 2\r\ncontrols\n",settings,token,&controls));
     assert(settings[LOA_SETTINGS_COUNT]==16&&settings[LOA_SETTINGS_COUNT+1]==3&&settings[LOA_SETTINGS_COUNT+2]==2&&!strcmp(controls,"controls\n"));

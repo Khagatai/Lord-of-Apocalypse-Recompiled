@@ -3,7 +3,7 @@
 
 The pinned upstream import emitter calls sr_end without sr_begin, attributing
 the syscall to the previous delay slot. Add trace hooks during generation and
-conditional 60 FPS timing seams; never edit generated C or suppress a PSP error.
+conditional 60 FPS timing and optional camera seams; never edit generated C or suppress a PSP error.
 """
 from pathlib import Path
 import sys
@@ -30,6 +30,10 @@ def traced_import(addr, lib, nid, lle_import_seam=None, *, options=None):
 def main():
     import frame_rate_codegen
     frame_rate_codegen.install(codegen)
+    import camera_codegen
+    camera_codegen.install(codegen)
+    import password_codegen
+    password_codegen.install(codegen)
     import companion_name_codegen
     companion_name_codegen.install(codegen)
     codegen.import_stub_text = traced_import

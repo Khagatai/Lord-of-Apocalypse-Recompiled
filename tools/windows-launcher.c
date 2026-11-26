@@ -24,13 +24,19 @@
 #define ID_SETTINGS_TAB 120
 #define ID_SETTING_ROW 200
 #define ID_PRESET 230
+#define ID_LOCATION_ISO 240
+#define ID_LOCATION_GAME 241
+#define ID_EDIT_CONTROLS 242
 #define BUILD_SETTINGS_COUNT 3
 #define LAUNCH_SETTINGS_COUNT (LOA_SETTINGS_COUNT+BUILD_SETTINGS_COUNT)
-#define LAUNCH_TAB_COUNT 6
+#define LAUNCH_TAB_COUNT 7
 static HWND main_window,status_label,play_button,safe_box,details,log_button,expand_button,hover_button;
 static HWND settings_button,settings_back,settings_save,settings_tabs[LAUNCH_TAB_COUNT],settings_rows[LAUNCH_SETTINGS_COUNT],preset_buttons[3];
+static HWND location_buttons[2];
+static HWND controls_edit_button;
+static wchar_t location_game[32768],location_iso[32768];
 static int settings_page,settings_tab,settings_loaded,child_mode,settings_codes[LAUNCH_SETTINGS_COUNT],settings_saved[LAUNCH_SETTINGS_COUNT];
-static char settings_token[65],settings_output[8192];static size_t settings_output_length;
+static char settings_token[65],settings_output[262144];static size_t settings_output_length;
 static wchar_t settings_controls[4096];
 static HFONT font,title_font,logo_font,logo_small_font,small_font,mono_font,button_font;
 static HBRUSH panel_brush,details_brush,background_brush;
@@ -94,6 +100,7 @@ static void settings_layout(void);
 static void settings_paint(HDC dc,int x,int width);
 static int settings_draw_button(const DRAWITEMSTRUCT *item);
 static void settings_request(int save);
+static void locations_request(int action);
 static void settings_finish(DWORD code);
 static void settings_create(HWND parent);
 static void settings_fonts(void);
@@ -302,6 +309,7 @@ static int argument(wchar_t *out,size_t cap,size_t *used,const wchar_t *arg) {
     if(*used) {if(*used+1>=cap)return 0;out[(*used)++]=L' ';}
     return quote_arg(out,cap,used,arg);
 }
+#include "recomplauncher-cli.h"
 #include "launcher-settings-ui.h"
 static void append_text(const wchar_t *text) {
     int length=GetWindowTextLengthW(details);
@@ -388,16 +396,13 @@ static void launch(int argc,wchar_t **argv) {
     child_mode=0;
     setup_active=0;setup_percent=0;setup_elapsed=0;last_elapsed_second=0;
     setup_peak_mib=setup_cap_mib=0;
-    wchar_t python[32768],script[32768],manifest[32768],command[32768]={0};size_t used=0;
+    wchar_t python[32768],script[32768],command[32768]={0};size_t used=0;
     swprintf(python,32768,L"%ls\\private\\tools\\python314\\python.exe",root);
-    swprintf(manifest,32768,L"%ls\\private\\distribution\\release.json",root);
-    swprintf(script,32768,L"%ls\\tools\\%ls",root,
-        GetFileAttributesW(manifest)!=INVALID_FILE_ATTRIBUTES?L"tester-start.py":L"launch-preview.py");
+    swprintf(script,32768,L"%ls\\tools\\launcher_locations.py",root);
     if(GetFileAttributesW(python)==INVALID_FILE_ATTRIBUTES || GetFileAttributesW(script)==INVALID_FILE_ATTRIBUTES) {
         set_status(L"Required launcher files are missing. Extract the entire ZIP first.",1);return;
     }
-    int ok=argument(command,32768,&used,python)&&argument(command,32768,&used,L"-u")&&argument(command,32768,&used,script);
-    if(GetFileAttributesW(manifest)==INVALID_FILE_ATTRIBUTES)ok=ok&&argument(command,32768,&used,L"--variant")&&argument(command,32768,&used,L"saved");
+    int ok=argument(command,32768,&used,python)&&argument(command,32768,&used,L"-u")&&argument(command,32768,&used,script)&&argument(command,32768,&used,L"--launch");
     for(int i=1;i<argc;i++)ok=ok&&argument(command,32768,&used,argv[i]);
     if(SendMessageW(safe_box,BM_GETCHECK,0,0)==BST_CHECKED)ok=ok&&argument(command,32768,&used,L"--graphics-preset")&&argument(command,32768,&used,L"original");
     if(!ok){set_status(L"The launch command is too long.",1);return;}
@@ -530,14 +535,20 @@ static LRESULT CALLBACK window_proc(HWND hwnd,UINT msg,WPARAM wp,LPARAM lp) {
 #ifndef LOA_LAUNCHER_TEST
 int WINAPI wWinMain(HINSTANCE instance,HINSTANCE previous,LPWSTR command,int show) {
     (void)previous;(void)command;(void)show;
+    if(!GetModuleFileNameW(NULL,root,32768))return 1;
+    wchar_t *slash=wcsrchr(root,L'\\');if(!slash)return 1;*slash=0;
+    if(wcslen(root)>32000)return 1;
+    int direct_argc=0;wchar_t **direct_argv=CommandLineToArgvW(GetCommandLineW(),&direct_argc);
+    if(!direct_argv)return 1;
+    for(int i=1;i<direct_argc;i++)if(!wcscmp(direct_argv[i],L"--recomplauncher")){
+        int code=recomp_launcher_cli(direct_argc,direct_argv);LocalFree(direct_argv);return code;
+    }
+    LocalFree(direct_argv);
     HMODULE user=GetModuleHandleW(L"user32.dll");
     typedef BOOL (WINAPI *DpiAware)(HANDLE);DpiAware aware=(DpiAware)(void *)GetProcAddress(user,"SetProcessDpiAwarenessContext");
     if(aware)aware((HANDLE)(LONG_PTR)-4);
     typedef UINT (WINAPI *DpiSystem)(void);DpiSystem system_dpi=(DpiSystem)(void *)GetProcAddress(user,"GetDpiForSystem");if(system_dpi)dpi=system_dpi();
     RECT desktop_work;SystemParametersInfoW(SPI_GETWORKAREA,0,&desktop_work,0);dpi=fitted_dpi(dpi,desktop_work);
-    if(!GetModuleFileNameW(NULL,root,32768))return 1;
-    wchar_t *slash=wcsrchr(root,L'\\');if(!slash)return 1;*slash=0;
-    if(wcslen(root)>32000)return 1;
     swprintf(log_path,32768,L"%ls\\private\\launcher\\latest.log",root);
     WNDCLASSW wc={0};wc.hInstance=instance;wc.lpfnWndProc=window_proc;wc.lpszClassName=L"LoaNativeLauncher";
     app_icon=(HICON)LoadImageW(instance,MAKEINTRESOURCEW(1),IMAGE_ICON,GetSystemMetrics(SM_CXICON),GetSystemMetrics(SM_CYICON),0);

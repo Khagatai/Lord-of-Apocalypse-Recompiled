@@ -77,6 +77,8 @@ def audit(archives, profiles):
                         stats['empty_or_unused'] += 1
                         continue
                     profile = profile_for(profiles, resource_id, index, lines)
+                    if profile and profile.get('runtime_command_widths'):
+                        lines, advances, uncertain = measurements(message, table, profile['runtime_command_widths'])
                     entry = dict(record, cue=cue if len(messages) > 1 else None,
                                  lines=lines, advances=advances, rows=len(lines))
                     if profile:

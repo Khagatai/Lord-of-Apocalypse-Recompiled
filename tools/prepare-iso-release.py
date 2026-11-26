@@ -29,6 +29,7 @@ def inventory(work, launcher=None):
     def generated(name,value):
         path=work/(hashlib.sha256(name.encode()).hexdigest()+'.json');path.write_text(json.dumps(value,indent=2)+'\n');add(path,name)
     for name in ('LICENSE','CREDITS.md'):add(ROOT/name)
+    add(ROOT/'recomplauncher.json')
     add(launcher or work/'LordOfApocalypse.exe','LordOfApocalypse.exe')
     add(ROOT/'config/PLAYER_README.txt','READ-ME-FIRST.txt')
     for folder in ('tools','config'):
@@ -79,10 +80,10 @@ def inventory(work, launcher=None):
         path=ROOT/'private/local-build'/source;name='private/distribution/recipes/'+kind+'.json';add(path,name)
         recipes[kind]=dict(path=name,sha256=sha(path))
     original=dict(size=title.CONFIG['disc']['iso_size'],sha256=title.CONFIG['disc']['iso_sha256'])
-    native_tools = set('title.py import_trace_codegen.py frame_rate_codegen.py companion_name_codegen.py mip_runtime_patch.py media_runtime_patch.py '
+    native_tools = set('title.py import_trace_codegen.py frame_rate_codegen.py companion_name_codegen.py camera_codegen.py camera_runtime.c camera_input.c camera_motion.h password_codegen.py password_runtime.c password_alias.h mip_runtime_patch.py media_runtime_patch.py scheduler_runtime_patch.py texture_lookup.h '
                        'iso_local_setup.py survey-disc.py build-prx-helper.py prx-decrypt.cpp'.split())
-    native_tools.update('in-game-settings.c title_settings_menu.h gameplay_fps.c coop_hle.c coop_service_wait.h '
-                        'coop_transport.c coop_transport.h online_runtime.c online_runtime.h movie_subtitles.c '
+    native_tools.update('in-game-settings.c title_settings_menu.h in-game-controls.h controller-settings-contract.h gameplay_fps.c coop_hle.c coop_service_wait.h '
+                        'coop_transport.c coop_transport.h online_runtime.c online_runtime.h coop_diagnostics.c movie_subtitles.c '
                         'movie_caption_format.h audio_diagnostics.h'.split())
     native_configs = {'config/lordofapocalypse.toml','config/lordofapocalypse.json','config/startup-registers.json',
                       'config/local-build-inputs.json','config/local-build-player-framework.json'}
@@ -103,7 +104,7 @@ def inventory(work, launcher=None):
                                'title_description_layout.py orb_description_layout.py companion_name_layout.py item_description_layout.py '
                                'text_panel_layout.py mes_tokens.py',
                                extra_files=('config/title-name-wording.json', 'config/orb-panel-wording.json',
-                                            'config/text-panel-layout.json')),
+                                            'config/text-panel-layout.json', 'config/dialogue-panel-wording.json')),
         captions=content_identity(('captions',), 'build-local-movie-captions.py build-movie-helper.py movie-caption-survey.c '
                                   'validate-movie-captions.py render-caption-atlas.ps1 render-text-worker.ps1 text_render_worker.py'),
         HD=identity({recipes['HD']['path'],'config/remaster-upscaler.json','config/hd-compatible-pipelines.json',
@@ -120,13 +121,13 @@ def inventory(work, launcher=None):
 
 def main():
     p=argparse.ArgumentParser(description=__doc__);p.add_argument('--output',type=Path,required=True)
-    p.add_argument('--version',default='0.9.0-beta.5',help='Version without the leading v used in GitHub tags')
+    p.add_argument('--version',default='0.9.0-beta.6',help='Version without the leading v used in GitHub tags')
     p.add_argument('--launcher',type=Path,help='Use a launcher built separately for this version')
     p.add_argument('--report',type=Path,help='Write the build report here instead of the default staging path');a=p.parse_args()
     version_key(a.version)
     if a.version.startswith('v'):p.error('Use a version without a leading v')
     output=a.output.resolve();output.mkdir(parents=True,exist_ok=True);work=ROOT/'private/local-build/release-staging'
-    items=inventory(work,a.launcher);path=output/f'Lord-of-Apocalypse-Recompiled-v{a.version}-ISO-Builder-part01-of01.zip'
+    items=inventory(work,a.launcher);path=output/f'Lord-of-Apocalypse-Recompiled-v{a.version}-Windows-x64.zip'
     if path.exists():raise FileExistsError('Existing release candidate preserved')
     temporary=path.with_suffix('.zip.part');records=[]
     if temporary.exists():raise FileExistsError('Interrupted ZIP requires inspection')

@@ -56,10 +56,10 @@ class SharedLauncherSettings(unittest.TestCase):
 
     def test_control_reference_uses_the_actual_profile(self):
         profile=json.loads((ROOT/'config/controller-camera.json').read_text())
-        text=launcher_settings.controls_reference(profile);self.assertIn('Right stick + D-pad',text);self.assertIn('A / B',text)
+        text=launcher_settings.controls_reference(profile);self.assertIn('Right stick + D-pad',text);self.assertIn('Cross/A / Circle/B',text)
         for binding in profile['psp_bindings']:
             if binding['control']=='cross':binding['primary']='north'
-        self.assertIn('Y / B',launcher_settings.controls_reference(profile))
+        self.assertIn('Triangle/Y / Circle/B',launcher_settings.controls_reference(profile))
 
     def test_native_launcher_and_f1_presets_match_python_for_all_sample_profiles(self):
         compiler=title.SDK/'bin/gcc.exe'

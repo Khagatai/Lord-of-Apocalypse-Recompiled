@@ -15,9 +15,11 @@
 #pragma weak loa_online_available
 #pragma weak loa_online_transport
 #pragma weak loa_online_alive
+#pragma weak loa_online_poll
 #pragma weak loa_online_close
 #pragma weak loa_online_port
 #pragma weak loa_online_pending
+#pragma weak loa_online_socket_info
 #pragma weak loa_online_ptp_open
 #pragma weak loa_online_ptp_connect
 #pragma weak loa_online_ptp_accept
@@ -165,6 +167,11 @@ int loa_coop_transport_alive(void) {
     pump();
     return transport.lobby!=INVALID_SOCKET;
 }
+int loa_coop_poll(NkLobbyEvent *out,size_t max,size_t *count) {
+    if(online_mode)return loa_online_poll(out,max,count);
+    *count=transport.base.ops->take_events(&transport.base,out,max);
+    return loa_coop_transport_alive();
+}
 static int login(NkAdhocTransport *base,const uint8_t mac[6],const char *nickname,const char *product) {
     (void)base;
     Transport *t=&transport;
@@ -308,6 +315,13 @@ uint32_t loa_coop_socket_pending(int handle) {
     u_long bytes=0;
     if(handle>=0 && handle<(int)SLOTS && transport.udp[handle]!=INVALID_SOCKET)ioctlsocket(transport.udp[handle],FIONREAD,&bytes);
     return (uint32_t)bytes;
+}
+int loa_coop_socket_info(int handle,uint16_t *port,uint32_t *pending) {
+    if(online_mode)return loa_online_socket_info(handle,port,pending);
+    if(handle<0 || handle>=(int)SLOTS || transport.udp[handle]==INVALID_SOCKET)return NK_NET_NO_SOCKET;
+    u_long bytes=0;
+    if(ioctlsocket(transport.udp[handle],FIONREAD,&bytes))return NK_NET_BAD_ARG;
+    *port=transport.ports[handle];*pending=(uint32_t)bytes;return NK_NET_OK;
 }
 static int pdp_send(NkAdhocTransport *base,int handle,const uint8_t mac[6],uint16_t port,const void *data,uint32_t len) {
     (void)base;

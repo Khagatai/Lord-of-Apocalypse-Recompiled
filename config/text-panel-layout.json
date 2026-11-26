@@ -1205,6 +1205,23 @@
       "width": 144,
       "rows": 4,
       "evidence": "reported God Mark crafting panel; stat row below description"
+    },
+    {
+      "name": "quest-delivery-dialogue",
+      "resource_id": "00040d7c",
+      "ranges": [
+        [
+          39,
+          44
+        ]
+      ],
+      "minimum_rows": 1,
+      "width": 348,
+      "rows": 3,
+      "runtime_command_widths": {
+        "efe0:0000": 282,
+        "efe1:0000": 36
+      }
     }
   ],
   "notes": [

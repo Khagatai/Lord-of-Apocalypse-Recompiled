@@ -745,6 +745,10 @@ Japanese script, four are unresolved legacy demo-save metadata, and 14 are liter
 promotional password keys. The password resource also contains display notifications;
 those are now translated. The edit layer refuses password-key changes, including
 attempts through aliases. Keys are functional input values rather than prose.
+Beta.8 adds [English password input aliases](PASSWORDS.md) at the native input
+boundary while preserving these literal records and the original reward/save
+logic. Thirteen distinct keys are referenced by the retail reward table; the
+fourteenth protected record is unused by that table.
 The four legacy records decode with inconsistent kanji. Trying the supplemental
 glyph table did not resolve them; their meanings have not been guessed or replaced.
 Next fix: identify the original legacy glyph mapping in the import/export path.

@@ -300,6 +300,7 @@ static int write_message(const wchar_t *name, const char *data) {
     }
     return 1;
 }
+#include "in-game-controls.h"
 static void initialize(void) {
     if(initialized) return;
     initialized=1; choices[5]=1;
@@ -334,7 +335,8 @@ static void submit(int want_restart) {
 bool __real_nk_overlay_host_due(NkOverlayHost *host, double now);
 bool __wrap_nk_overlay_host_due(NkOverlayHost *host, double now) {
     support_poll();
-    return pending || live_apply || networking_page || support_page || support_pending || __real_nk_overlay_host_due(host,now);
+    control_poll();
+    return control_pending || pending || live_apply || networking_page || support_page || support_pending || __real_nk_overlay_host_due(host,now);
 }
 
 /* Return a stock host action for safe live changes. All other choices are startup-only. */

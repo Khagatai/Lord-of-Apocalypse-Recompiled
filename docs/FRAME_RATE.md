@@ -1,6 +1,6 @@
 # Gameplay frame-rate selection
 
-Open **Start-Game.cmd**, then **F1 → Settings → Graphics → Gameplay frame rate**.
+Open **LordOfApocalypse.exe**, then **F1 â†’ Settings â†’ Graphics â†’ Gameplay frame rate**.
 Choose **Original 30 FPS** or **Upgraded 60 FPS (experimental)**, save game
 progress, then use **Apply and restart game** and its separate confirmation.
 The external graphics panel exposes the same choice. Existing profiles migrate
@@ -63,7 +63,7 @@ original update floor with enhancement off.
 186 source tests pass. Production media tracking passes synthetic tests in both
 modes for simultaneous contexts, original errors, stop/delete, restoration and
 conservative overflow (`private/fps-synthetic/`). Native F1 persistence passes
-30 → 60 → 30 without changing normal saves/preferences
+30 â†’ 60 â†’ 30 without changing normal saves/preferences
 (`private/fps-in-game-settings-02/`). All 15 external panel controls and presets
 pass (`private/fps-launcher-check/`). The first sandboxed F1 attempt could not
 load the existing SDL font DLL; rerunning with DLL access passes.
@@ -118,3 +118,36 @@ Native cadence/update-speed evidence is recorded separately. Combat, full
 campaign acceptance and every movie/cinematic route remain unverified, so 60
 stays experimental. Hardware load can reduce achieved FPS with HD art, 4x
 rendering and supersampling; the timing check does not measure that load.
+
+## 2026-11-20 multiplayer loading investigation
+
+The user reports stable shared missions at 30 FPS and frequent failures while
+loading together at 60 FPS. A local 60-FPS session with two joined peers terminates
+at an indirect call to zero from `0x08bf386c` (caller return `0x08bf3804`). An
+older loading report instead reaches guest C++ termination; those failures are
+not established to have the same cause. Do not infer a network timeout from a
+peer leaving after the game has stopped. The current evidence does not identify
+the first corrupted object or prove that timing alone caused either error.
+
+The title transport now combines event/room-health polling into one synchronous
+helper snapshot and obtains a socket's port/pending-byte count with one request.
+No connection state is cached across frames. Guest packets, timeouts, simulation
+timing and fatal-error behaviour remain unchanged. In a native loopback metadata
+benchmark, 60 cycles use 120 rather than 240 requests: 10.4 vs 20.7 ms without an
+injected helper delay, and 662.8 vs 1,312.2 ms with 5 ms per request. These are
+metadata-workload measurements, not rendered FPS or internet-latency results.
+
+New `LOA_IPC` measurements and fatal-callback context reach the local report.
+Raw diagnostic memory stays in the private native log. Null callback faults
+still execute the pinned original fatal handler; they are never skipped or
+converted to success. A detected null callback creates a local diagnostic ZIP
+after exit even if the user did not request one before the crash.
+
+Synthetic native IPC/error tests, native networking-HLE exchange, and three
+local WebRTC helper traffic tests pass. Actual 60-FPS co-op mission loading,
+combat, rewards and return/save acceptance remain open. Use 30 FPS for reliable
+sessions until the candidate is retested on every participating PC. For the
+next failure, retain the fresh local report and name the mission, host, FPS on
+each PC and the last successful loading-screen transition. A 30/60 comparison
+must repeat the same quest and party, then match the first divergent guest
+callback/object state against the pinned PPSSPP interpreter.

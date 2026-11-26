@@ -21,6 +21,17 @@ class AgentTests(unittest.TestCase):
     def test_unconfigured_create_never_generates_code(self):
         self.assertEqual(self.agent.request(dict(op='create'))['result'],-3);self.assertEqual(self.agent.status()['code'],'')
         self.assertEqual(self.agent.request(dict(op='pdp_open',port=31000))['result'],-3)
+    def test_poll_reports_actual_lobby_state_and_preserves_login_failure(self):
+        self.assertEqual(self.agent.request(dict(op='poll')),dict(result=-3,state='offline'))
+        self.connected();self.agent.state='in-room';self.agent.logged=False
+        self.assertEqual(self.agent.request(dict(op='poll')),dict(result=-3,state='in-room'))
+    def test_poll_consumes_only_the_requested_events_without_changing_packets(self):
+        self.connected();self.agent.state='in-room'
+        for i in range(10):self.agent.emit(dict(kind=3,peer_id=i))
+        first=self.agent.request(dict(op='poll',max=8));second=self.agent.request(dict(op='poll',max=8))
+        self.assertEqual(first,dict(result=0,state='in-room',events=[dict(kind=3,peer_id=i) for i in range(8)]))
+        self.assertEqual(second['events'],[dict(kind=3,peer_id=8),dict(kind=3,peer_id=9)])
+        for bad in (-1,9,True,'8',None):self.assertEqual(self.agent.request(dict(op='poll',max=bad))['result'],-2)
     def test_datagram_short_buffer_retains_exact_sender_and_payload(self):
         self.connected();handle=self.agent.request(dict(op='pdp_open',port=31000))['result'];peer=self.agent.peers['peer']
         self.agent.packet(peer,b'P'+struct.pack('!HH',32000,31000)+b'payload')

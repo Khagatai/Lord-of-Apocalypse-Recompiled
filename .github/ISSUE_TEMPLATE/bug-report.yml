@@ -11,14 +11,15 @@ body:
     id: version
     attributes:
       label: Release version
-      placeholder: v0.9.0-beta.1
+      placeholder: v0.9.0-beta.8
+      description: Enter the exact version installed on your PC.
     validations:
       required: true
   - type: textarea
     id: reproduction
     attributes:
       label: What happened and how can we reproduce it?
-      description: Include the location or quest, exact steps, and what you expected.
+      description: Include the location or quest, exact steps, and what you expected. For co-op, include each player's version and FPS, and whether failure happened during loading, combat or returning.
     validations:
       required: true
   - type: dropdown

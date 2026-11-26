@@ -1,5 +1,8 @@
 Lord of Apocalypse Recompiled - Windows x64
 
+Beta.8 English main-menu password codes are listed in config\Passwords.txt.
+Smooth 360 camera is available in F1 > Controls > Camera rotation settings.
+
 1. Download Setup.exe from the matching GitHub release and run it. It downloads
    verified public build tools and generation instructions, without game files.
    Use an ASCII-only install path, e.g. C:\Games\LordOfApocalypse-Recomp.
@@ -13,6 +16,8 @@ Lord of Apocalypse Recompiled - Windows x64
    Keep the launcher running. The original ISO is unchanged. Python, the portable
    compiler and runtime dependencies are included; no separate Git, compiler or
    emulator installation is required. All processing stays on your PC.
+   No manual PowerShell command or saved execution-policy change is required
+   for normal Windows first setup; the launcher handles its own render scripts.
 4. To enable the optional English HD world/model pack, open Settings > Advanced,
    set Local HD pack (English) to On, save and click Play. You can also change
    it from F1 > Settings > Advanced and restart. The first HD build may take
@@ -41,6 +46,17 @@ editions need Microsoft's Media Feature Pack for movies. Direct Japanese play
 also requires an ASCII-only original ISO path; English uses the prepared images.
 
 F1 or Escape opens settings, networking, controls and tester support.
+Change gamepad bindings in F1 > Controls or Launcher Settings > Controls.
+Camera rotation settings offer experimental smooth horizontal right-stick
+rotation and adjustable speed. Vertical movement keeps the PSP camera positions.
+Original PSP camera behaviour remains the default. Changes persist locally.
+Launcher Settings > Locations can select a different original ISO or an existing
+game installation folder. It remembers these choices without moving or copying
+files. The selected installation's saves and settings are used. Select its root
+folder containing tools, config and private. Empty folders are not installations.
+Xbox and PlayStation controllers use SDL gamepad input. DualSense supports USB
+and Bluetooth; pair it in Windows before playing. The launcher Controls page
+shows both button layouts. Right stick controls the camera; D-pad keeps menus.
 Graphics, language and controller choices save automatically. Some changes
 require restarting; save in-game first. The launcher's basic-graphics checkbox
 offers a troubleshooting preset. Open launcher log shows setup/startup errors.

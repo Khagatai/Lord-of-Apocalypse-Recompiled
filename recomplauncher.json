@@ -1,0 +1,602 @@
+{
+  "$schema": "https://recomplauncher.com/schema/recomplauncher.json",
+  "format": 1,
+  "name": "Lord of Apocalypse Recompiled",
+  "repo": "Khagatai/Lord-of-Apocalypse-Recompiled",
+  "inputs": [
+    {
+      "id": "game",
+      "role": "game",
+      "label": "Your unmodified Japanese PSP dump, NPJH50503 disc 1.01 (ISO, CSO or DVD-layout CHD).",
+      "formats": [
+        {
+          "type": "file",
+          "extensions": [
+            "iso",
+            "cso",
+            "chd"
+          ]
+        }
+      ],
+      "dumps": [
+        {
+          "name": "Japan, NPJH50503 disc 1.01 (locally verified unmodified dump)",
+          "size": 1068498944,
+          "crc32": "a0ea68dd"
+        }
+      ]
+    }
+  ],
+  "start": {
+    "program": [
+      "LordOfApocalypse.exe"
+    ],
+    "args": [
+      "--recomplauncher",
+      "--play",
+      "--game={input:game}"
+    ]
+  },
+  "prepare": {
+    "program": [
+      "LordOfApocalypse.exe"
+    ],
+    "args": [
+      "--recomplauncher",
+      "--prepare",
+      "--game={input:game}"
+    ],
+    "label": "Build the native game and English text locally from your dump",
+    "done": [
+      "{install}/private/recomplauncher/ready.json",
+      "{install}/private/native-release/lordofapocalypse/lordofapocalypse.exe",
+      "{install}/private/native-release/lordofapocalypse/lordofapocalypse_image.bin",
+      "{install}/private/native-release/lordofapocalypse/host-ui-build.json",
+      "{install}/private/translation/text-pass-16-image/LordOfApocalypse-English-WIP.iso",
+      "{install}/private/translation/text-pass-16-image/result.json",
+      "{install}/private/translation/movie-captions/captions.bin"
+    ],
+    "options": [
+      {
+        "id": "hd_textures",
+        "label": "Build optional HD environment and character textures",
+        "note": "Downloads the official texture upscaler; generation can take hours and reuses completed work.",
+        "default": false,
+        "args": [
+          "--with-hd"
+        ],
+        "os": [
+          "windows"
+        ]
+      }
+    ]
+  },
+  "config": [
+    {
+      "id": "main",
+      "format": "json",
+      "file": [
+        {
+          "path": "{install}/private/settings/graphics.json"
+        }
+      ],
+      "new": {
+        "schema": "1",
+        "variant": "\"english-text-test\"",
+        "render_scale": "4",
+        "fullscreen": "false",
+        "window_size": "[960,544]",
+        "scaling": "\"sharp\"",
+        "vsync": "true",
+        "hud": "false",
+        "upscale": "\"fsr1\"",
+        "anisotropy": "16",
+        "mipmaps": "true",
+        "full_color": "true",
+        "supersampling": "2",
+        "texture_scale": "4",
+        "hd_ui": "false",
+        "gameplay_fps": "30"
+      }
+    }
+  ],
+  "settings": [
+    {
+      "id": "variant",
+      "label": "Language",
+      "group": "General",
+      "help": "WIP English changes text; Japanese audio is retained.",
+      "choices": [
+        {
+          "label": "WIP English",
+          "set": {
+            "variant": "\"english-text-test\""
+          }
+        },
+        {
+          "label": "Original Japanese",
+          "set": {
+            "variant": "\"japanese\""
+          }
+        }
+      ],
+      "defaults": {
+        "variant": "\"english-text-test\""
+      }
+    },
+    {
+      "id": "render_scale",
+      "label": "Render resolution",
+      "group": "Display",
+      "help": "Increases 3D rendering resolution; higher values need more GPU power.",
+      "choices": [
+        {
+          "label": "1x (480 x 272)",
+          "set": {
+            "render_scale": "1"
+          }
+        },
+        {
+          "label": "2x (960 x 544)",
+          "set": {
+            "render_scale": "2"
+          }
+        },
+        {
+          "label": "3x (1440 x 816)",
+          "set": {
+            "render_scale": "3"
+          }
+        },
+        {
+          "label": "4x (1920 x 1088)",
+          "set": {
+            "render_scale": "4"
+          }
+        }
+      ],
+      "defaults": {
+        "render_scale": "4"
+      }
+    },
+    {
+      "id": "fullscreen",
+      "label": "Window mode",
+      "group": "Display",
+      "help": "Fullscreen or a window.",
+      "choices": [
+        {
+          "label": "Windowed",
+          "set": {
+            "fullscreen": "false"
+          }
+        },
+        {
+          "label": "Fullscreen",
+          "set": {
+            "fullscreen": "true"
+          }
+        }
+      ],
+      "defaults": {
+        "fullscreen": "false"
+      }
+    },
+    {
+      "id": "window_size",
+      "label": "Window size",
+      "group": "Display",
+      "help": "The size of the game window.",
+      "choices": [
+        {
+          "label": "960 x 544",
+          "set": {
+            "window_size": "[960,544]"
+          }
+        },
+        {
+          "label": "1280 x 720",
+          "set": {
+            "window_size": "[1280,720]"
+          }
+        },
+        {
+          "label": "1600 x 900",
+          "set": {
+            "window_size": "[1600,900]"
+          }
+        },
+        {
+          "label": "1920 x 1080",
+          "set": {
+            "window_size": "[1920,1080]"
+          }
+        },
+        {
+          "label": "2560 x 1440",
+          "set": {
+            "window_size": "[2560,1440]"
+          }
+        },
+        {
+          "label": "3840 x 2160",
+          "set": {
+            "window_size": "[3840,2160]"
+          }
+        }
+      ],
+      "defaults": {
+        "window_size": "[960,544]"
+      },
+      "when": {
+        "fullscreen": "false"
+      }
+    },
+    {
+      "id": "scaling",
+      "label": "Presentation filter",
+      "group": "Display",
+      "help": "Choose sharp scaling, whole-number pixels or a smooth picture.",
+      "choices": [
+        {
+          "label": "Sharp",
+          "set": {
+            "scaling": "\"sharp\""
+          }
+        },
+        {
+          "label": "Integer pixels",
+          "set": {
+            "scaling": "\"integer\""
+          }
+        },
+        {
+          "label": "Bilinear",
+          "set": {
+            "scaling": "\"bilinear\""
+          }
+        }
+      ],
+      "defaults": {
+        "scaling": "\"sharp\""
+      }
+    },
+    {
+      "id": "vsync",
+      "label": "V-Sync",
+      "group": "Display",
+      "help": "Synchronizes presentation to reduce tearing.",
+      "choices": [
+        {
+          "label": "Off",
+          "set": {
+            "vsync": "false"
+          }
+        },
+        {
+          "label": "On",
+          "set": {
+            "vsync": "true"
+          }
+        }
+      ],
+      "defaults": {
+        "vsync": "true"
+      }
+    },
+    {
+      "id": "hud",
+      "label": "Performance display",
+      "group": "Display",
+      "help": "Shows the host performance overlay.",
+      "choices": [
+        {
+          "label": "Off",
+          "set": {
+            "hud": "false"
+          }
+        },
+        {
+          "label": "On",
+          "set": {
+            "hud": "true"
+          }
+        }
+      ],
+      "defaults": {
+        "hud": "false"
+      },
+      "advanced": true
+    },
+    {
+      "id": "upscale",
+      "label": "Upscaling",
+      "group": "Graphics",
+      "help": "FSR 1 sharpens and scales the rendered image.",
+      "choices": [
+        {
+          "label": "Off",
+          "set": {
+            "upscale": "\"off\""
+          }
+        },
+        {
+          "label": "FSR 1",
+          "set": {
+            "upscale": "\"fsr1\""
+          }
+        }
+      ],
+      "defaults": {
+        "upscale": "\"fsr1\""
+      }
+    },
+    {
+      "id": "anisotropy",
+      "label": "Anisotropic filtering",
+      "group": "Graphics",
+      "help": "Improves textures viewed at an angle.",
+      "choices": [
+        {
+          "label": "Off",
+          "set": {
+            "anisotropy": "0"
+          }
+        },
+        {
+          "label": "2x",
+          "set": {
+            "anisotropy": "2"
+          }
+        },
+        {
+          "label": "4x",
+          "set": {
+            "anisotropy": "4"
+          }
+        },
+        {
+          "label": "8x",
+          "set": {
+            "anisotropy": "8"
+          }
+        },
+        {
+          "label": "16x",
+          "set": {
+            "anisotropy": "16"
+          }
+        }
+      ],
+      "defaults": {
+        "anisotropy": "16"
+      }
+    },
+    {
+      "id": "mipmaps",
+      "label": "Mipmaps",
+      "group": "Graphics",
+      "help": "Reduces distant texture shimmer.",
+      "choices": [
+        {
+          "label": "Off",
+          "set": {
+            "mipmaps": "false"
+          }
+        },
+        {
+          "label": "On",
+          "set": {
+            "mipmaps": "true"
+          }
+        }
+      ],
+      "defaults": {
+        "mipmaps": "true"
+      }
+    },
+    {
+      "id": "full_color",
+      "label": "Full colour",
+      "group": "Graphics",
+      "help": "Uses the enhanced full-colour rendering path.",
+      "choices": [
+        {
+          "label": "Off",
+          "set": {
+            "full_color": "false"
+          }
+        },
+        {
+          "label": "On",
+          "set": {
+            "full_color": "true"
+          }
+        }
+      ],
+      "defaults": {
+        "full_color": "true"
+      },
+      "advanced": true
+    },
+    {
+      "id": "supersampling",
+      "label": "Supersampling",
+      "group": "Graphics",
+      "help": "Renders extra samples to smooth edges at a higher GPU cost.",
+      "choices": [
+        {
+          "label": "Off",
+          "set": {
+            "supersampling": "1"
+          }
+        },
+        {
+          "label": "2x",
+          "set": {
+            "supersampling": "2"
+          }
+        }
+      ],
+      "defaults": {
+        "supersampling": "2"
+      },
+      "advanced": true
+    },
+    {
+      "id": "texture_scale",
+      "label": "Texture scaling",
+      "group": "Graphics",
+      "help": "Scales textures at runtime; larger values use more memory.",
+      "choices": [
+        {
+          "label": "1x",
+          "set": {
+            "texture_scale": "1"
+          }
+        },
+        {
+          "label": "2x",
+          "set": {
+            "texture_scale": "2"
+          }
+        },
+        {
+          "label": "3x",
+          "set": {
+            "texture_scale": "3"
+          }
+        },
+        {
+          "label": "4x",
+          "set": {
+            "texture_scale": "4"
+          }
+        },
+        {
+          "label": "5x",
+          "set": {
+            "texture_scale": "5"
+          }
+        },
+        {
+          "label": "6x",
+          "set": {
+            "texture_scale": "6"
+          }
+        }
+      ],
+      "defaults": {
+        "texture_scale": "4"
+      },
+      "advanced": true
+    },
+    {
+      "id": "hd_ui",
+      "label": "Local HD textures",
+      "group": "Graphics",
+      "help": "Build the optional HD pack with Set Up Again first; UI and portraits retain original artwork.",
+      "choices": [
+        {
+          "label": "Off",
+          "set": {
+            "hd_ui": "false"
+          }
+        },
+        {
+          "label": "Use prepared pack",
+          "set": {
+            "hd_ui": "true"
+          }
+        }
+      ],
+      "defaults": {
+        "hd_ui": "false"
+      }
+    },
+    {
+      "id": "gameplay_fps",
+      "label": "Gameplay frame rate",
+      "group": "General",
+      "help": "Movies remain at 30 FPS; 60 FPS co-op loading still needs wider testing.",
+      "choices": [
+        {
+          "label": "Original 30 FPS",
+          "set": {
+            "gameplay_fps": "30"
+          }
+        },
+        {
+          "label": "Experimental 60 FPS",
+          "set": {
+            "gameplay_fps": "60"
+          }
+        }
+      ],
+      "defaults": {
+        "gameplay_fps": "30"
+      }
+    }
+  ],
+  "saves": [
+    "{install}/private/memstick/english-text-test/PSP/SAVEDATA/*/DATA.BIN",
+    "{install}/private/memstick/english-text-test/PSP/SAVEDATA/*/PARAM.SFO",
+    "{install}/private/memstick/japanese/PSP/SAVEDATA/*/DATA.BIN",
+    "{install}/private/memstick/japanese/PSP/SAVEDATA/*/PARAM.SFO"
+  ],
+  "folders": {
+    "game": [
+      {
+        "path": "{install}"
+      }
+    ],
+    "saves": [
+      {
+        "path": "{install}/private/memstick/english-text-test/PSP/SAVEDATA"
+      }
+    ],
+    "settings": [
+      {
+        "path": "{install}/private/settings"
+      }
+    ],
+    "logs": [
+      {
+        "path": "{install}/private/recomplauncher/logs"
+      }
+    ]
+  },
+  "actions": [
+    {
+      "id": "saves",
+      "label": "Open English saves",
+      "open": "saves"
+    },
+    {
+      "id": "settings",
+      "label": "Open settings folder",
+      "open": "settings"
+    },
+    {
+      "id": "logs",
+      "label": "Open launch logs",
+      "open": "logs"
+    }
+  ],
+  "exit_codes": {
+    "1": "Setup or launch failed. Read the last lines of the launch log, check your original Japanese disc and choose Set Up Again.",
+    "2": "Setup is incomplete or your disc/HD selection changed. Choose Set Up Again."
+  },
+  "system": {
+    "windows": {
+      "version": "10",
+      "graphics": {
+        "vulkan": "1.1"
+      }
+    }
+  },
+  "looks": {
+    "graphics": "vulkan",
+    "lines": 272
+  }
+}

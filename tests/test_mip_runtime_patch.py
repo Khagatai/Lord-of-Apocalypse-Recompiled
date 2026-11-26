@@ -34,5 +34,5 @@ class PrivateMipRenderer(unittest.TestCase):
             self.assertEqual(first.read_bytes(),second.read_bytes())
             self.assertEqual(report['upstream_sha256'],hashlib.sha256(before).hexdigest())
             self.assertEqual(report['generated_sha256'],hashlib.sha256(first.read_bytes()).hexdigest())
-            self.assertEqual(len(report['extension_sha256']),5)
+            self.assertEqual(len(report['extension_sha256']),6)
         self.assertEqual(source.read_bytes(),before)

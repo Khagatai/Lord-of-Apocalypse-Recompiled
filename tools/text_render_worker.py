@@ -12,7 +12,10 @@ class Renderer:
         if script not in ('render-texture-text.ps1','render-caption-atlas.ps1'):raise ValueError('Unknown local text renderer')
         if self.process is None:
             powershell=Path(os.environ.get('SystemRoot','C:/Windows'))/'System32/WindowsPowerShell/v1.0/powershell.exe'
-            self.process=subprocess.Popen([str(powershell),'-NoProfile','-File',str(self.root/'tools/render-text-worker.ps1')],
+            # Application-owned scripts run only in this child session. Never
+            # change CurrentUser/LocalMachine policy to complete game setup.
+            self.process=subprocess.Popen([str(powershell),'-NoProfile','-NonInteractive','-ExecutionPolicy','Bypass',
+                '-File',str(self.root/'tools/render-text-worker.ps1')],
                 stdin=subprocess.PIPE,stdout=subprocess.PIPE,stderr=subprocess.STDOUT,text=True,encoding='utf-8',errors='replace',
                 creationflags=getattr(subprocess,'CREATE_NO_WINDOW',0))
             self.reader=threading.Thread(target=self._read,daemon=True);self.reader.start()

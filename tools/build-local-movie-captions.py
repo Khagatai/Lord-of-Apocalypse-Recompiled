@@ -9,7 +9,11 @@ def sha(raw):return hashlib.sha256(raw).hexdigest()
 
 def run_render(script,arguments):
     powershell=Path(os.environ.get('SystemRoot','C:/Windows'))/'System32/WindowsPowerShell/v1.0/powershell.exe'
-    result=subprocess.run([str(powershell),'-NoProfile','-File',str(ROOT/'tools'/script),*arguments],capture_output=True,text=True)
+    # Match the persistent UI worker: process-scoped policy for our own scripts,
+    # without requiring administrator rights or a persistent policy change.
+    result=subprocess.run([str(powershell),'-NoProfile','-NonInteractive','-ExecutionPolicy','Bypass',
+        '-File',str(ROOT/'tools'/script),*arguments],capture_output=True,text=True,
+        creationflags=getattr(subprocess,'CREATE_NO_WINDOW',0))
     if result.returncode:raise RuntimeError(result.stderr)
 
 def discard_incomplete_render(render,record):

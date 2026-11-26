@@ -20,6 +20,7 @@ import title
 import window_settings
 import settings_bridge
 import test_support
+import controller_settings
 
 
 def main():
@@ -27,6 +28,7 @@ def main():
     parser.add_argument('--output', type=Path, required=True)
     parser.add_argument('--restart', action='store_true', help='Exercise advanced/language/presets and clean restart into WIP English')
     parser.add_argument('--fps',action='store_true',help='Exercise the gameplay 30/60 FPS setting and revert the isolated fixture to 30')
+    parser.add_argument('--controls',action='store_true',help='Exercise native F1 binding save, live reload and defaults with isolated controller preferences')
     parser.add_argument('--support',action='store_true',help='Exercise F1 audio marking and safe local diagnostic export')
     parser.add_argument('--relocated',action='store_true',help='Verify an existing packaged release without development Git metadata')
     parser.add_argument('--preferences',type=Path,help='Existing private QA preferences shared with a launcher fixture')
@@ -62,8 +64,10 @@ def main():
     if not fixture_preferences.is_relative_to(ROOT/'private') or fixture_preferences.suffix!='.json':
         parser.error('QA preferences must be a private JSON file')
     bridge=settings_bridge.Bridge(output, fixture_preferences)
+    controls=controller_settings.Bridge(output,output/'controller-fixture.json',output/'controller-profile.json')
     support=test_support.Support(ROOT,output,output/'memstick',profile)
     env.update(bridge.environment(profile))
+    env.update(controls.environment())
     env.update(SR_AUDIOSTAT='1',SR_MPEGAV='1',LOA_MOVIE_TIMING='1',SR_PERF='1')
     env['LOA_SETTINGS_TRACE']='1'
     if args.online:
@@ -122,6 +126,7 @@ def main():
                 deadline = time.monotonic()+seconds
                 while time.monotonic() < deadline:
                     bridge.poll()
+                    controls.poll()
                     support.poll()
                     if marker in log_path.read_text(errors='replace'):
                         return
@@ -133,6 +138,7 @@ def main():
                 key(code)
                 time.sleep(0.25)
                 bridge.poll()
+                controls.poll()
                 support.poll()
             def saved(seq):
                 wait_for(f'LOA_SETTINGS: saved sequence={seq}')
@@ -141,7 +147,38 @@ def main():
             key(0x70)  # F1, delivered only to this child process.
             wait_for('SR_PAUSE: entered')
             time.sleep(1)
-            if args.support:
+            if args.controls:
+                for code in (0x28,0x28,0x28,0x0d):step(code)
+                wait_for('LOA_CONTROLS: focus=630')
+                subprocess.run(['powershell','-NoProfile','-File',str(ROOT/'tools/capture-owned-window.ps1'),'-Window',str(window),'-Owner',str(process.pid),'-Output',str(output/'controller-bindings.png')],check=True,timeout=10,capture_output=True)
+                step(0x27);wait_for('LOA_CONTROLS: saved sequence=1 reloaded=1')
+                expected=controller_settings.assign(controller_settings.defaults(),0,2)
+                if controller_settings.load(output/'controller-fixture.json')!=expected:raise RuntimeError('F1 controller change was not saved')
+                for _ in range(12):
+                    focuses=re.findall(r'LOA_CONTROLS: focus=(\d+)',log_path.read_text(errors='replace'))
+                    if focuses and focuses[-1]=='661':break
+                    step(0x28)
+                else:raise RuntimeError('Could not focus Restore default controller bindings')
+                step(0x0d);wait_for('LOA_CONTROLS: saved sequence=2 reloaded=1')
+                if controller_settings.load(output/'controller-fixture.json')!=controller_settings.defaults():raise RuntimeError('F1 defaults were not restored')
+                for code in (0x28,0x28,0x28,0x28,0x0d):step(code)
+                step(0x27);wait_for('LOA_CONTROLS: saved sequence=3 reloaded=1')
+                step(0x28);step(0x27);wait_for('LOA_CONTROLS: saved sequence=4 reloaded=1')
+                if controller_settings.load(output/'controller-fixture.json')[-2:]!=[1,3]:raise RuntimeError('F1 camera mode and speed did not persist')
+                subprocess.run(['powershell','-NoProfile','-File',str(ROOT/'tools/capture-owned-window.ps1'),'-Window',str(window),'-Owner',str(process.pid),'-Output',str(output/'camera-settings.png')],check=True,timeout=10,capture_output=True)
+                step(0x1b)
+                for _ in range(12):
+                    focuses=re.findall(r'LOA_CONTROLS: focus=(\d+)',log_path.read_text(errors='replace'))
+                    if focuses and focuses[-1]=='661':break
+                    step(0x28)
+                else:raise RuntimeError('Could not restore defaults after Camera settings')
+                step(0x0d)
+                wait_for('LOA_CONTROLS: saved sequence=5 reloaded=1')
+                if controller_settings.load(output/'controller-fixture.json')!=controller_settings.defaults():raise RuntimeError('F1 did not restore camera defaults')
+                report['controller_bindings']='PASS: native page, acknowledged saves, live profile reload and restored defaults'
+                report['camera_settings']='PASS: experimental horizontal mode and speed persisted, then defaults restored'
+                step(0x1b);step(0x26);step(0x26)
+            elif args.support:
                 for code in (0x28,0x28,0x28,0x28,0x0d):step(code)
                 wait_for('LOA_MENU: tester support opened')
                 step(0x28);step(0x0d)
@@ -153,7 +190,7 @@ def main():
                     raise RuntimeError('F1 export did not create a diagnostic archive')
                 import zipfile
                 with zipfile.ZipFile(support.last_report) as archive:
-                    if set(archive.namelist())!={'report.json','audio-diagnostics.json','TESTER-NOTES.txt'}:
+                    if set(archive.namelist())!={'report.json','audio-diagnostics.json','network-diagnostics.json','TESTER-NOTES.txt'}:
                         raise RuntimeError('Unexpected diagnostic report payload')
                 report['tester_support']='PASS: actual F1 audio marker and local ZIP export'
                 subprocess.run(['powershell','-NoProfile','-File',str(ROOT/'tools/capture-owned-window.ps1'),

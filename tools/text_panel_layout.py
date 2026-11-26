@@ -7,16 +7,20 @@ from mes_codec import Bundle, Message
 from mes_tokens import message_template
 
 
-def measurements(message, table):
+def measurements(message, table, runtime_widths=None):
+    runtime_widths = runtime_widths or {}
     lines, commands = message_template(message, table)
+    def key(command):return ':'.join(f'{word:04x}' for word in command)
     uncertain = [f'{command[0]:04x}' for command in commands
-                 if command[0] not in (0xfffa, 0xfff9, 0xfff4)]
+                 if command[0] not in (0xfffa, 0xfff9, 0xfff4) and key(command) not in runtime_widths]
     advances = []
     for line in lines:
         advance = width(line)
         for index, command in enumerate(commands):
             if command[0] == 0xfff4:
                 advance += line.count(f'<cmd:{index}>') * 12
+            elif key(command) in runtime_widths:
+                advance += line.count(f'<cmd:{index}>') * runtime_widths[key(command)]
         advances.append(advance)
     return lines, advances, uncertain
 
@@ -53,8 +57,8 @@ def validate(raw, table, resource_id, profiles=None):
         if not candidates:
             continue
         message = Message.parse(bundle.blocks[block])
-        lines, advances, uncertain = measurements(message, table)
         for profile in candidates:
+            lines, advances, uncertain = measurements(message, table, profile.get('runtime_command_widths'))
             if uncertain:
                 raise ValueError(f'{identity}:{index} needs measured runtime control widths')
             if max(advances) > profile['width'] or len(lines) > profile['rows']:

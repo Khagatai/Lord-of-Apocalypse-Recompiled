@@ -6,8 +6,10 @@
 NkAdhocTransport *loa_coop_transport(const char *host,unsigned lobby_port,const char *bind_ip,unsigned offset);
 void loa_coop_transport_close(void);
 int loa_coop_transport_alive(void);
+int loa_coop_poll(NkLobbyEvent *out,size_t max,size_t *count);
 uint16_t loa_coop_socket_port(int handle);
 uint32_t loa_coop_socket_pending(int handle);
+int loa_coop_socket_info(int handle,uint16_t *port,uint32_t *pending);
 typedef struct LoaPtpStat {uint8_t peer[6];uint16_t local_port,peer_port;uint32_t available,state;} LoaPtpStat;
 int loa_coop_ptp_open(uint16_t local,const uint8_t peer[6],uint16_t remote,int backlog);
 int loa_coop_ptp_connect(int handle);

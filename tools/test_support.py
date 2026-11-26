@@ -16,7 +16,7 @@ FIELDS = set('ch pushes q_min_ms q_max_ms underruns starved_ms pushed overruns q
     'vblank_total wall_ms fps frame_ms vblank_hz cpu_ms ge_wait_ms present_ms idle_ms '
     'ge_cpu_ms vk_wait_ms texture_decode_ms iso_read_ms vfs_read_ms h264_ms atrac_ms mix_ms output_ms'.split())
 
-def telemetry(folder):
+def telemetry(folder, *, network=False):
     path=Path(folder)/'native.log'
     lines=[]
     if path.is_file():
@@ -24,15 +24,22 @@ def telemetry(folder):
             size=stream.seek(0,2);stream.seek(max(0,size-2*1024*1024))
             data=stream.read(2*1024*1024).decode('utf-8',errors='replace')
         for line in data.splitlines():
-            if not line.startswith(PREFIXES):continue
+            prefixes=('LOA_IPC:', 'LOA_COOP_FAULT:', 'NULL_CODE_POINTER:') if network else PREFIXES
+            if not line.startswith(prefixes):continue
             # Export only numeric fields, never raw lines, device names, paths or IDs.
             prefix=line.split(':',1)[0].split(' ',1)[0]
             if not re.fullmatch(r'[A-Z_]{3,40}',prefix):continue
-            fields={k:v for k,v in NUMBER.findall(line) if k in FIELDS}
+            allowed=set('requests failures total_ms max_ms pc ra sp uid vblank fps a0 a1 a2 s0 s1'.split()) if network else FIELDS
+            fields={k:v for k,v in NUMBER.findall(line) if k in allowed}
+            if network and prefix=='NULL_CODE_POINTER':
+                match=re.search(r'computed transfer at (0x[0-9a-fA-F]{8}) targets 0x00000000',line)
+                if match:fields['pc']=match[1]
             if fields:lines.append({'kind':prefix,'fields':fields})
-    return {'scope':'last-2-MiB-of-log', 'samples':lines[-2000:],
-            'complete_session':False, 'audio_quality_validated':False,
+    report={'scope':'last-2-MiB-of-log', 'samples':lines[-2000:],
+            'complete_session':False,
             'note':'Missing samples are unavailable measurements, not zero errors.'}
+    report['multiplayer_validated' if network else 'audio_quality_validated']=False
+    return report
 
 def build_identity(root):
     path=Path(root)/'private/native-release/lordofapocalypse/host-ui-build.json'
@@ -69,8 +76,10 @@ def export_report(root, folder, graphics, markers=(), replace_path=None):
         with zipfile.ZipFile(temporary,'w',compression=zipfile.ZIP_DEFLATED) as archive:
             archive.writestr('report.json',json.dumps(metadata,indent=2))
             archive.writestr('audio-diagnostics.json',json.dumps(telemetry(folder),indent=2))
+            archive.writestr('network-diagnostics.json',json.dumps(telemetry(folder,network=True),indent=2))
             archive.writestr('TESTER-NOTES.txt','Describe the location, steps, expected behaviour and what happened.\n'
                 'For audio, say whether it was a movie or fight and whether 30 or 60 FPS was selected.\n'
+                'For multiplayer, state FPS on every PC and whether it failed during loading, combat or returning.\n'
                 'This ZIP was created locally. Nothing was uploaded.\n'
                 'Raw logs, saves, game content and network identifiers are excluded.\n'
                 'Audio measurements may be unavailable until the runtime exits.\n')
@@ -119,5 +128,8 @@ class Support:
 
     def finish(self):
         atomic_json(self.folder/'audio-diagnostics.json',telemetry(self.folder))
-        if self.last_report:
-            export_report(self.root,self.folder,self.graphics,self.markers,replace_path=self.last_report)
+        network=telemetry(self.folder,network=True)
+        atomic_json(self.folder/'network-diagnostics.json',network)
+        fatal=any(row['kind'] in ('LOA_COOP_FAULT','NULL_CODE_POINTER') for row in network['samples'])
+        if self.last_report or fatal:
+            self.last_report=export_report(self.root,self.folder,self.graphics,self.markers,replace_path=self.last_report)

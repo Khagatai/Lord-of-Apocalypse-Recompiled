@@ -194,6 +194,12 @@ class Agent:
     def request(self,body):
         op=body.get('op');result=OK
         if op=='status':return dict(result=OK,**self.status())
+        if op=='poll':
+            # One authenticated snapshot replaces consecutive events/status IPC.
+            limit=body.get('max',8)
+            if type(limit) is not int or not 0<=limit<=8:return dict(result=BAD)
+            reply=self.request(dict(op='events',max=limit))
+            return dict(reply,state=self.state)
         if op in ('create','join'):return self.create_or_join(op,body.get('code',''))
         if op=='leave':return self.leave()
         if op=='stop':self.closed=True;return dict(result=OK)

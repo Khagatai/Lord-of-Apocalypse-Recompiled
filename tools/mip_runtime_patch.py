@@ -64,6 +64,29 @@ static int tex_xs_store(TexEnt *e, const NkTexScaleResult *r) {
 #include "tex_scale_gpu_selftest.inc"
 #undef gegpu_texscale_selftest
 #include "mip_gpu_selftest.c"''')
+    change('static VkDescriptorSet tex_get(void) {', '''#include "texture_lookup.h"
+static int loa_texture_report_registered,loa_texture_reported;
+static void loa_texture_lookup_report(void) {
+    if(loa_texture_reported)return;
+    loa_texture_reported=1;
+    fprintf(stderr,"LOA_TEXTURE_LOOKUP: enabled=%d hits=%llu searches=%llu comparisons=%llu verified=%d\\n",
+        loa_texture_lookup_enabled,(unsigned long long)loa_texture_hint_hits,(unsigned long long)loa_texture_searches,
+        (unsigned long long)loa_texture_comparisons,loa_texture_lookup_verify);
+    if(s_cpu_profile)for(int phase=0;phase<GEGPU_CPU_PHASE_COUNT;phase++)
+        fprintf(stderr,"LOA_GE_CPU: phase=%d calls=%llu ns=%llu\\n",phase,
+            s_cpu_profile_stats.phase[phase].calls,s_cpu_profile_stats.phase[phase].ns);
+}
+
+static VkDescriptorSet tex_get(void) {''')
+    change('''    for (int i = 0; i < s_tex_n; i++) {
+        TexEnt *e = &s_tex[i];
+        if (e->key != key || memcmp(&e->mip, &mip, sizeof(mip)) != 0) continue;''', '''    int loa_texture_index=loa_texture_find(key,&mip);
+    if (loa_texture_index>=0) {
+        TexEnt *e = &s_tex[loa_texture_index];''')
+    change('        s_cpu_profile = cpu_profile && cpu_profile[0] && strcmp(cpu_profile, "0") != 0;',
+           '''        s_cpu_profile = cpu_profile && cpu_profile[0] && strcmp(cpu_profile, "0") != 0;
+        loa_texture_lookup_reset();loa_texture_reported=0;
+        if(!loa_texture_report_registered){loa_texture_report_registered=1;atexit(loa_texture_lookup_report);}''')
     change('s_xs_factor = xs->factor;', '''s_xs_factor = xs->factor;
         const char *original_ui=getenv("LOA_ORIGINAL_UI");
         s_loa_original_ui=original_ui && !strcmp(original_ui,"1");
@@ -76,7 +99,8 @@ static int tex_xs_store(TexEnt *e, const NkTexScaleResult *r) {
             fprintf(stderr,"LOA_MIPS: refused invalid LOA_MIP_TEXTURES (use 0 or 1)\\n");
         s_loa_mips=g_ace_on && loa && strcmp(loa,"1")==0;
         fprintf(stderr,"LOA_MIPS: %s (experimental authored-level scaling; private renderer copy)\\n",s_loa_mips?"on":"off");''')
-    change('tex_repl_shutdown();   /* the exit line,', '''fprintf(stderr,"LOA_ORIGINAL_UI: exit (original_binds=%llu)\\n",(unsigned long long)s_loa_ui_original_binds);
+    change('tex_repl_shutdown();   /* the exit line,', '''loa_texture_lookup_report();
+    fprintf(stderr,"LOA_ORIGINAL_UI: exit (original_binds=%llu)\\n",(unsigned long long)s_loa_ui_original_binds);
     fprintf(stderr,"LOA_MIPS: exit (queued=%llu, uploaded=%llu, levels=%llu, bound=%llu, failed=%llu, replacement_queued=%llu, replacement_rejected=%llu)\\n",
             (unsigned long long)s_loa_mip_queued,(unsigned long long)s_loa_mip_uploaded,
             (unsigned long long)s_loa_mip_levels_uploaded,(unsigned long long)s_loa_mip_bound,
@@ -91,7 +115,7 @@ def prepare(framework,output):
     output=Path(output)
     helpers=Path(__file__).resolve().parent
     fingerprints={}
-    for name in ('mip_chain.c','mip_gpu.c','mip_gpu_selftest.c','mip_runtime_patch.py','sampler_pack.c'):
+    for name in ('mip_chain.c','mip_gpu.c','mip_gpu_selftest.c','mip_runtime_patch.py','sampler_pack.c','texture_lookup.h'):
         content=(helpers/name).read_bytes()
         fingerprints[name]=hashlib.sha256(content).hexdigest()
         target=output.parent/name

@@ -183,8 +183,8 @@ static void ctl_thread(CpuState *s,void *opaque) {
     uint32_t generation=(uint32_t)(uintptr_t)opaque;
     while(net.ctl && generation==net.generation) {
         NkLobbyEvent events[8];
-        size_t count=net.transport->ops->take_events(net.transport,events,8);
-        if(!loa_coop_transport_alive()) {
+        size_t count=0;
+        if(!loa_coop_poll(events,8,&count)) {
             net.state=0;
             net.pending=0;
             net.peer_n=0;
@@ -563,13 +563,16 @@ static uint32_t pdp_stat(CpuState *s) {
     if(count && !sr_guest_span_writable(A1,count*20))return NETERR(2);
     unsigned n=0;
     for(unsigned i=0;i<16 && n<count;i++)if(net.pdp[i].used) {
+        uint16_t port;uint32_t pending;
+        int status=loa_coop_socket_info(net.pdp[i].transport,&port,&pending);
+        if(status!=NK_NET_OK)return transport_error(status);
         uint32_t out=A1+20*n;
         zero_bytes(out,20);
         MEM_W32(out,++n<count?out+20:0);
         MEM_W32(out+4,i+1);
         write_bytes(out+8,net.mac,6);
-        MEM_W16(out+14,loa_coop_socket_port(net.pdp[i].transport));
-        MEM_W32(out+16,loa_coop_socket_pending(net.pdp[i].transport));
+        MEM_W16(out+14,port);
+        MEM_W32(out+16,pending);
     }
     return 0;
 }

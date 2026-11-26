@@ -30,6 +30,7 @@ NkJsonNode *loa_online_request(const char *fields) {
     int length=snprintf(wire,65536,"{\"token\":\"%s\",%s}\n",token,fields);
     if(length<=0 || length>=65536)goto done;
     AcquireSRWLockExclusive(&ipc_lock);
+    LARGE_INTEGER began;QueryPerformanceCounter(&began);
     if(!wsa) {WSADATA data;if(WSAStartup(MAKEWORD(2,2),&data))goto unlock;wsa=1;}
     if(ipc==INVALID_SOCKET) {
         unsigned port=(unsigned)strtoul(getenv("LOA_ONLINE_PORT"),NULL,10);
@@ -55,6 +56,21 @@ NkJsonNode *loa_online_request(const char *fields) {
 broken:
     closesocket(ipc);ipc=INVALID_SOCKET;
 unlock:
+    {
+        static LARGE_INTEGER frequency;
+        static ULONGLONG since;
+        static unsigned requests,failures;
+        static double total_ms,max_ms;
+        LARGE_INTEGER ended;QueryPerformanceCounter(&ended);
+        if(!frequency.QuadPart)QueryPerformanceFrequency(&frequency);
+        double ms=1000.0*(ended.QuadPart-began.QuadPart)/frequency.QuadPart;
+        requests++;failures+=result==NULL;total_ms+=ms;if(ms>max_ms)max_ms=ms;
+        ULONGLONG now=GetTickCount64();if(!since)since=now;
+        if(now-since>=1000){
+            fprintf(stderr,"LOA_IPC: requests=%u failures=%u total_ms=%.3f max_ms=%.3f\n",requests,failures,total_ms,max_ms);
+            since=now;requests=failures=0;total_ms=max_ms=0;
+        }
+    }
     ReleaseSRWLockExclusive(&ipc_lock);
 done:
     free(wire);free(reply);return result;
@@ -89,10 +105,11 @@ static int group(NkAdhocTransport *base,const uint8_t name[8]) {
 }
 static int leave(NkAdhocTransport *base) {(void)base;return simple("\"op\":\"disconnect\"");}
 static int scan(NkAdhocTransport *base) {(void)base;return simple("\"op\":\"scan\"");}
-static size_t events(NkAdhocTransport *base,NkLobbyEvent *out,size_t max) {
-    (void)base;char request[80];if(max>8)max=8;
-    snprintf(request,sizeof request,"\"op\":\"events\",\"max\":%u",(unsigned)max);
+static size_t events_snapshot(NkLobbyEvent *out,size_t max,int *alive) {
+    char request[80];if(max>8)max=8;
+    snprintf(request,sizeof request,"\"op\":\"%s\",\"max\":%u",alive?"poll":"events",(unsigned)max);
     NkJsonNode *r=loa_online_request(request);size_t count=0;
+    if(alive)*alive=r && (loa_online_result(r)==0 || loa_online_result(r)==NK_NET_NOT_LOGGED_IN) && !strcmp(string(r,"state"),"in-room");
     if(loa_online_result(r)==0) {
         NkJsonNode *list=nk_json_obj_get(r,"events");size_t n=nk_json_array_count(list);if(n>max)n=max;
         for(size_t i=0;i<n;i++) {
@@ -106,6 +123,12 @@ static size_t events(NkAdhocTransport *base,NkLobbyEvent *out,size_t max) {
         }
     }
     nk_json_free(r);return count;
+}
+static size_t events(NkAdhocTransport *base,NkLobbyEvent *out,size_t max) {
+    (void)base;return events_snapshot(out,max,NULL);
+}
+int loa_online_poll(NkLobbyEvent *out,size_t max,size_t *count) {
+    int alive=0;*count=events_snapshot(out,max,&alive);return alive;
 }
 static uint32_t dropped(const NkAdhocTransport *base) {(void)base;return 0;}
 static uint32_t pdp_dropped(const NkAdhocTransport *base) {
@@ -145,6 +168,13 @@ static NkJsonNode *socket_stat(int handle,const char *kind) {
 }
 uint16_t loa_online_port(int handle) {NkJsonNode *r=socket_stat(handle,"pdp");uint16_t p=(uint16_t)integer(r,"port",0);nk_json_free(r);return p;}
 uint32_t loa_online_pending(int handle) {NkJsonNode *r=socket_stat(handle,"pdp");uint32_t p=(uint32_t)integer(r,"pending",0);nk_json_free(r);return p;}
+int loa_online_socket_info(int handle,uint16_t *port,uint32_t *pending) {
+    NkJsonNode *r=socket_stat(handle,"pdp");int result=loa_online_result(r);
+    int p=integer(r,"port",-1),n=integer(r,"pending",-1);
+    if(result==0 && (p<0 || p>65535 || n<0))result=NK_NET_BAD_ARG;
+    if(result==0){*port=(uint16_t)p;*pending=(uint32_t)n;}
+    nk_json_free(r);return result;
+}
 int loa_online_ptp_open(uint16_t local,const uint8_t peer[6],uint16_t remote,int backlog) {
     char hex[13],request[200];mac_string(peer,hex);snprintf(request,sizeof request,"\"op\":\"ptp_open\",\"port\":%u,\"remote\":%u,\"backlog\":%d,\"mac\":\"%s\"",local,remote,backlog,hex);return simple(request);
 }

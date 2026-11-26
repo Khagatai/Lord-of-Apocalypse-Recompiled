@@ -1,0 +1,15 @@
+{
+  "schema": 1,
+  "resource_id": "00040d7c",
+  "width": 348,
+  "rows": 3,
+  "runtime_command_widths": {"efe0:0000": 282, "efe1:0000": 36},
+  "entries": {
+    "39": ["Bring me:", "<cmd:0> x<cmd:1><cmd:2><cmd:3>.", "That's all you need to pass. Take care!"],
+    "40": ["You still need:", "<cmd:0> x<cmd:1><cmd:2><cmd:3>.", "Come back when you've gathered them."],
+    "41": ["Please find this for me:", "<cmd:0>", "Sorry, I can't tell you what it's for."],
+    "42": ["For your next warm-up, bring:", "<cmd:0> x<cmd:1><cmd:2><cmd:3>.", "That's all you need to pass."],
+    "43": ["You still need:", "<cmd:0> x<cmd:1><cmd:2><cmd:3>.", "Come back when you've gathered them."],
+    "44": ["For our busy client, bring:", "<cmd:0> x<cmd:1><cmd:2><cmd:3>.", "Veddel will collect and deliver them."]
+  }
+}

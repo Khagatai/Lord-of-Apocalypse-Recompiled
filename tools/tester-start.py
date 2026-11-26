@@ -8,7 +8,8 @@ def main():
     if arguments and not arguments[0].startswith('--'):image=Path(arguments.pop(0))
     if tester_setup.iso_local_install():
         launcher_pid = os.environ.get('LOA_LAUNCHER_PID', '')
-        if launcher_pid.isdecimal() and not any(flag in arguments for flag in ('--check','--check-cached')):
+        if (os.environ.get('RECOMPLAUNCHER')!='1' and launcher_pid.isdecimal()
+                and not any(flag in arguments for flag in ('--check','--check-cached'))):
             import player_update
             if player_update.offer(tester_setup.ROOT, int(launcher_pid)):
                 return 0

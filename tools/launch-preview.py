@@ -23,6 +23,16 @@ import network_settings
 import test_support
 import tester_setup
 import ui_runtime
+import controller_settings
+
+CONTROLLER_HIDAPI='SDL_JOYSTICK_HIDAPI'
+PLAYSTATION_HIDAPI=('SDL_JOYSTICK_HIDAPI_PS4','SDL_JOYSTICK_HIDAPI_PS5')
+
+def configure_controller_environment(environment):
+    # Set child-process defaults before SDL starts; retain explicit driver overrides.
+    general=environment.setdefault(CONTROLLER_HIDAPI,'1')
+    for key in PLAYSTATION_HIDAPI:environment.setdefault(key,general)
+    return {key:environment[key] for key in (CONTROLLER_HIDAPI,*PLAYSTATION_HIDAPI)}
 
 def verify_native_location(root=ROOT,image=None):
     if sys.platform=='win32' and not str(root).isascii():
@@ -101,6 +111,7 @@ def main(argv=None):
         graphics['hd_ui'] = True
     pack=None
     graphics_env=graphics_settings.environment(graphics,args.renderer)
+    controller_hints=configure_controller_environment(dict(os.environ))
     import movie_captions
     graphics_env.update(movie_captions.environment(save_namespace))
     graphics_env.update(network_settings.environment(network,network_profile))
@@ -146,6 +157,7 @@ def main(argv=None):
               'mip_experiment':mip_experiment,
               "input_profile": str(input_profile),
               "input_profile_sha256": hashlib.sha256(input_profile.read_bytes()).hexdigest(),
+              'controller_driver_hints':controller_hints,
               'graphics_settings': graphics,
               'graphics_environment': graphics_env,
               'texture_pack':{key:value for key,value in pack.items() if key!='textures'} if pack else None,
@@ -175,12 +187,18 @@ def main(argv=None):
                 "SR_VIDEO": args.renderer, "SR_GPU_GE": "1" if args.renderer == "vulkan" else "0", "SR_PADWIDTH": "0",
                 "SR_PERF": "1", "SR_PERF_JSON": str(output / "perf.json")})
     env.update(graphics_env)
+    configure_controller_environment(env)
     if mip_experiment:
         import runtime_assets
         runtime_assets.configure_fonts(env,build)
     # The language shown by F1 must match this run, including legacy direct shortcuts.
     bridge = settings_bridge.Bridge(output,preview_settings) if mip_experiment else settings_bridge.Bridge(output)
     env.update(bridge.environment(graphics))
+    controls = controller_settings.Bridge(output)
+    env.update(controls.environment())
+    record['camera']={'mode':env['LOA_CAMERA_MODE'],'speed_index':int(env['LOA_CAMERA_SPEED'])}
+    record['input_profile']=env['NK_INPUT_PROFILE']
+    record['input_profile_sha256']=hashlib.sha256(Path(env['NK_INPUT_PROFILE']).read_bytes()).hexdigest()
     support = test_support.Support(ROOT,output,memstick,graphics)
     # Aggregate measurements only; no PCM recording or verbose MPEG decoder dump.
     env.update(SR_AUDIOSTAT='1',SR_MPEGAV='1',LOA_MOVIE_TIMING='1',LOA_AUDIO_DIAGNOSTICS='1')
@@ -220,6 +238,7 @@ def main(argv=None):
         try:
             while process.poll() is None:
                 bridge.poll()
+                controls.poll()
                 support.poll()
                 try:
                     process.wait(timeout=0.1)
@@ -235,6 +254,9 @@ def main(argv=None):
     record.update({"state": "EXITED", "returncode": code, "harness_terminated_child": terminated})
     try:
         support.finish()
+        if support.last_report:
+            record['diagnostic_report']=str(support.last_report)
+            print('Local diagnostic report: '+str(support.last_report),flush=True)
     except (OSError,ValueError,RuntimeError) as error:
         record['diagnostic_export_error']=str(error)
         print('Could not finalize diagnostic report: '+str(error),file=sys.stderr)
